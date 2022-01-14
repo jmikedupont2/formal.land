@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <id>https://formal.land/blog</id>
+    <title>Formal Land Blog</title>
+    <updated>2021-11-12T00:00:00.000Z</updated>
+    <generator>https://github.com/jpmonette/feed</generator>
+    <link rel="alternate" href="https://formal.land/blog"/>
+    <subtitle>Formal Land Blog</subtitle>
+    <icon>https://formal.land/img/land-512.png</icon>
+    <entry>
+        <title type="html"><![CDATA[New blog posts and Meetup talk]]></title>
+        <id>New blog posts and Meetup talk</id>
+        <link href="https://formal.land/blog/2021/11/12/new-blog-posts-and-meetup-talk"/>
+        <updated>2021-11-12T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Recently, we added two new blog posts about the verification of the crypto-currency Tezos:]]></summary>
+        <author>
+            <name>Guillaume Claret</name>
+            <uri>https://github.com/clarus</uri>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Verification of the use of data-encoding]]></title>
+        <id>Verification of the use of data-encoding</id>
+        <link href="https://formal.land/blog/2021/10/27/verification-data-encoding"/>
+        <updated>2021-10-27T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[We added a blog post about the verification of the use of data-encodings in the protocol of Tezos. Currently, we work on the verification of Tezos and publish our blog articles there. We use coq-of-ocaml to translate the OCaml code to Coq and do our verification effort.]]></summary>
+        <author>
+            <name>Guillaume Claret</name>
+            <uri>https://github.com/clarus</uri>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Welcome]]></title>
+        <id>Welcome</id>
+        <link href="https://formal.land/blog/2021/10/10/welcome"/>
+        <updated>2021-10-10T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Welcome to the blog of Foobar Land. Here we will post various updates about the work we are doing.]]></summary>
+        <author>
+            <name>Guillaume Claret</name>
+            <uri>https://github.com/clarus</uri>
+        </author>
+    </entry>
+</feed>

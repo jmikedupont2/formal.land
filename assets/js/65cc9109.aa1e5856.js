@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkfoobar_land=self.webpackChunkfoobar_land||[]).push([[799],{8864:function(a){a.exports=JSON.parse('{"allTagsPath":"/blog/tags","slug":"/blog/tags/data-encoding","name":"data-encoding","count":1,"permalink":"/blog/tags/data-encoding"}')}}]);

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0">
+    <channel>
+        <title>Formal Land Blog</title>
+        <link>https://formal.land/blog</link>
+        <description>Formal Land Blog</description>
+        <lastBuildDate>Fri, 12 Nov 2021 00:00:00 GMT</lastBuildDate>
+        <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
+        <generator>https://github.com/jpmonette/feed</generator>
+        <item>
+            <title><![CDATA[New blog posts and Meetup talk]]></title>
+            <link>https://formal.land/blog/2021/11/12/new-blog-posts-and-meetup-talk</link>
+            <guid>New blog posts and Meetup talk</guid>
+            <pubDate>Fri, 12 Nov 2021 00:00:00 GMT</pubDate>
+            <description><![CDATA[Recently, we added two new blog posts about the verification of the crypto-currency Tezos:]]></description>
+        </item>
+        <item>
+            <title><![CDATA[Verification of the use of data-encoding]]></title>
+            <link>https://formal.land/blog/2021/10/27/verification-data-encoding</link>
+            <guid>Verification of the use of data-encoding</guid>
+            <pubDate>Wed, 27 Oct 2021 00:00:00 GMT</pubDate>
+            <description><![CDATA[We added a blog post about the verification of the use of data-encodings in the protocol of Tezos. Currently, we work on the verification of Tezos and publish our blog articles there. We use coq-of-ocaml to translate the OCaml code to Coq and do our verification effort.]]></description>
+        </item>
+        <item>
+            <title><![CDATA[Welcome]]></title>
+            <link>https://formal.land/blog/2021/10/10/welcome</link>
+            <guid>Welcome</guid>
+            <pubDate>Sun, 10 Oct 2021 00:00:00 GMT</pubDate>
+            <description><![CDATA[Welcome to the blog of Foobar Land. Here we will post various updates about the work we are doing.]]></description>
+        </item>
+    </channel>
+</rss>
