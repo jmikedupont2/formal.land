@@ -34,7 +34,7 @@
         <id>Welcome</id>
         <link href="https://formal.land/blog/2021/10/10/welcome"/>
         <updated>2021-10-10T00:00:00.000Z</updated>
-        <summary type="html"><![CDATA[Welcome to the blog of Foobar Land. Here we will post various updates about the work we are doing.]]></summary>
+        <summary type="html"><![CDATA[Welcome to the blog of Formal Land. Here we will post various updates about the work we are doing.]]></summary>
         <author>
             <name>Guillaume Claret</name>
             <uri>https://github.com/clarus</uri>
