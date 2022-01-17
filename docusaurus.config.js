@@ -58,10 +58,14 @@ const config = {
         },
         items: [
           {
-            type: 'doc',
-            docId: 'intro',
+            to: 'docs/company/intro',
             position: 'left',
-            label: 'Introduction',
+            label: 'Company',
+          },
+          {
+            to: 'docs/coq-of-ocaml/introduction',
+            position: 'left',
+            label: 'coq-of-ocaml',
           },
           {to: '/blog', label: 'Blog', position: 'left'},
           {
@@ -83,23 +87,23 @@ const config = {
         style: 'dark',
         links: [
           {
-            title: 'Company',
+            title: 'Contet',
             items: [
               {
-                label: 'Introduction',
-                to: '/docs/intro',
+                label: 'Company',
+                to: '/docs/company/intro',
               },
               {
                 label: 'Claims',
-                to: '/docs/claims',
+                to: '/docs/company/claims',
               },
               {
                 label: 'Press',
-                to: '/docs/press',
+                to: '/docs/company/press',
               },
               {
                 label: 'About',
-                to: '/docs/about',
+                to: '/docs/company/about',
               },
             ],
           },
@@ -148,6 +152,7 @@ const config = {
       prism: {
         theme: lightCodeTheme,
         darkTheme: darkCodeTheme,
+        additionalLanguages: ['coq', 'ocaml'],
       },
     }),
 };

@@ -37,7 +37,7 @@ function HomepageHeader() {
         <div className={styles.buttons}>
           <Link
             className="button button--secondary button--lg"
-            to="/docs/intro">
+            to="/docs/company/intro">
             Introduction
           </Link>
           <Link
@@ -47,9 +47,8 @@ function HomepageHeader() {
           </Link>
           <Link
             className="button button--danger button--lg"
-            target="_blank"
-            to="/assets/files/formal-verification-ocaml-foobar-land-197b7c8113b2826e7607e76e1f0d633c.pdf">
-            Hiring&nbsp;<ExternalLink />
+            to="/docs/company/careers">
+            Hiring
           </Link>
         </div>
         <p className="hero__subtitle" style={{marginTop: 40}}>
