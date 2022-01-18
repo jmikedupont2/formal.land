@@ -78,7 +78,7 @@ const config = {
       announcementBar: {
         id: 'hiring',
         content:
-          'We are hiring! 📣 See our <a href="/assets/files/formal-verification-ocaml-foobar-land-197b7c8113b2826e7607e76e1f0d633c.pdf" target="_blank">job offers 🌷</a>.',
+          'We are hiring! 📣 See our <a href="/docs/company/careers">job offers 🌷</a>.',
         backgroundColor: '#fafbfc',
         textColor: '#091E42',
         isCloseable: false,
