@@ -3,7 +3,7 @@ id: introduction
 title: What is coq-of-ocaml
 ---
 
-`coq-of-ocaml` is a compiler from the [OCaml](https://ocaml.org/) programming language to the [Coq](https://coq.inria.fr/) proof language. It aims generate *idiomatic* and *human readable* Coq code. Technically speaking, this is a [shallow embedding](https://cstheory.stackexchange.com/questions/1370/shallow-versus-deep-embeddings) of OCaml into Coq.
+[coq-of-ocaml](https://github.com/foobar-land/coq-of-ocaml) is a compiler from the [OCaml](https://ocaml.org/) programming language to the [Coq](https://coq.inria.fr/) proof language. It aims generate *idiomatic* and *human readable* Coq code. Technically speaking, this is a [shallow embedding](https://cstheory.stackexchange.com/questions/1370/shallow-versus-deep-embeddings) of OCaml into Coq.
 
 We can use `coq-of-ocaml` to:
 * do formal proofs on OCaml programs;
