@@ -10,8 +10,8 @@ A presentation of the [Coq Tezos of OCaml](https://nomadic-labs.gitlab.io/coq-te
 
 ## Technical presentation
 A technical presentation about what we can do for your project:
-* [Slides](https://formal.land/static/technical-presentation/)
+* [Slides](https://formal.land/technical-presentation/)
 
 ## Company presentation
 A general presentation of the [Formal Land](/) company, and how we can be useful for Tezos in particular:
-* [Brochure (pdf)](press/brochure-foobar-land.pdf)
+* [Brochure (pdf)](press/brochure-formal-land.pdf)
