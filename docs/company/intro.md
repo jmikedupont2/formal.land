@@ -20,4 +20,4 @@ Our proposal is to formally verify critical parts of existing projects. We suppo
 > The higher your requirements are, the more you need us.
 
 ## Get started
-Contact us at <code><a href="mailto:&#099;&#111;&#110;&#116;&#097;&#099;&#116;&#064;&#102;&#111;&#111;&#098;&#097;&#114;&#046;&#108;&#097;&#110;&#100;">&#099;&#111;&#110;&#116;&#097;&#099;&#116;&#064;&#102;&#111;&#111;&#098;&#097;&#114;&#046;&#108;&#097;&#110;&#100;</a></code> for an evaluation of your code and discuss what is possible to do.
+Contact us at <code><a href="mailto:mailto:&#099;&#111;&#110;&#116;&#097;&#099;&#116;&#064;formal&#046;&#108;&#097;&#110;&#100;">mailto:&#099;&#111;&#110;&#116;&#097;&#099;&#116;&#064;formal&#046;&#108;&#097;&#110;&#100;</a></code> for an evaluation of your code and discuss what is possible to do.

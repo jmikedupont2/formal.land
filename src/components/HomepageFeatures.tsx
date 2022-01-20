@@ -23,7 +23,7 @@ const FeatureList: FeatureItem[] = [
     imageNight: 'img/icons/river-night.png',
     description: (
       <>
-        Using <a href="docs/claims#mathematical-methods">mathematical methods</a>, we make sure that critical parts of your code are free of bugs. <a href="docs/claims#scale-your-code">Scale</a> your code and onboard <a href="docs/claims#onboard-new-developers">new developers</a> without risking to break things. Make perfect <a href="docs/claims#perfect-code-reviews">code reviews</a>.
+        Using <a href="docs/company/claims#mathematical-methods">mathematical methods</a>, we make sure that critical parts of your code are free of bugs. <a href="docs/company/claims#scale-your-code">Scale</a> your code and onboard <a href="docs/company/claims#onboard-new-developers">new developers</a> without risking to break things. Make perfect <a href="docs/company/claims#perfect-code-reviews">code reviews</a>.
       </>
     ),
   },
@@ -33,7 +33,7 @@ const FeatureList: FeatureItem[] = [
     imageNight: 'img/icons/hills-night.png',
     description: (
       <>
-        We are currently <a href="docs/claims#verify-the-implementation-of-tezos">verifying the implementation</a> of the crypto-currency <a href="https://tezos.com/">Tezos</a> with the aim to make it an extremely safe exchange platform. We rely on the <a href="docs/claims#mature-proof-system">mature</a> proof system <a href="https://coq.inria.fr/">Coq</a> for all of our work.
+        We are currently <a href="docs/company/claims#verify-the-implementation-of-tezos">verifying the implementation</a> of the crypto-currency <a href="https://tezos.com/">Tezos</a> with the aim to make it an extremely safe exchange platform. We rely on the <a href="docs/company/claims#mature-proof-system">mature</a> proof system <a href="https://coq.inria.fr/">Coq</a> for all of our work.
       </>
     ),
   },
@@ -43,7 +43,7 @@ const FeatureList: FeatureItem[] = [
     imageNight: 'img/icons/canyon-night.png',
     description: (
       <>
-        We design tools to <a href="docs/claims#minimize-the-cost">minimize the cost</a> of formal verification. We take the necessary <a href="docs/claims#use-shortcuts">shortcuts</a> and decisions to make formal verification accessible to <a href="docs/claims#everyday-life-programs">everyday-life programs</a>.
+        We design tools to <a href="docs/company/claims#minimize-the-cost">minimize the cost</a> of formal verification. We take the necessary <a href="docs/company/claims#use-shortcuts">shortcuts</a> and decisions to make formal verification accessible to <a href="docs/company/claims#everyday-life-programs">everyday-life programs</a>.
       </>
     ),
   },

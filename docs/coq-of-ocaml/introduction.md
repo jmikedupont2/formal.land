@@ -43,12 +43,12 @@ We can import to Coq the OCaml programs which are either purely functional or wh
 
 We compile OCaml projects by pluging into [Merlin](https://github.com/ocaml/merlin). This means that if you are using Merlin then you can run `coq-of-ocaml` with no additional configurations.
 
-We do not do special treatments for the termination of fixpoints. We disable termination checks using the Coq's flag [Guard Checking](https://coq.inria.fr/refman/proof-engine/vernacular-commands.html#coq:flag.Guard-Checking). We erase the type parameters for the [GADTs](https://caml.inria.fr/pub/docs/manual-ocaml/manual033.html). This makes sure that the type definitions are accepted, but can make the pattern matchings incomplete. In this case we offer the possibility to introduce dynamic casts guided by annotations in the OCaml code. We did not find a way to nicely represent GADTs in Coq yet. We think that this is hard because the dependent pattern matching works well on type indicies which are values, but does not with types.
+We do not do special treatments for the termination of fixpoints. We disable termination checks using the Coq's flag [Guard Checking](https://coq.inria.fr/refman/proof-engine/vernacular-commands.html#coq:flag.Guard-Checking). We erase the type parameters for the [GADTs](https://ocaml.org/manual/gadts.html). This makes sure that the type definitions are accepted, but can make the pattern matchings incomplete. In this case we offer the possibility to introduce dynamic casts guided by annotations in the OCaml code. We did not find a way to nicely represent GADTs in Coq yet. We think that this is hard because the dependent pattern matching works well on type indicies which are values, but does not with types.
 
 We support modules, module types, functors and first-class modules. We generate either Coq modules or polymorphic records depending on the case. We generate axioms for `.mli` files to help formalizations, but importing `.mli` files should not be necessary for a project to compile in Coq.
 
 ## Status
-`coq-of-ocaml` is under active development at [Nomadic Labs](https://www.nomadic-labs.com/) to get a [Coq formalization](https://gitlab.com/nomadic-labs/coq-tezos-of-ocaml) of the crypto-currency [Tezos](https://tezos.com/). To contact us, you can open an [issue](https://github.com/clarus/coq-of-ocaml/issues) on GitHub or send [an email](mailto:contact@nomadic-labs.com) to Nomadic Labs.
+`coq-of-ocaml` is under active development at [Nomadic Labs](https://www.nomadic-labs.com/) to get a [Coq formalization](https://gitlab.com/nomadic-labs/coq-tezos-of-ocaml) of the crypto-currency [Tezos](https://tezos.com/). To contact us, you can open an [issue](https://github.com/foobar-land/coq-of-ocaml/issues) on GitHub or send [an email](mailto:contact@nomadic-labs.com) to Nomadic Labs.
 
 ## Workflow
 `coq-of-ocaml` works by compiling the OCaml files one by one. Thanks to Merlin, we get access to the typing environment of each file. Thus names referencing external definitions are properly interpreted.
@@ -82,5 +82,5 @@ In the Rust community:
 * [electrolysis](https://github.com/Kha/electrolysis) (import Rust to Lean)
 
 ## Credits
-The `coq-of-ocaml` project started as part of a PhD directed by [Yann Regis-Gianas](http://yann.regis-gianas.org/) and [Hugo Herbelin
+The `coq-of-ocaml` project started as part of a PhD directed by [Yann Regis-Gianas](https://yrg.gitlab.io/homepage/) and [Hugo Herbelin
 ](http://pauillac.inria.fr/~herbelin/) as the university of [Paris 7](https://u-paris.fr/). Originally, the goal was to formalize real OCaml programs in Coq to study side-effects inference and proof techniques on functional programs. The project is now financed by [Nomadic Labs](https://www.nomadic-labs.com/), with the aim to be able to reason about the implementation of the crypto-currency [Tezos](https://tezos.com/). See this [blog post](http://coq-blog.clarus.me/beginning-of-verification-for-the-parsing-of-smart-contracts.html) to get an example about what we can prove.
