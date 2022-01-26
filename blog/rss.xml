@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0">
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/">
     <channel>
         <title>Formal Land Blog</title>
         <link>https://formal.land/blog</link>
@@ -10,23 +10,26 @@
         <item>
             <title><![CDATA[New blog posts and Meetup talk]]></title>
             <link>https://formal.land/blog/2021/11/12/new-blog-posts-and-meetup-talk</link>
-            <guid>New blog posts and Meetup talk</guid>
+            <guid>/2021/11/12/new-blog-posts-and-meetup-talk</guid>
             <pubDate>Fri, 12 Nov 2021 00:00:00 GMT</pubDate>
             <description><![CDATA[Recently, we added two new blog posts about the verification of the crypto-currency Tezos:]]></description>
+            <content:encoded><![CDATA[<p>Recently, we added two new blog posts about the verification of the crypto-currency <a href="https://tezos.com/">Tezos</a>:</p><ul><li><a href="https://nomadic-labs.gitlab.io/coq-tezos-of-ocaml/blog/2021/11/01/verify-michelson-types-mi-cho-coq/">Verify the Michelson types of Mi-Cho-Coq</a> to compare the types defined in the Tezos code for the <a href="http://tezos.gitlab.io/active/michelson.html">Michelson</a> interpreter and in the <a href="https://gitlab.com/nomadic-labs/mi-cho-coq">Mi-Cho-Coq library</a> to verify smart contracts;</li><li><a href="https://nomadic-labs.gitlab.io/coq-tezos-of-ocaml/blog/2021/11/08/translate-tenderbake/">Translate the Tenderbake&#x27;s code to Coq</a> to explain how we translated the recent changes in Tezos to the Coq using <a href="https://github.com/foobar-land/coq-of-ocaml">coq-of-ocaml</a>. In particular we translated the code of the new <a href="https://research-development.nomadic-labs.com/a-look-ahead-to-tenderbake.html">Tenderbake</a> consensus algorithm.</li></ul><p>We also talked at the <a href="https://www.meetup.com/LambdaLille/events/281374644/">Lambda Lille Meetup</a> (in French) to present our work on <code>coq-of-ocaml</code> for Tezos. A video on the <a href="https://www.youtube.com/channel/UC-hC7y_ilQBq0QCa9xDu1iA">Youtube channel</a> of the Meetup should be available shortly. We thanks the organizers for hosting the talk.</p>]]></content:encoded>
         </item>
         <item>
             <title><![CDATA[Verification of the use of data-encoding]]></title>
             <link>https://formal.land/blog/2021/10/27/verification-data-encoding</link>
-            <guid>Verification of the use of data-encoding</guid>
+            <guid>/2021/10/27/verification-data-encoding</guid>
             <pubDate>Wed, 27 Oct 2021 00:00:00 GMT</pubDate>
             <description><![CDATA[We added a blog post about the verification of the use of data-encodings in the protocol of Tezos. Currently, we work on the verification of Tezos and publish our blog articles there. We use coq-of-ocaml to translate the OCaml code to Coq and do our verification effort.]]></description>
+            <content:encoded><![CDATA[<p>We added a blog post about the <a href="https://nomadic-labs.gitlab.io/coq-tezos-of-ocaml/blog/2021/10/20/data-encoding-usage">verification of the use of data-encodings</a> in the protocol of Tezos. Currently, we work on the verification of Tezos and publish our blog articles there. We use <a href="https://foobar-land.github.io/coq-of-ocaml/">coq-of-ocaml</a> to translate the OCaml code to Coq and do our verification effort.</p>]]></content:encoded>
         </item>
         <item>
             <title><![CDATA[Welcome]]></title>
             <link>https://formal.land/blog/2021/10/10/welcome</link>
-            <guid>Welcome</guid>
+            <guid>/2021/10/10/welcome</guid>
             <pubDate>Sun, 10 Oct 2021 00:00:00 GMT</pubDate>
             <description><![CDATA[Welcome to the blog of Formal Land. Here we will post various updates about the work we are doing.]]></description>
+            <content:encoded><![CDATA[<p>Welcome to the blog of <a href="/">Formal Land</a>. Here we will post various updates about the work we are doing.</p>]]></content:encoded>
         </item>
     </channel>
 </rss>
