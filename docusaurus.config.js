@@ -27,10 +27,12 @@ const config = {
       '@docusaurus/preset-classic',
       /** @type {import('@docusaurus/preset-classic').Options} */
       ({
+/*
 	gtag: {
           trackingID: 'G-MQLHF4EV4J',
           anonymizeIP: true,
         },
+*/
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
           remarkPlugins: [require('mdx-mermaid')],
@@ -46,6 +48,16 @@ const config = {
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
         },
+      }),
+    ],
+  ],
+
+  plugins: [
+    [
+      '@docusaurus/plugin-google-gtag',
+      ({
+        trackingID: 'G-MQLHF4EV4J',
+        anonymizeIP: true,
       }),
     ],
   ],
