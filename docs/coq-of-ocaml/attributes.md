@@ -142,7 +142,7 @@ that is being built, in this example it wouldn't be necessary but we generate
 the same code for a simpler boilerplate.
 
 ## coq_implicit
-The `[@coq_implicit "(A := ...)"]` attribute adds an arbitrary annotation on an OCaml identifier or constructor. We typically use this attribute to help Coq to infer implicit types where there is an ambiguity:
+The `[@coq_implicit "A" "..."]` attribute adds an arbitrary annotation on an OCaml identifier or constructor. We typically use this attribute to help Coq to infer implicit types where there is an ambiguity:
 ```ocaml
 let forget x = ()
 
@@ -162,7 +162,7 @@ Error: Cannot infer the implicit parameter A of nil whose type is "Set".
 ```
 Indeed, the type parameter of this empty list does not matter as it is dropped by the `forget` function. We can force it to an arbitrary value like `unit`:
 ```ocaml
-let u = forget ([] [@coq_implicit "(A := unit)"])
+let u = forget ([] [@coq_implicit "A" "unit"])
 ```
 so that the generated Coq code compiles:
 ```coq
