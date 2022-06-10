@@ -3,7 +3,7 @@ id: introduction
 title: What is coq-of-ocaml
 ---
 
-[coq-of-ocaml](https://github.com/foobar-land/coq-of-ocaml) is a compiler from the [OCaml](https://ocaml.org/) programming language to the [Coq](https://coq.inria.fr/) proof language. It aims generate *idiomatic* and *human readable* Coq code. Technically speaking, this is a [shallow embedding](https://cstheory.stackexchange.com/questions/1370/shallow-versus-deep-embeddings) of OCaml into Coq.
+[coq-of-ocaml](https://github.com/formal-land/coq-of-ocaml) is a compiler from the [OCaml](https://ocaml.org/) programming language to the [Coq](https://coq.inria.fr/) proof language. It aims generate *idiomatic* and *human readable* Coq code. Technically speaking, this is a [shallow embedding](https://cstheory.stackexchange.com/questions/1370/shallow-versus-deep-embeddings) of OCaml into Coq.
 
 We can use `coq-of-ocaml` to:
 * do formal proofs on OCaml programs;
@@ -48,7 +48,7 @@ We do not do special treatments for the termination of fixpoints. We disable ter
 We support modules, module types, functors and first-class modules. We generate either Coq modules or polymorphic records depending on the case. We generate axioms for `.mli` files to help formalizations, but importing `.mli` files should not be necessary for a project to compile in Coq.
 
 ## Status
-`coq-of-ocaml` is under active development at [Nomadic Labs](https://www.nomadic-labs.com/) to get a [Coq formalization](https://gitlab.com/nomadic-labs/coq-tezos-of-ocaml) of the crypto-currency [Tezos](https://tezos.com/). To contact us, you can open an [issue](https://github.com/foobar-land/coq-of-ocaml/issues) on GitHub or send [an email](mailto:contact@nomadic-labs.com) to Nomadic Labs.
+`coq-of-ocaml` is under active development at [Nomadic Labs](https://www.nomadic-labs.com/) to get a [Coq formalization](https://gitlab.com/nomadic-labs/coq-tezos-of-ocaml) of the crypto-currency [Tezos](https://tezos.com/). To contact us, you can open an [issue](https://github.com/formal-land/coq-of-ocaml/issues) on GitHub or send [an email](mailto:contact@nomadic-labs.com) to Nomadic Labs.
 
 ## Workflow
 `coq-of-ocaml` works by compiling the OCaml files one by one. Thanks to Merlin, we get access to the typing environment of each file. Thus names referencing external definitions are properly interpreted.

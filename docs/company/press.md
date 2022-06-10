@@ -1,7 +1,7 @@
 ---
 sidebar_position: 4
 ---
-# Press
+# 📜 Press
 Here are some documents you can read or use.
 
 ## Coq Tezos of OCaml project

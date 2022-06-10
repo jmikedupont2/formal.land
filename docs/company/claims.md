@@ -1,7 +1,7 @@
 ---
 sidebar_position: 2
 ---
-# Claims
+# 📣 Claims
 Here are our claims.
 
 ## Verify

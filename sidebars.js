@@ -28,7 +28,7 @@ module.exports = {
     },
     {
       type: 'category',
-      label: 'coq-of-ocaml',
+      label: '🐫 coq-of-ocaml',
       items: [
         'coq-of-ocaml/introduction',
         'coq-of-ocaml/install',
