@@ -7,7 +7,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'Formal Land',
-  tagline: 'Making software safe',
+  tagline: 'Formal verification for everyday-life programs',
   // We disable that so that the text indexed and shown by Google in the results
   // list is not the default message for when the website starts without
   // JavaScript.

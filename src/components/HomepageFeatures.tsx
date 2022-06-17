@@ -43,7 +43,7 @@ const FeatureList: FeatureItem[] = [
     imageNight: 'img/icons/canyon-night.png',
     description: (
       <>
-        We design tools to <a href="docs/company/claims#minimize-the-cost">minimize the cost</a> of formal verification. We take the necessary <a href="docs/company/claims#use-shortcuts">shortcuts 🏇</a> and decisions to make formal verification accessible to <a href="docs/company/claims#everyday-life-programs">everyday-life programs</a>.
+        We design tools to <a href="docs/company/claims#minimize-the-cost">minimize the cost</a> of formal verification. We take the necessary <a href="docs/company/claims#use-shortcuts">shortcuts ✂️</a> and decisions to make formal verification accessible to <a href="docs/company/claims#everyday-life-programs">everyday-life programs</a>.
       </>
     ),
   },

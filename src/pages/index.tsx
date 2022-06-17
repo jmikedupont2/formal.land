@@ -32,7 +32,7 @@ function HomepageHeader() {
           {siteConfig.title}
         </h1>
         <p className="hero__subtitle">
-          {siteConfig.tagline} 🛡️
+          {siteConfig.tagline} 🏇
         </p>
         <div className={styles.buttons}>
           <Link
