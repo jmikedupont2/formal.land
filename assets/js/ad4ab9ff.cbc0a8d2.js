@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkformal_land=self.webpackChunkformal_land||[]).push([[8684],{3792:function(a){a.exports=JSON.parse('{"allTagsPath":"/blog/tags","slug":"/blog/tags/mi-cho-coq","name":"mi-cho-coq","count":1,"permalink":"/blog/tags/mi-cho-coq"}')}}]);
