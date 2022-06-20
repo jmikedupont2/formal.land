@@ -4,10 +4,12 @@ authors: [guillaume_claret]
 tags: [tezos, coq-of-ocaml, coq]
 ---
 
-Here we give an update on our verification effort on the protocol of Tezos. We add the marks:
+Here we give an update on our [verification effort](https://nomadic-labs.gitlab.io/coq-tezos-of-ocaml/) on the protocol of Tezos. We add the marks:
 * ✅ for "rather done"
 * 🌊 for "partially done"
 * ❌ for "most is yet to do"
+
+On the website of project, we also automatically generates pages such as [Compare](https://nomadic-labs.gitlab.io/coq-tezos-of-ocaml/docs/status/compare/) to follow the status of the tasks.
 
 <!-- truncate -->
 
