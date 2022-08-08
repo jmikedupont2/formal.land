@@ -85,7 +85,7 @@ const config = {
           },
           {to: '/blog', label: 'Blog', position: 'left'},
           {
-            href: 'https://github.com/foobar-land',
+            href: 'https://github.com/formal-land',
             label: 'GitHub',
             position: 'right',
           },
@@ -145,11 +145,11 @@ const config = {
               },
               {
                 label: 'GitHub',
-                href: 'https://github.com/foobar-land',
+                href: 'https://github.com/formal-land',
               },
               {
                 label: 'coq-of-ocaml',
-                href: 'https://foobar-land.github.io/coq-of-ocaml/',
+                href: 'https://github.com/formal-land/coq-of-ocaml',
               },
               {
                 label: 'Coq Tezos of OCaml',
