@@ -6,7 +6,7 @@ tags: [tezos, coq-of-ocaml, coq]
 
 ![Elephants](elephants-elmira-gokoryan.webp)
 
-Our primary goal at [Formal&nbsp;Land&nbsp;🌲](https://formal.land/) is to make [Tezos](https://tezos.com/) the first crypto-currency with a formally verified implementation. With [formal verification](https://en.wikipedia.org/wiki/Formal_verification), thanks to mathematical methods, we can check that a program behaves as expected for all possible inputs. Formal verification goes beyond what testing can do, as testing can only handle a finite amount of cases. That is critical as cryptocurrencies hold a large amount of money (around $3B for Tezos today). The current result of our verification project is available on [nomadic-labs.gitlab.io/coq-tezos-of-ocaml](https://nomadic-labs.gitlab.io/coq-tezos-of-ocaml/). Formal verification is also key to allowing Tezos to evolve constantly in a safe and backward compatible manner.
+Our primary goal at [Formal&nbsp;Land&nbsp;🌲](https://formal.land/) is to make [Tezos](https://tezos.com/) the first crypto-currency with a formally verified implementation. With [formal verification](https://en.wikipedia.org/wiki/Formal_verification), thanks to mathematical methods, we can check that a program behaves as expected for all possible inputs. Formal verification goes beyond what testing can do, as testing can only handle a finite amount of cases. That is critical as cryptocurrencies hold a large amount of money (around $3B for Tezos today). The current result of our verification project is available on [nomadic-labs.gitlab.io/coq-tezos-of-ocaml](https://formal-land.gitlab.io/coq-tezos-of-ocaml/). Formal verification is also key to allowing Tezos to evolve constantly in a safe and backward compatible manner.
 
 <!-- truncate -->
 

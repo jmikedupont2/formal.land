@@ -153,7 +153,7 @@ const config = {
               },
               {
                 label: 'Coq Tezos of OCaml',
-                href: 'https://nomadic-labs.gitlab.io/coq-tezos-of-ocaml/',
+                href: 'https://formal-land.gitlab.io/coq-tezos-of-ocaml/',
               },
             ],
           },
