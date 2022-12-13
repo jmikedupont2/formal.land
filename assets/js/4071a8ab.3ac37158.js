@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkformal_land=self.webpackChunkformal_land||[]).push([[5649],{8685:function(a){a.exports=JSON.parse('{"allTagsPath":"/blog/tags","slug":"/blog/tags/tezos","name":"tezos","count":3,"permalink":"/blog/tags/tezos"}')}}]);
