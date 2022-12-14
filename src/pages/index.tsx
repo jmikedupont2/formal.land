@@ -36,20 +36,20 @@ function HomepageHeader() {
         </p>
         <div className={styles.buttons}>
           <Link
+            className="button button--success button--lg"
+            to="https://n25o5qrzcx2.typeform.com/to/mltUWY58">
+            Verify my code base&nbsp;<ExternalLink />
+          </Link>
+          <Link
             className="button button--secondary button--lg"
             to="/docs/company/intro">
-            Introduction
+            More
           </Link>
-          <Link
-            className="button button--success button--lg"
-            to="https://n25o5qrzcx2.typeform.com/to/qltRoOtq">
-            Get started&nbsp;<ExternalLink />
-          </Link>
-          <Link
+          {/* <Link
             className="button button--danger button--lg"
             to="/docs/company/careers">
             Hiring
-          </Link>
+          </Link> */}
         </div>
         <p className="hero__subtitle" style={{marginTop: 40}}>
           <a
