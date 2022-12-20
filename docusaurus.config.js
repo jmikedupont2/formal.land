@@ -103,7 +103,7 @@ const config = {
         style: 'dark',
         links: [
           {
-            title: 'Contet',
+            title: 'Content',
             items: [
               {
                 label: 'Company',
