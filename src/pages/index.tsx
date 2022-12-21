@@ -35,16 +35,26 @@ function HomepageHeader() {
           {siteConfig.tagline} 🏇
         </p>
         <div className={styles.buttons}>
-          <Link
+          {/* <Link
             className="button button--success button--lg"
             to="https://n25o5qrzcx2.typeform.com/to/mltUWY58">
             Verify my code base&nbsp;<ExternalLink />
+          </Link> */}
+          <Link
+            className="button button--info button--lg"
+            to="https://koalendar.com/e/meet-with-guillaume-claret">
+            Schedule a meeting&nbsp;<ExternalLink />
           </Link>
           <Link
+            className="button button--success button--lg"
+            to="/docs/company/intro">
+            Info
+          </Link>
+          {/* <Link
             className="button button--secondary button--lg"
             to="/docs/company/intro">
-            More
-          </Link>
+            Info
+          </Link> */}
           {/* <Link
             className="button button--danger button--lg"
             to="/docs/company/careers">
