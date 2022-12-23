@@ -43,7 +43,7 @@ function HomepageHeader() {
           <Link
             className="button button--info button--lg"
             to="https://koalendar.com/e/meet-with-guillaume-claret">
-            Schedule a meeting&nbsp;<ExternalLink />
+            Schedule a call&nbsp;<ExternalLink />
           </Link>
           <Link
             className="button button--success button--lg"
