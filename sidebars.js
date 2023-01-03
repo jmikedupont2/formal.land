@@ -28,6 +28,15 @@ module.exports = {
     },
     {
       type: 'category',
+      label: 'Services',
+      items: [
+        'services/ocaml-development',
+        // 'services/typescript-development',
+        // 'services/solidity-development',
+      ],
+    },
+    {
+      type: 'category',
       label: '🐫 coq-of-ocaml',
       items: [
         'coq-of-ocaml/introduction',

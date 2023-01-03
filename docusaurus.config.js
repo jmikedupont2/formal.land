@@ -7,7 +7,9 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'Formal Land',
-  tagline: 'Formal verification for everyday-life programs',
+  // tagline: 'Formal verification for everyday-life programs',
+  // tagline: 'The more you are demanding, the more you need us',
+  tagline: 'Securing everyday-life programs with formal methods',
   // We disable that so that the text indexed and shown by Google in the results
   // list is not the default message for when the website starts without
   // JavaScript.
@@ -158,7 +160,7 @@ const config = {
             ],
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} Formal Land 🐦, Paris<br />❤️`,
+        copyright: `Copyright © ${new Date().getFullYear()} Formal Land 🐦, Paris<br /><em>The more you are demanding, the more you need us.</em>`,
       },
       colorMode: {
         // Hides the switch in the navbar
