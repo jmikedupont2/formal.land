@@ -4,7 +4,7 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-		<title>Formal Land - Technical presentation</title>
+		<title>Formal Land - General presentation</title>
 
 		<link rel="stylesheet" href="dist/reset.css">
 		<link rel="stylesheet" href="dist/theme/white.css">
@@ -98,7 +98,7 @@
 				</section>
 				<section data-markdown>
 					<script type="text/template">
-						## We verify
+						## We are verifying
 						* Absence of internal errors
 						* Backward compatibility
 						* Preservation of the invariants
@@ -162,7 +162,7 @@ Arguments Node {_}.
 Fixpoint sum (tree : tree int) : int :=
   match tree with
   | Leaf n => n
-  | Node tree1 tree2 => Z.add (sum tree1) (sum tree2)
+  | Node tree1 tree2 => sum tree1 +i sum tree2
   end.
 						```
 					</script>
@@ -197,8 +197,8 @@ Fixpoint sum (tree : tree int) : int :=
 				<section data-markdown>
 					<script type="text/template">
 						# Thanks
-						> The more you are demanding,<br />
-						> the more you need us.
+						<!-- > The more you are demanding,<br />
+						> the more you need us. -->
 
 						🏇
 					</script>
