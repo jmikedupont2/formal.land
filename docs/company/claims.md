@@ -1,6 +1,3 @@
----
-sidebar_position: 2
----
 # 📣 Claims
 Here are our claims.
 

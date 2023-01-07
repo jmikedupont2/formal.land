@@ -1,6 +1,6 @@
 ---
 title: Latest blog posts on our formal verification effort on Tezos
-authors: [guillaume_claret]
+# authors: [guillaume_claret]
 tags: [coq-tezos-of-ocaml, Tezos, coq-of-ocaml]
 ---
 

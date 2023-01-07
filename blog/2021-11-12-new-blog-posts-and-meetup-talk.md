@@ -1,6 +1,6 @@
 ---
 title: New blog posts and Meetup talk
-authors: [guillaume_claret]
+# authors: [guillaume_claret]
 tags: [tezos, mi-cho-coq, coq-of-ocaml, meetup]
 ---
 

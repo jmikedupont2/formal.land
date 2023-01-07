@@ -1,7 +1,4 @@
----
-sidebar_position: 1
----
-# Introduction
+# 🏁 Introduction
 Here we present our project.
 
 ## Technology

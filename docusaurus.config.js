@@ -9,7 +9,7 @@ const config = {
   title: 'Formal Land',
   // tagline: 'Formal verification for everyday-life programs',
   // tagline: 'The more you are demanding, the more you need us',
-  tagline: 'Securing everyday-life programs with formal methods',
+  tagline: 'Securing everyday-life programs with formal verification',
   // We disable that so that the text indexed and shown by Google in the results
   // list is not the default message for when the website starts without
   // JavaScript.
@@ -76,9 +76,19 @@ const config = {
         },
         items: [
           {
-            to: 'docs/company/intro',
+            to: 'docs/company/about',
             position: 'left',
             label: 'Company',
+          },
+          {
+            to: 'docs/verification/ocaml',
+            position: 'left',
+            label: 'Formal verification',
+          },
+          {
+            to: 'docs/services/solidity-development',
+            position: 'left',
+            label: 'Services',
           },
           {
             to: 'docs/coq-of-ocaml/introduction',
@@ -109,7 +119,7 @@ const config = {
             items: [
               {
                 label: 'Company',
-                to: '/docs/company/intro',
+                to: '/docs/company/about',
               },
               {
                 label: 'Claims',
@@ -119,10 +129,6 @@ const config = {
                 label: 'Press',
                 to: '/docs/company/press',
               },
-              {
-                label: 'About',
-                to: '/docs/company/about',
-              },
             ],
           },
           {
@@ -131,6 +137,10 @@ const config = {
               {
                 label: 'Twitter',
                 href: 'https://twitter.com/LandFoobar',
+              },
+              {
+                label: 'Linkedin',
+                href: 'https://fr.linkedin.com/company/formal-land',
               },
               {
                 label: 'Nomadic Labs',
@@ -160,17 +170,17 @@ const config = {
             ],
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} Formal Land 🐦, Paris<br /><em>The more you are demanding, the more you need us.</em>`,
+        copyright: `Copyright © ${new Date().getFullYear()} Formal Land 🐦, Paris<br /><em>The more you are demanding, the more you need us 🏇.</em>`,
       },
       colorMode: {
         // Hides the switch in the navbar
         // Useful if you want to support a single color mode
         disableSwitch: false,
-      },  
+      },
       prism: {
         theme: lightCodeTheme,
         darkTheme: darkCodeTheme,
-        additionalLanguages: ['coq', 'ocaml'],
+        additionalLanguages: ['coq', 'ocaml', 'rust', 'solidity'],
       },
     }),
 };

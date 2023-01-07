@@ -1,12 +1,9 @@
----
-sidebar_position: 4
----
 # 📜 Press
 Here are some documents you can read or use.
 
 ## Slides
 Slides with a general presentation about what we can do for your project:
-* [Slides](https://formal.land/general-presentation/)
+* [Slides](/general-presentation/)
 
 ## Coq Tezos of OCaml project
 A presentation of the [Coq Tezos of OCaml](https://nomadic-labs.gitlab.io/coq-tezos-of-ocaml/) project, to verify in Coq the protocol (kernel) of the Tezos blockchain:

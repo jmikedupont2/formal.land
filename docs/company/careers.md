@@ -1,6 +1,3 @@
----
-sidebar_position: 3
----
 # 🧑‍💼 Careers
 :::info
 We are currently complete in terms of team, but are looking for new customers and may hire more after that.

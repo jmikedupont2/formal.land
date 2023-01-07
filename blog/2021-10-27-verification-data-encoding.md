@@ -1,6 +1,6 @@
 ---
 title: Verification of the use of data-encoding
-authors: [guillaume_claret]
+# authors: [guillaume_claret]
 tags: [data-encoding]
 ---
 

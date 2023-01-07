@@ -19,11 +19,21 @@ module.exports = {
       type: 'category',
       label: 'Company',
       items: [
+        'company/about',
         'company/intro',
         'company/claims',
         'company/careers',
         'company/press',
-        'company/about',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'Formal verification',
+      items: [
+        'verification/ocaml',
+        'verification/rust',
+        // 'verification/typescript',
+        'verification/solidity',
       ],
     },
     {
@@ -32,7 +42,7 @@ module.exports = {
       items: [
         'services/ocaml-development',
         // 'services/typescript-development',
-        // 'services/solidity-development',
+        'services/solidity-development',
       ],
     },
     {

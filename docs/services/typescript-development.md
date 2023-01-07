@@ -1,6 +1,3 @@
----
-sidebar_position: 2
----
 # 🇹 TypeScript development
 
 We offer our [OCaml](https://ocaml.org/) development services (or in [Reason](https://reasonml.github.io/)/[ReScript](https://rescript-lang.org/)/[Melange](https://github.com/melange-re/melange) languages that are close). We work as contractors and our work can be terminated without notice period. <!-- Our rate is $12,000 per month all inclusive. --> Some of our developers have more than 10 years of experience in software development, either in embedded systems or in Web applications (front and back). We strive to follow schedule and fulfill requirements.
