@@ -9,7 +9,7 @@ const config = {
   title: 'Formal Land',
   // tagline: 'Formal verification for everyday-life programs',
   // tagline: 'The more you are demanding, the more you need us',
-  tagline: 'Securing everyday-life programs with formal verification',
+  tagline: 'Securing everyday-life programs thanks to formal verification',
   // We disable that so that the text indexed and shown by Google in the results
   // list is not the default message for when the website starts without
   // JavaScript.
@@ -106,7 +106,8 @@ const config = {
       announcementBar: {
         id: 'hiring',
         content:
-          'We are hiring! 📣 See our <a href="/docs/company/careers">job offers 🌷</a>.',
+          // 'We are hiring! 📣 See our <a href="/docs/company/careers">job offers 🌷</a>.',
+          '📣&nbsp;If you are interested in our services, send us an email at <a href="&#099;&#111;&#110;&#116;&#097;&#099;&#116;&#064;formal&#046;&#108;&#097;&#110;&#100;">&#099;&#111;&#110;&#116;&#097;&#099;&#116;&#064;formal&#046;&#108;&#097;&#110;&#100;</a>!&nbsp;🌷',
         backgroundColor: '#fafbfc',
         textColor: '#091E42',
         isCloseable: false,
@@ -170,7 +171,9 @@ const config = {
             ],
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} Formal Land 🐦, Paris<br /><em>The more you are demanding, the more you need us 🏇.</em>`,
+        // copyright: `Copyright © ${new Date().getFullYear()} Formal Land 🐦, Paris<br /><em>The more you are demanding, the more you need us 🏇.</em>`,
+        // copyright: `Copyright © ${new Date().getFullYear()} Formal Land 🐦, Paris<br /><em>Formal verification for everyday-life programs 🏇</em>`,
+        copyright: `Copyright © ${new Date().getFullYear()} Formal Land 🐦, Paris<br /><em>While there is work there is money 🏇</em>`,
       },
       colorMode: {
         // Hides the switch in the navbar

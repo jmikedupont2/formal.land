@@ -35,15 +35,15 @@ function HomepageHeader() {
           {siteConfig.tagline} 🏇
         </p>
         <div className={styles.buttons}>
-          {/* <Link
+          <Link
             className="button button--success button--lg"
             to="https://n25o5qrzcx2.typeform.com/to/mltUWY58">
-            Verify my code base&nbsp;<ExternalLink />
-          </Link> */}
+            Request an audit&nbsp;<ExternalLink />
+          </Link>
           <Link
             className="button button--info button--lg"
             to="https://koalendar.com/e/meet-with-formal-land">
-            Request an audit&nbsp;<ExternalLink />
+            Call us&nbsp;<ExternalLink />
           </Link>
           <Link
             className="button button--secondary button--lg"
