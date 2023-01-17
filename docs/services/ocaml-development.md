@@ -15,4 +15,5 @@ An example of our work is the development of [coq-of-ocaml](https://github.com/f
 
 You can contact us by email at [&#099;&#111;&#110;&#116;&#097;&#099;&#116;&#064;formal&#046;&#108;&#097;&#110;&#100;](mailto:&#099;&#111;&#110;&#116;&#097;&#099;&#116;&#064;formal&#046;&#108;&#097;&#110;&#100;) ✉️ or schedule a call on [koalendar.com/e/meet-with-formal-land](https://koalendar.com/e/meet-with-formal-land) ☎️.
 
-> The more you are demanding, the more you need us 🏇.
+<!-- > The more you are demanding, the more you need us 🏇. -->
+> Helping you build 🚀

@@ -4,12 +4,22 @@
 const lightCodeTheme = require('prism-react-renderer/themes/github');
 const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
+const liveChat = `<!-- Start of LiveChat (www.livechat.com) code -->
+<script>
+    window.__lc = window.__lc || {};
+    window.__lc.license = 14938650;
+    ;(function(n,t,c){function i(n){return e._h?e._h.apply(null,n):e._q.push(n)}var e={_q:[],_h:null,_v:"2.0",on:function(){i(["on",c.call(arguments)])},once:function(){i(["once",c.call(arguments)])},off:function(){i(["off",c.call(arguments)])},get:function(){if(!e._h)throw new Error("[LiveChatWidget] You can't use getters before load.");return i(["get",c.call(arguments)])},call:function(){i(["call",c.call(arguments)])},init:function(){var n=t.createElement("script");n.async=!0,n.type="text/javascript",n.src="https://cdn.livechatinc.com/tracking.js",t.head.appendChild(n)}};!n.__lc.asyncInit&&e.init(),n.LiveChatWidget=n.LiveChatWidget||e}(window,document,[].slice))
+</script>
+<noscript><a href="https://www.livechat.com/chat-with/14938650/" rel="nofollow">Chat with us</a>, powered by <a href="https://www.livechat.com/?welcome" rel="noopener nofollow" target="_blank">LiveChat</a></noscript>
+<!-- End of LiveChat code -->`
+
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'Formal Land',
   // tagline: 'Formal verification for everyday-life programs',
   // tagline: 'The more you are demanding, the more you need us',
-  tagline: 'Securing everyday-life programs thanks to formal verification',
+  // tagline: 'Securing everyday-life programs thanks to formal verification',
+  tagline: 'Securing your code with formal verification',
   // We disable that so that the text indexed and shown by Google in the results
   // list is not the default message for when the website starts without
   // JavaScript.
@@ -101,13 +111,18 @@ const config = {
             label: 'GitHub',
             position: 'right',
           },
+          {
+            href: 'https://gitlab.com/formal-land',
+            label: 'GitLab',
+            position: 'right',
+          },
         ],
       },
       announcementBar: {
         id: 'hiring',
         content:
           // 'We are hiring! 📣 See our <a href="/docs/company/careers">job offers 🌷</a>.',
-          '📣&nbsp;If you are interested in our services, send us an email at <a href="&#099;&#111;&#110;&#116;&#097;&#099;&#116;&#064;formal&#046;&#108;&#097;&#110;&#100;">&#099;&#111;&#110;&#116;&#097;&#099;&#116;&#064;formal&#046;&#108;&#097;&#110;&#100;</a>!&nbsp;🌷',
+          '📣&nbsp;If you are interested in our services, send us an email at <a href="&#099;&#111;&#110;&#116;&#097;&#099;&#116;&#064;formal&#046;&#108;&#097;&#110;&#100;">&#099;&#111;&#110;&#116;&#097;&#099;&#116;&#064;formal&#046;&#108;&#097;&#110;&#100;</a>&nbsp;🌷',
         backgroundColor: '#fafbfc',
         textColor: '#091E42',
         isCloseable: false,
@@ -144,6 +159,10 @@ const config = {
                 href: 'https://fr.linkedin.com/company/formal-land',
               },
               {
+                label: 'Telegram',
+                href: 'https://t.me/formal_land',
+              },
+              {
                 label: 'Nomadic Labs',
                 href: 'https://www.nomadic-labs.com/',
               },
@@ -161,8 +180,8 @@ const config = {
                 href: 'https://github.com/formal-land',
               },
               {
-                label: 'coq-of-ocaml',
-                href: 'https://github.com/formal-land/coq-of-ocaml',
+                label: 'GitLab',
+                href: 'https://gitlab.com/formal-land',
               },
               {
                 label: 'Coq Tezos of OCaml',
@@ -171,9 +190,9 @@ const config = {
             ],
           },
         ],
-        // copyright: `Copyright © ${new Date().getFullYear()} Formal Land 🐦, Paris<br /><em>The more you are demanding, the more you need us 🏇.</em>`,
-        // copyright: `Copyright © ${new Date().getFullYear()} Formal Land 🐦, Paris<br /><em>Formal verification for everyday-life programs 🏇</em>`,
-        copyright: `Copyright © ${new Date().getFullYear()} Formal Land 🐦, Paris<br /><em>While there is work there is money 🏇</em>`,
+        // copyright: `Copyright © ${new Date().getFullYear()} Formal Land 🐦, Paris<br /><em>The more you are demanding, the more you need us 🏇</em>`,
+        copyright: `Copyright © ${new Date().getFullYear()} Formal Land 🐦, Paris<br /><em>Formal verification for everyday-life programs 🏇</em>${liveChat}`,
+        // copyright: `Copyright © ${new Date().getFullYear()} Formal Land 🐦, Paris<br /><em>While there is work there is money 🏇</em>`,
       },
       colorMode: {
         // Hides the switch in the navbar

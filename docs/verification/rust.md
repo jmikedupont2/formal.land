@@ -25,4 +25,5 @@ This project is already quite complete, but some features such as traits are sti
 For more information, you can contact us by email at [&#099;&#111;&#110;&#116;&#097;&#099;&#116;&#064;formal&#046;&#108;&#097;&#110;&#100;](mailto:&#099;&#111;&#110;&#116;&#097;&#099;&#116;&#064;formal&#046;&#108;&#097;&#110;&#100;) ✉️ or schedule a call on [koalendar.com/e/meet-with-formal-land](https://koalendar.com/e/meet-with-formal-land) ☎️. Our main expertise is in the Coq system. We translate code to Coq to after write specifications and proofs on the generated code.
 :::
 
-> The more you are demanding, the more you need us 🏇.
+<!-- > The more you are demanding, the more you need us 🏇. -->
+> Helping you build 🚀

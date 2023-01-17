@@ -32,7 +32,7 @@ module.exports = {
       items: [
         'verification/ocaml',
         'verification/rust',
-        // 'verification/typescript',
+        'verification/typescript',
         'verification/solidity',
       ],
     },
@@ -41,7 +41,8 @@ module.exports = {
       label: 'Services',
       items: [
         'services/ocaml-development',
-        // 'services/typescript-development',
+        'services/rust-development',
+        'services/typescript-development',
         'services/solidity-development',
       ],
     },

@@ -16,5 +16,5 @@ In addition, we are thinking about relating the two translations (of Solidity an
 For more information or to formally verify your smart contracts, you can contact us by email at [&#099;&#111;&#110;&#116;&#097;&#099;&#116;&#064;formal&#046;&#108;&#097;&#110;&#100;](mailto:&#099;&#111;&#110;&#116;&#097;&#099;&#116;&#064;formal&#046;&#108;&#097;&#110;&#100;) ✉️ or schedule a call on [koalendar.com/e/meet-with-formal-land](https://koalendar.com/e/meet-with-formal-land) ☎️. Our target is to be as cheap as $50,000 to fully verify an existing dApp. By full verification we mean formalizing and verifying the specification given by a typical set of unit/integration tests on a project.
 :::
 
-> The more you are demanding, the more you need us 🏇.
-
+<!-- > The more you are demanding, the more you need us 🏇. -->
+> Helping you build 🚀

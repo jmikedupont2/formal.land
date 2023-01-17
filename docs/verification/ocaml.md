@@ -47,4 +47,5 @@ We are now looking to support the new features introduced in OCaml 5.
 If you want to make extra secure OCaml programs (to be applied in domains such as aviation, automotive, or medical devices) with formal verification, you can contact us by email at [&#099;&#111;&#110;&#116;&#097;&#099;&#116;&#064;formal&#046;&#108;&#097;&#110;&#100;](mailto:&#099;&#111;&#110;&#116;&#097;&#099;&#116;&#064;formal&#046;&#108;&#097;&#110;&#100;) ✉️ or schedule a call on [koalendar.com/e/meet-with-formal-land](https://koalendar.com/e/meet-with-formal-land) ☎️. Our main expertise is in the Coq system. We estimate there should be one *Coq developer* for each three or four *OCaml developers* to make formally verified software.
 :::
 
-> The more you are demanding, the more you need us 🏇.
+<!-- > The more you are demanding, the more you need us 🏇. -->
+> Helping you build 🚀

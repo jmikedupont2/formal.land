@@ -15,6 +15,7 @@ function winningProposal() public view
 
 We have experience in crypto-currencies and the development of secure protocols working for the auditing and formal verification of the Tezos blockchain with the project [Coq Tezos of OCaml](https://formal-land.gitlab.io/coq-tezos-of-ocaml/). We are currently running a program to make new formal verification tools for Solidity. Get more information on [this page](/docs/verification/solidity).
 
-You can contact us by email at [&#099;&#111;&#110;&#116;&#097;&#099;&#116;&#064;formal&#046;&#108;&#097;&#110;&#100;](mailto:&#099;&#111;&#110;&#116;&#097;&#099;&#116;&#064;formal&#046;&#108;&#097;&#110;&#100;) ✉️ or schedule a call on [koalendar.com/e/meet-with-guillaume-claret](https://koalendar.com/e/meet-with-guillaume-claret) ☎️.
+You can contact us by email at [&#099;&#111;&#110;&#116;&#097;&#099;&#116;&#064;formal&#046;&#108;&#097;&#110;&#100;](mailto:&#099;&#111;&#110;&#116;&#097;&#099;&#116;&#064;formal&#046;&#108;&#097;&#110;&#100;) ✉️ or schedule a call on [koalendar.com/e/meet-with-formal-land](https://koalendar.com/e/meet-with-formal-land) ☎️.
 
-> The more you are demanding, the more you need us 🏇.
+<!-- > The more you are demanding, the more you need us 🏇. -->
+> Helping you build 🚀
