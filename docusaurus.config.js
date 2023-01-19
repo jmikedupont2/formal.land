@@ -191,7 +191,7 @@ const config = {
           },
         ],
         // copyright: `Copyright © ${new Date().getFullYear()} Formal Land 🐦, Paris<br /><em>The more you are demanding, the more you need us 🏇</em>`,
-        copyright: `Copyright © ${new Date().getFullYear()} Formal Land 🐦, Paris<br /><em>Formal verification for everyday-life programs 🏇</em>${liveChat}`,
+        copyright: `Copyright © ${new Date().getFullYear()} Formal Land (Arae SARL) 🐦, Paris<br /><em>Formal verification for everyday-life programs 🏇</em>${liveChat}`,
         // copyright: `Copyright © ${new Date().getFullYear()} Formal Land 🐦, Paris<br /><em>While there is work there is money 🏇</em>`,
       },
       colorMode: {
