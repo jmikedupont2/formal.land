@@ -19,7 +19,7 @@ const config = {
   // tagline: 'Formal verification for everyday-life programs',
   // tagline: 'The more you are demanding, the more you need us',
   // tagline: 'Securing everyday-life programs thanks to formal verification',
-  tagline: 'Securing your code with formal verification',
+  tagline: 'Securing web3 with formal verification',
   // We disable that so that the text indexed and shown by Google in the results
   // list is not the default message for when the website starts without
   // JavaScript.
