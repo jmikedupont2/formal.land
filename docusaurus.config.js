@@ -17,9 +17,10 @@ const liveChat = `<!-- Start of LiveChat (www.livechat.com) code -->
 const config = {
   title: 'Formal Land',
   // tagline: 'Formal verification for everyday-life programs',
+  tagline: 'Unbreakable safety with formal verification',
   // tagline: 'The more you are demanding, the more you need us',
   // tagline: 'Securing everyday-life programs thanks to formal verification',
-  tagline: 'Securing web3 with formal verification',
+  // tagline: 'Securing web3 with formal verification',
   // We disable that so that the text indexed and shown by Google in the results
   // list is not the default message for when the website starts without
   // JavaScript.
@@ -122,7 +123,7 @@ const config = {
         id: 'hiring',
         content:
           // 'We are hiring! 📣 See our <a href="/docs/company/careers">job offers 🌷</a>.',
-          '📣&nbsp;If you are interested in our services, send us an email at <a href="&#099;&#111;&#110;&#116;&#097;&#099;&#116;&#064;formal&#046;&#108;&#097;&#110;&#100;">&#099;&#111;&#110;&#116;&#097;&#099;&#116;&#064;formal&#046;&#108;&#097;&#110;&#100;</a>&nbsp;🌷',
+          '🤙&nbsp;DM us at <a href="mailto:&#099;&#111;&#110;&#116;&#097;&#099;&#116;&#064;formal&#046;&#108;&#097;&#110;&#100;">&#099;&#111;&#110;&#116;&#097;&#099;&#116;&#064;formal&#046;&#108;&#097;&#110;&#100;</a>&nbsp;🤙',
         backgroundColor: '#fafbfc',
         textColor: '#091E42',
         isCloseable: false,
@@ -148,7 +149,7 @@ const config = {
             ],
           },
           {
-            title: 'Community',
+            title: 'Links',
             items: [
               {
                 label: 'Twitter',
@@ -163,8 +164,8 @@ const config = {
                 href: 'https://t.me/formal_land',
               },
               {
-                label: 'Nomadic Labs',
-                href: 'https://www.nomadic-labs.com/',
+                label: 'Email',
+                href: 'mailto:contact@formal.land',
               },
             ],
           },
@@ -190,14 +191,13 @@ const config = {
             ],
           },
         ],
-        // copyright: `Copyright © ${new Date().getFullYear()} Formal Land 🐦, Paris<br /><em>The more you are demanding, the more you need us 🏇</em>`,
-        copyright: `Copyright © ${new Date().getFullYear()} Formal Land (Arae SARL) 🐦, Paris<br /><em>Formal verification for everyday-life programs 🏇</em>${liveChat}`,
-        // copyright: `Copyright © ${new Date().getFullYear()} Formal Land 🐦, Paris<br /><em>While there is work there is money 🏇</em>`,
+        // copyright: `Copyright © ${new Date().getFullYear()} Formal Land (Arae SARL) 🐦, Paris<br /><em>Formal verification for everyday-life programs 🏇</em>${liveChat}`,
+        copyright: `Copyright © ${new Date().getFullYear()} Formal Land (Arae SARL) 🐦, Paris<br /><em>Unbreakable safety with formal verification 🏇</em>${liveChat}`,
       },
       colorMode: {
-        // Hides the switch in the navbar
-        // Useful if you want to support a single color mode
-        disableSwitch: false,
+        defaultMode: 'light',
+        disableSwitch: true,
+        respectPrefersColorScheme: false,
       },
       prism: {
         theme: lightCodeTheme,
