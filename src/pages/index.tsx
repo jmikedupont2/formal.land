@@ -5,6 +5,7 @@ import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import useThemeContext from '@theme/hooks/useThemeContext';
 import styles from './index.module.css';
+import './csshake-default.css';
 import HomepageFeatures from '../components/HomepageFeatures';
 
 function ExternalLink() {
@@ -49,7 +50,7 @@ function HomepageHeader() {
           {siteConfig.title}
         </h1>
         <p className="hero__subtitle">
-          🎇&nbsp;{siteConfig.tagline}&nbsp;🏇
+          {siteConfig.tagline}&nbsp;🏇
         </p>
         <div className={styles.buttons}>
           {/* <Link
