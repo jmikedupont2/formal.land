@@ -164,6 +164,10 @@ const config = {
                 href: 'https://t.me/formal_land',
               },
               {
+                label: 'TikTok',
+                href: 'https://www.tiktok.com/@formal.land',
+              },
+              {
                 label: 'Email',
                 href: 'mailto:contact@formal.land',
               },
