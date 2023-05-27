@@ -2,11 +2,59 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://formal.land/blog</id>
     <title>Formal Land Blog</title>
-    <updated>2023-04-26T00:00:00.000Z</updated>
+    <updated>2023-05-28T00:00:00.000Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://formal.land/blog"/>
     <subtitle>Formal Land Blog</subtitle>
     <icon>https://formal.land/img/land-512.png</icon>
+    <entry>
+        <title type="html"><![CDATA[Monad for side effects in Rust]]></title>
+        <id>/2023/05/28/monad-for-side-effects-in-rust</id>
+        <link href="https://formal.land/blog/2023/05/28/monad-for-side-effects-in-rust"/>
+        <updated>2023-05-28T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[To formally verify Rust programs, we are building coq-of-rust, a translator from Rust&nbsp;🦀 code to the proof system Coq&nbsp;🐓. We generate Coq code that is as similar as possible to the original Rust code, so that the user can easily understand the generated code and write proofs about it. In this blog post, we explain how we are representing side effects in Coq.]]></summary>
+        <content type="html"><![CDATA[<p>To formally verify Rust programs, we are building <a href="https://github.com/formal-land/coq-of-rust">coq-of-rust</a>, a translator from Rust<!-- --> <!-- -->🦀 code to the proof system <a href="https://coq.inria.fr/">Coq<!-- --> <!-- -->🐓</a>. We generate Coq code that is as similar as possible to the original Rust code, so that the user can easily understand the generated code and write proofs about it. In this blog post, we explain how we are representing side effects in Coq.</p><h2>🦀 Side-effects in Rust</h2><p>In programming, <a href="https://en.wikipedia.org/wiki/Side_effect_(computer_science)">side effects</a> are all what is not representable by pure functions, that is to say functions that always return the same output for given input parameters. In Rust there are various kinds of side effects:</p><ul><li>errors (the <a href="https://doc.rust-lang.org/core/macro.panic.html">panic!</a> macro) that propagate and do appear in the return type of functions,</li><li>non-termination, with some potentially non-terminating loops (never returning a result is considered as a side-effect),</li><li>control-flow, with the <code>break</code>, <code>continue</code>, <code>return</code> keywords, that can jump to a different part of the code,</li><li>memory allocations and memory mutations,</li><li>I/O, with for example the <a href="https://doc.rust-lang.org/std/macro.println.html">println!</a> macro, that prints a message to the standard output,</li><li>concurrency, with the <a href="https://doc.rust-lang.org/std/thread/fn.spawn.html">thread::spawn</a> function, that creates a new thread.</li></ul><h2>🐓 Coq, a purely functional language</h2><p>Like most proof systems, Coq is a purely functional language. This means we need to find an encoding for the side effects. The reason for most proof systems to forbid side effects is to be logically consistent. Otherwise, it would be easy to write a proof of <code>False</code> by writing a term that does not terminate for example.</p><h2>🔮<!-- --> <!-- -->Monads in Coq</h2><p>Monads are a common way to represent side effects in a functional language. A monad is a type constructor <code>M</code>:</p><pre><code class="language-coq">Definition M (A : Set) : Set :=
+  ...
+</code></pre><p>representing computations returning values of type <code>A</code>. As an example we can take the error monad of computations that can fail with an error message, using the <a href="https://doc.rust-lang.org/std/result/enum.Result.html">Result</a> type like in Rust:</p><pre><code class="language-coq">Definition M (A : Set) : Set :=
+  Result A string.
+</code></pre><p>It must have two operators, <code>Pure</code> and <code>Bind</code>.</p><h3>The <code>Pure</code> operator</h3><p>The <code>Pure</code> operator has type:</p><pre><code class="language-coq">Definition Pure {A : Set} (v : A) : M A :=
+  ...
+</code></pre><p>It lifts a pure value <code>v</code> into the monad. For our error monad, the <code>Pure</code> operator is:</p><pre><code class="language-coq">Definition Pure {A : Set} (v : A) : M A :=
+  Ok v.
+</code></pre><h3>The <code>Bind</code> operator</h3><p>The <code>Bind</code> operator has type:</p><pre><code class="language-coq">Definition Bind {A B : Set} (e1 : M A) (f : A -&gt; M B) : M B :=
+  ...
+</code></pre><p>It sequences two computations <code>e1</code> with <code>f</code>, where <code>f</code> is a function that takes the result of <code>e1</code> as input and returns a new computation. We also note the <code>Bind</code> operator:</p><pre><code class="language-coq">let* x := e1 in
+e2
+</code></pre><p>assuming that <code>f</code> is a function that takes <code>x</code> as input and returns <code>e2</code>. Requiring this operator for all monads shows that sequencing computations is a very fundamental operation for side effects.</p><p>For our error monad, the <code>Bind</code> operator is:</p><pre><code class="language-coq">Definition Bind {A B : Set} (e1 : M A) (f : A -&gt; M B) : M B :=
+  match e1 with
+  | Ok v =&gt; f v
+  | Err msg =&gt; Err msg
+  end.
+</code></pre><h2>🚧 State, exceptions, non-termination, control-flow</h2><p>We use a single monad to represent all the side effects that interest us in Rust. This monad is called<!-- --> <code>M</code> and is defined as follows:</p><pre><code class="language-coq">Definition RawMonad `{State.Trait} :=
+  ...
+
+Module Exception.
+  Inductive t (R : Set) : Set :=
+  | Return : R -&gt; t R
+  | Continue : t R
+  | Break : t R
+  | Panic {A : Set} : A -&gt; t R.
+  Arguments Return {_}.
+  Arguments Continue {_}.
+  Arguments Break {_}.
+  Arguments Panic {_ _}.
+End Exception.
+Definition Exception := Exception.t.
+
+Definition Monad `{State.Trait} (R A : Set) : Set :=
+  nat -&gt; State -&gt; RawMonad ((A + Exception R) * State).
+
+Definition M `{State.Trait} (A : Set) : Set :=
+  Monad Empty_set A.
+</code></pre><p>We assume the definition of some <code>RawMonad</code> for memory handling that we will describe in a later post. Our monad<!-- --> <code>M</code> is a particular case of the monad<!-- --> <code>Monad</code> with <code>R = Empty_set</code>. It is a combination four monads:</p><ol><li>The <code>RawMonad</code>.</li><li>A state monad, that takes a <code>State</code> as input and a return an updated state as output. The trait <code>State.Trait</code> provides read/write operations on the <code>State</code> type.</li><li>An error monad with errors of type <code>Exception R</code>. There errors include the <code>Return</code>, <code>Continue</code>, <code>Break</code> and <code>Panic</code> constructors. The <code>Return</code> constructor is used to return a value from a function. The <code>Continue</code> constructor is used to continue the execution of a loop. The <code>Break</code> constructor is used to break the execution of a loop. The <code>Panic</code> constructor is used to panic with an error message. We implement all these operations as exceptions, even if only <code>Panic</code> is really an error, as they behave in the same way: interrupting the execution of the current sub-expression to bubble up to a certain level.</li><li>A fuel monad for non-termination, with the additional <code>nat</code> parameter.</li></ol><p>The parameter <code>R</code> of the type constructor <code>Monad</code> is used to represent the type of values that can be returned in the body of a function. It is the same as the return type of the function. So for a function returning a value of type <code>A</code>, we define its body in <code>Monad A A</code>. Then, we wrap it in an operator:</p><pre><code class="language-coq">Definition catch_return {A : Set} (e : Monad A A) : M A :=
+  ...
+</code></pre><p>that catches the <code>Return</code> exceptions and returns the value.</p><h2>Conclusion</h2><p>We will see in the next post how we define the <code>RawMonad</code> to handle the Rust state of a program and memory allocation.</p><p>:::tip Contact</p><p>If you have a Rust codebase that you wish to formally verify, or need advice in your work, contact us at<!-- --> <a href="mailto:contact@formal.land">c<!-- -->o<!-- -->n<!-- -->t<!-- -->a<!-- -->c<!-- -->t<!-- -->@<!-- -->formal<!-- -->.<!-- -->l<!-- -->a<!-- -->n<!-- -->d</a>. We will be happy to set up a call with you.</p><p>:::</p>]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Representation of Rust methods in Coq]]></title>
         <id>/2023/04/26/representation-of-rust-methods-in-coq</id>
@@ -39,15 +87,15 @@ fn main() {
 }
 </code></pre><p>The Rust compiler can find the implementation of the <code>.area()</code> method call because it knows that the type of <code>rect1</code> is <code>Rectangle</code>. There could be other <code>area</code> methods defined for different types, and the code would still compile calling the <code>area</code> method of <code>Rectangle</code>.</p><p>Coq has no direct equivalent for calling a function based on its name and type.</p><h2>Our Translation</h2><p>Here is our Coq translation of the code above:</p><pre><code class="language-coq"> 1: (* Generated by coq-of-rust *)
  2: Require Import CoqOfRust.CoqOfRust.
- 3: 
+ 3:
  4: Import Root.std.prelude.rust_2015.
- 5: 
+ 5:
  6: Module Rectangle.
  7:   Record t : Set := {
  8:     width : u32;
  9:     height : u32;
 10:   }.
-11:   
+11:
 12:   Global Instance Get_width : Notation.Dot &quot;width&quot; := {
 13:     Notation.dot &#x27;(Build_t x0 _) := x0;
 14:   }.
@@ -56,18 +104,18 @@ fn main() {
 17:   }.
 18: End Rectangle.
 19: Definition Rectangle : Set := Rectangle.t.
-20: 
+20:
 21: Module ImplRectangle.
 22:   Definition Self := Rectangle.
-23:   
+23:
 24:   Definition area (self : ref Self) : u32 :=
 25:     self.[&quot;width&quot;].[&quot;mul&quot;] self.[&quot;height&quot;].
-26:   
+26:
 27:   Global Instance Method_area : Notation.Dot &quot;area&quot; := {
 28:     Notation.dot := area;
 29:   }.
 30: End ImplRectangle.
-31: 
+31:
 32: Definition main (_ : unit) : unit :=
 33:   let rect1 := {| Rectangle.width := 30; Rectangle.height := 50; |} in
 34:   _crate.io._print
@@ -105,7 +153,7 @@ End Notation.
   }.
   Arguments double_colon {Kind} type name {T DoubleColon}.
 End Notation.
-</code></pre><h2>In Conclusion</h2><p>The type-classes mechanism of Coq appears flexible enough to represent our current use cases involving methods and associated functions. It remains to be seen whether this approach will suffice for future use cases.</p><p>:::tip Contact</p><p>If you have a Rust codebase that you wish to formally verify, or need advices in your work, contact us at<!-- --> <a href="mailto:contact@formal.land">c<!-- -->o<!-- -->n<!-- -->t<!-- -->a<!-- -->c<!-- -->t<!-- -->@<!-- -->formal<!-- -->.<!-- -->l<!-- -->a<!-- -->n<!-- -->d</a>. We will be happy to set up a call with you.</p><p>:::</p>]]></content>
+</code></pre><h2>In Conclusion</h2><p>The type-classes mechanism of Coq appears flexible enough to represent our current use cases involving methods and associated functions. It remains to be seen whether this approach will suffice for future use cases.</p><p>:::tip Contact</p><p>If you have a Rust codebase that you wish to formally verify, or need advice in your work, contact us at<!-- --> <a href="mailto:contact@formal.land">c<!-- -->o<!-- -->n<!-- -->t<!-- -->a<!-- -->c<!-- -->t<!-- -->@<!-- -->formal<!-- -->.<!-- -->l<!-- -->a<!-- -->n<!-- -->d</a>. We will be happy to set up a call with you.</p><p>:::</p>]]></content>
     </entry>
     <entry>
         <title type="html"><![CDATA[Current formal verification efforts 💪]]></title>
