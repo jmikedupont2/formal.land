@@ -1,24 +1,73 @@
 ---
-title: Monad for side effects in Rust (Part 1)
+title: Monadic translation of Rust (Part 2)
 tags: [coq-of-rust, Rust, Coq, monad, side effects]
 ---
 
-To formally verify Rust programs, we are building [coq-of-rust](https://github.com/formal-land/coq-of-rust), a translator from Rust&nbsp;🦀 code to the proof system [Coq&nbsp;🐓](https://coq.inria.fr/). We generate Coq code that is as similar as possible to the original Rust code, so that the user can easily understand the generated code and write proofs about it. In this blog post, we explain how we are representing side effects in Coq.
+As explained in our [previous post](/blog/2023/05/28/monad-for-side-effects-in-rust), we use a monad to represent the [side effects](<https://en.wikipedia.org/wiki/Side_effect_(computer_science)>) of Rust in the proof system Coq. We will explain in this post how we make the monadic translation, in order to generate a code of reasonable size but still handling all cases.
+
+Our project is available at [github.com/formal-land/coq-of-rust](https://github.com/formal-land/coq-of-rust).
+
+:::tip Contact
+
+If you have a Rust codebase that you wish to formally verify, or need advice in your work, contact us at&nbsp;[&#099;&#111;&#110;&#116;&#097;&#099;&#116;&#064;formal&#046;&#108;&#097;&#110;&#100;](mailto:contact@formal.land). We will be happy to set up a call with you.
+
+:::
 
 <!-- truncate -->
 
-## 🦀 Side effects in Rust
+## ✍️ Monadic translation
 
-In programming, [side effects](<https://en.wikipedia.org/wiki/Side_effect_(computer_science)>) are all what is not representable by pure functions (mathematical functions, functions that always return the same output for given input parameters). In Rust there are various kinds of side effects:
+We recall here the definition of a monad. This is a type constructor `M` with two operators, `Pure` and `Bind`. The `Pure` operator lifts a pure value into the monad. The `Bind` operator sequences two computations, where the second computation can depend on the result of the first one.
 
-- errors (the [panic!](https://doc.rust-lang.org/core/macro.panic.html) macro) that propagate and do appear in the return type of functions,
-- non-termination, with some potentially non-terminating loops (never returning a result is considered as a side-effect),
-- control-flow, with the `break`, `continue`, `return` keywords, that can jump to a different part of the code,
-- memory allocations and memory mutations,
-- I/O, with for example the [println!](https://doc.rust-lang.org/std/macro.println.html) macro, that prints a message to the standard output,
-- concurrency, with the [thread::spawn](https://doc.rust-lang.org/std/thread/fn.spawn.html) function, that creates a new thread.
+```coq
+Definition M (A : Set) : Set :=
+  ...
 
-## 🐓 Coq, a purely functional language
+Definition Pure {A : Set} (v : A) : M A :=
+  ...
+
+Definition Bind {A B : Set} (e1 : M A) (f : A -> M B) : M B :=
+  ...
+```
+
+The goal of the monadic translation is to translate a program with effects to a purely functional program where effects are implemented in a monad. This entails to represent all the implicit sequencing of operation in the original code to explicit calls to the `Bind` operator. For example, the following Rust code:
+
+```rust
+let x = 1;
+let y = 2;
+let z = x + y;
+z
+```
+
+can be translated to:
+
+```coq
+let* x := Pure 1 in
+let* y := Pure 2 in
+let* z := Pure (x + y) in
+Pure z
+```
+
+The `let*` notation is a shorthand for `Bind`:
+
+```coq
+let* x := e1 in
+e2
+```
+
+is equivalent to:
+
+```coq
+Bind e1 (fun x => e2)
+```
+
+A definition of the monadic translation, together with examples, is given is [these slides](https://xavierleroy.org/mpri/2-4/monads.pdf) from a class of Xavier Leroy. This is defined by induction over all kinds of sub-expressions.
+
+## 🏎️ Optimizations
+
+As the monadic translation tend to be verbose we need to be careful not to translate sub-expression that are obviously free of side effects. For example, the following Rust code:
+
+````rust
 
 Like most proof systems, Coq is a purely functional language. This means we need to find an encoding for the side effects. The reason for most proof systems to forbid side effects is to be logically consistent. Otherwise, it would be easy to write a proof of `False` by writing a term that does not terminate for example.
 
@@ -29,7 +78,7 @@ Monads are a common way to represent side effects in a functional language. A mo
 ```coq
 Definition M (A : Set) : Set :=
   ...
-```
+````
 
 representing computations returning values of type `A`. As an example we can take the error monad of computations that can fail with an error message, using the [Result](https://doc.rust-lang.org/std/result/enum.Result.html) type like in Rust:
 
@@ -131,9 +180,3 @@ that catches the `Return` exceptions and returns the value.
 ## Conclusion
 
 We will see in the next post how we define the `RawMonad` to handle the Rust state of a program and memory allocation.
-
-:::tip Contact
-
-If you have a Rust codebase that you wish to formally verify, or need advice in your work, contact us at&nbsp;[&#099;&#111;&#110;&#116;&#097;&#099;&#116;&#064;formal&#046;&#108;&#097;&#110;&#100;](mailto:contact@formal.land). We will be happy to set up a call with you.
-
-:::
