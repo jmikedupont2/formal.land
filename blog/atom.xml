@@ -2,11 +2,293 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://formal.land/blog</id>
     <title>Formal Land Blog</title>
-    <updated>2023-05-28T00:00:00.000Z</updated>
+    <updated>2023-08-25T00:00:00.000Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://formal.land/blog"/>
     <subtitle>Formal Land Blog</subtitle>
     <icon>https://formal.land/img/land-512.png</icon>
+    <entry>
+        <title type="html"><![CDATA[Trait representation in Coq]]></title>
+        <id>/2023/08/25/trait-representation-in-coq</id>
+        <link href="https://formal.land/blog/2023/08/25/trait-representation-in-coq"/>
+        <updated>2023-08-25T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[In our project coq-of-rust we translate programs written in Rust to equivalent programs in the language of the proof system Coq&nbsp;🐓, which will later allow us to formally verify them.]]></summary>
+        <content type="html"><![CDATA[<p>In our project <a href="https://github.com/formal-land/coq-of-rust">coq-of-rust</a> we translate programs written in <a href="https://www.rust-lang.org/">Rust</a> to equivalent programs in the language of the proof system <a href="https://coq.inria.fr/">Coq<!-- --> <!-- -->🐓</a>, which will later allow us to formally verify them.
+Both Coq and Rust have many unique features, and there are many differences between them, so in the process of translation we need to treat the case of each language construction separately.
+In this post, we discuss how we translate the most complicated one: <a href="https://doc.rust-lang.org/book/ch10-02-traits.html">traits</a>.</p><h2>🦀 Traits in Rust</h2><p>Trait is the way to define a shared behaviour for a group of types in Rust.
+To define a trait we have to specify a list of signatures of the methods we want to be implemented for the types implementing our trait.
+We can also create a generic definition of a trait with the same syntax as in every Rust definition.
+Optionally, we can add a default implementation to any method or extend the list with associated types.
+Traits can also extend a behaviour of one or more other traits, in which case, to implement a trait for a type we would have to implement all its supertraits first.</p><p>Consider the following example (adapted from the <a href="https://doc.rust-lang.org/book/">Rust Book</a>):</p><pre><code class="language-rust">struct Sheep {
+    naked: bool,
+    name: &amp;&#x27;static str,
+}
+
+trait Animal {
+    // Associated function signature; `Self` refers to the implementor type.
+    fn new(name: &amp;&#x27;static str) -&gt; Self;
+
+    // Method signatures; these will return a string.
+    fn name(&amp;self) -&gt; &amp;&#x27;static str;
+    fn noise(&amp;self) -&gt; &amp;&#x27;static str;
+
+    // Traits can provide default method definitions.
+    fn talk(&amp;self) {
+        println!(&quot;{} says {}&quot;, self.name(), self.noise());
+    }
+}
+
+impl Sheep {
+    fn is_naked(&amp;self) -&gt; bool {
+        self.naked
+    }
+}
+
+// Implement the `Animal` trait for `Sheep`.
+impl Animal for Sheep {
+    // `Self` is the implementor type: `Sheep`.
+    fn new(name: &amp;&#x27;static str) -&gt; Sheep {
+        Sheep {
+            name: name,
+            naked: false,
+        }
+    }
+
+    fn name(&amp;self) -&gt; &amp;&#x27;static str {
+        self.name
+    }
+
+    fn noise(&amp;self) -&gt; &amp;&#x27;static str {
+        if self.is_naked() {
+            &quot;baaaaah?&quot;
+        } else {
+            &quot;baaaaah!&quot;
+        }
+    }
+
+    // Default trait methods can be overridden.
+    fn talk(&amp;self) {
+        // For example, we can add some quiet contemplation.
+        println!(&quot;{} pauses briefly... {}&quot;, self.name, self.noise());
+    }
+}
+
+impl Sheep {
+    fn shear(&amp;mut self) {
+        if self.is_naked() {
+            // Implementor methods can use the implementor&#x27;s trait methods.
+            println!(&quot;{} is already naked...&quot;, self.name());
+        } else {
+            println!(&quot;{} gets a haircut!&quot;, self.name);
+
+            self.naked = true;
+        }
+    }
+}
+
+fn main() {
+    // Type annotation is necessary in this case.
+    let mut dolly = Animal::new(&quot;Dolly&quot;): Sheep;
+
+    dolly.talk();
+    dolly.shear();
+    dolly.talk();
+}
+</code></pre><p>We have a type <code>Sheep</code>, a trait <code>Animal</code>, and an implementation of <code>Animal</code> for <code>Sheep</code>.
+As we can see in <code>main</code>, after a trait is implemented for a type, we can use the methods of the trait like normal methods of the type.</p><h2>Our translation</h2><p>Rust notion of trait is very similar to the concept of <a href="https://en.wikipedia.org/wiki/Type_class">typeclasses</a> in <a href="https://en.wikipedia.org/wiki/Functional_programming">functional programming</a>.
+Typeclasses are also present in Coq, so translation of this construction is quite straightforward.</p><p>For a given trait we create a typeclass with fields being just translated signatures of the methods of the trait.
+To allow for the use of method syntax, we also define instances of <code>Notation.Dot</code> for every method name of the trait.
+We also add a parameter of type <code>Set</code> for every type parameter of the trait and translate trait bounds of the types into equivalent typeclass parameters.</p><h2>Translation of associated types</h2><p>Associated types are a bit harder than methods to translate, because it is possible to use <code>::</code> notation to access them.
+For that purpose, we created another typeclass in <code>Notation</code> module:</p><pre><code class="language-coq">Class DoubleColonType {Kind : Type} (type : Kind) (name : string) : Type := {
+  double_colon_type : Set;
+}.
+</code></pre><p>with a notation:</p><pre><code class="language-coq">Notation &quot;e1 ::type[ e2 ]&quot; := (Notation.double_colon_type e1 e2)
+  (at level 0).
+</code></pre><p>For every associated type, we create a parameter and a field of the typeclass resulting from the trait translation, and below, we create an instance of <code>Notation.DoubleColonType</code>.</p><h2>The example in Coq</h2><p>Here is our Coq translation of the example code above:</p><pre><code class="language-coq">(* Generated by coq-of-rust *)
+Require Import CoqOfRust.CoqOfRust.
+
+Module Sheep.
+  Unset Primitive Projections.
+  Record t : Set := {
+    naked : bool;
+    name : ref str;
+  }.
+  Global Set Primitive Projections.
+
+  Global Instance Get_naked : Notation.Dot &quot;naked&quot; := {
+    Notation.dot &#x27;(Build_t x0 _) := x0;
+  }.
+  Global Instance Get_name : Notation.Dot &quot;name&quot; := {
+    Notation.dot &#x27;(Build_t _ x1) := x1;
+  }.
+End Sheep.
+Definition Sheep : Set := @Sheep.t.
+
+Module Animal.
+  Class Trait (Self : Set) : Set := {
+    new `{H : State.Trait} : (ref str) -&gt; (M (H := H) Self);
+    name `{H : State.Trait} : (ref Self) -&gt; (M (H := H) (ref str));
+    noise `{H : State.Trait} : (ref Self) -&gt; (M (H := H) (ref str));
+  }.
+
+  Global Instance Method_new `{H : State.Trait} `(Trait)
+    : Notation.Dot &quot;new&quot; := {
+    Notation.dot := new;
+  }.
+  Global Instance Method_name `{H : State.Trait} `(Trait)
+    : Notation.Dot &quot;name&quot; := {
+    Notation.dot := name;
+  }.
+  Global Instance Method_noise `{H : State.Trait} `(Trait)
+    : Notation.Dot &quot;noise&quot; := {
+    Notation.dot := noise;
+  }.
+  Global Instance Method_talk `{H : State.Trait} `(Trait)
+    : Notation.Dot &quot;talk&quot; := {
+    Notation.dot (self : ref Self):=
+      (let* _ :=
+        let* _ :=
+          let* α0 := self.[&quot;name&quot;] in
+          let* α1 := format_argument::[&quot;new_display&quot;] (addr_of α0) in
+          let* α2 := self.[&quot;noise&quot;] in
+          let* α3 := format_argument::[&quot;new_display&quot;] (addr_of α2) in
+          let* α4 :=
+            format_arguments::[&quot;new_v1&quot;]
+              (addr_of [ &quot;&quot;; &quot; says &quot;; &quot;
+&quot; ])
+              (addr_of [ α1; α3 ]) in
+          std.io.stdio._print α4 in
+        Pure tt in
+      Pure tt
+      : M (H := H) unit);
+  }.
+End Animal.
+
+Module Impl_traits_Sheep.
+  Definition Self := traits.Sheep.
+
+  Definition is_naked `{H : State.Trait} (self : ref Self) : M (H := H) bool :=
+    Pure self.[&quot;naked&quot;].
+
+  Global Instance Method_is_naked `{H : State.Trait} :
+    Notation.Dot &quot;is_naked&quot; := {
+    Notation.dot := is_naked;
+  }.
+End Impl_traits_Sheep.
+
+Module Impl_traits_Animal_for_traits_Sheep.
+  Definition Self := traits.Sheep.
+
+  Definition new
+      `{H : State.Trait}
+      (name : ref str)
+      : M (H := H) traits.Sheep :=
+    Pure {| traits.Sheep.name := name; traits.Sheep.naked := false; |}.
+
+  Global Instance AssociatedFunction_new `{H : State.Trait} :
+    Notation.DoubleColon Self &quot;new&quot; := {
+    Notation.double_colon := new;
+  }.
+
+  Definition name `{H : State.Trait} (self : ref Self) : M (H := H) (ref str) :=
+    Pure self.[&quot;name&quot;].
+
+  Global Instance Method_name `{H : State.Trait} : Notation.Dot &quot;name&quot; := {
+    Notation.dot := name;
+  }.
+
+  Definition noise
+      `{H : State.Trait}
+      (self : ref Self)
+      : M (H := H) (ref str) :=
+    let* α0 := self.[&quot;is_naked&quot;] in
+    if (α0 : bool) then
+      Pure &quot;baaaaah?&quot;
+    else
+      Pure &quot;baaaaah!&quot;.
+
+  Global Instance Method_noise `{H : State.Trait} : Notation.Dot &quot;noise&quot; := {
+    Notation.dot := noise;
+  }.
+
+  Definition talk `{H : State.Trait} (self : ref Self) : M (H := H) unit :=
+    let* _ :=
+      let* _ :=
+        let* α0 := format_argument::[&quot;new_display&quot;] (addr_of self.[&quot;name&quot;]) in
+        let* α1 := self.[&quot;noise&quot;] in
+        let* α2 := format_argument::[&quot;new_display&quot;] (addr_of α1) in
+        let* α3 :=
+          format_arguments::[&quot;new_v1&quot;]
+            (addr_of [ &quot;&quot;; &quot; pauses briefly... &quot;; &quot;
+&quot; ])
+            (addr_of [ α0; α2 ]) in
+        std.io.stdio._print α3 in
+      Pure tt in
+    Pure tt.
+
+  Global Instance Method_talk `{H : State.Trait} : Notation.Dot &quot;talk&quot; := {
+    Notation.dot := talk;
+  }.
+
+  Global Instance I : traits.Animal.Trait Self := {
+    traits.Animal.new `{H : State.Trait} := new;
+    traits.Animal.name `{H : State.Trait} := name;
+    traits.Animal.noise `{H : State.Trait} := noise;
+  }.
+End Impl_traits_Animal_for_traits_Sheep.
+
+Module Impl_traits_Sheep_3.
+  Definition Self := traits.Sheep.
+
+  Definition shear `{H : State.Trait} (self : mut_ref Self) : M (H := H) unit :=
+    let* α0 := self.[&quot;is_naked&quot;] in
+    if (α0 : bool) then
+      let* _ :=
+        let* _ :=
+          let* α0 := self.[&quot;name&quot;] in
+          let* α1 := format_argument::[&quot;new_display&quot;] (addr_of α0) in
+          let* α2 :=
+            format_arguments::[&quot;new_v1&quot;]
+              (addr_of [ &quot;&quot;; &quot; is already naked...
+&quot; ])
+              (addr_of [ α1 ]) in
+          std.io.stdio._print α2 in
+        Pure tt in
+      Pure tt
+    else
+      let* _ :=
+        let* _ :=
+          let* α0 := format_argument::[&quot;new_display&quot;] (addr_of self.[&quot;name&quot;]) in
+          let* α1 :=
+            format_arguments::[&quot;new_v1&quot;]
+              (addr_of [ &quot;&quot;; &quot; gets a haircut!
+&quot; ])
+              (addr_of [ α0 ]) in
+          std.io.stdio._print α1 in
+        Pure tt in
+      let* _ := assign self.[&quot;naked&quot;] true in
+      Pure tt.
+
+  Global Instance Method_shear `{H : State.Trait} : Notation.Dot &quot;shear&quot; := {
+    Notation.dot := shear;
+  }.
+End Impl_traits_Sheep_3.
+
+(* #[allow(dead_code)] - function was ignored by the compiler *)
+Definition main `{H : State.Trait} : M (H := H) unit :=
+  let* dolly :=
+    let* α0 := traits.Animal.new &quot;Dolly&quot; in
+    Pure (α0 : traits.Sheep) in
+  let* _ := dolly.[&quot;talk&quot;] in
+  let* _ := dolly.[&quot;shear&quot;] in
+  let* _ := dolly.[&quot;talk&quot;] in
+  Pure tt.
+</code></pre><p>As we can see, the trait <code>Animal</code> is translated to a module <code>Animal</code>. Every time we want to refer to the trait we use the name <code>Trait</code> or <code>Animal.Trait</code>, depending on whether we do it inside or outside its module.</p><h2>Conclusion</h2><p>Traits are similar enough to Coq classes to make the translation relatively intuitive.
+The only hard case is a translation of associated types, for which we need a special notation.</p><p>:::tip Contact</p><p>If you have a Rust codebase that you wish to formally verify, or need advice in your work, contact us at<!-- --> <a href="mailto:contact@formal.land">c<!-- -->o<!-- -->n<!-- -->t<!-- -->a<!-- -->c<!-- -->t<!-- -->@<!-- -->formal<!-- -->.<!-- -->l<!-- -->a<!-- -->n<!-- -->d</a>. We will be happy to set up a call with you.</p><p>:::</p>]]></content>
+        <author>
+            <name>Bartłomiej Królikowski</name>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Monad for side effects in Rust]]></title>
         <id>/2023/05/28/monad-for-side-effects-in-rust</id>
