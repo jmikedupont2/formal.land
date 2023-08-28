@@ -3,9 +3,9 @@ title: Trait representation in Coq
 tags: [coq-of-rust, Rust, Coq, trait]
 ---
 
-In our project [coq-of-rust](https://github.com/formal-land/coq-of-rust) we translate programs written in [Rust](https://www.rust-lang.org/) to equivalent programs in the language of the proof system [Coq&nbsp;🐓](https://coq.inria.fr/), what will later allow us to formally verify them.
-Both Coq and Rust have many unique features and there are many differences between them, so in the process of translation we need to treat the case of each language construction separately.
-In this post we discuss how we translate the most complicated one: [traits](https://doc.rust-lang.org/book/ch10-02-traits.html).
+In our project [coq-of-rust](https://github.com/formal-land/coq-of-rust) we translate programs written in [Rust](https://www.rust-lang.org/) to equivalent programs in the language of the proof system [Coq&nbsp;🐓](https://coq.inria.fr/), which will later allow us to formally verify them.
+Both Coq and Rust have many unique features, and there are many differences between them, so in the process of translation we need to treat the case of each language construction separately.
+In this post, we discuss how we translate the most complicated one: [traits](https://doc.rust-lang.org/book/ch10-02-traits.html).
 
 <!-- truncate -->
 
@@ -97,22 +97,22 @@ fn main() {
 }
 ```
 
-We have a type `Sheep`, a trait `Animal` and an implementation of `Animal` for `Sheep`.
-We as we can see in `main` after a trait is implemented for a type we can use the methods of the trait like normal methods of the type.
+We have a type `Sheep`, a trait `Animal`, and an implementation of `Animal` for `Sheep`.
+As we can see in `main`, after a trait is implemented for a type, we can use the methods of the trait like normal methods of the type.
 
 ## Our translation
 
-Rust notion of trait is very simmilar to the concept of [typeclasses](https://en.wikipedia.org/wiki/Type_class) in [functional programming](https://en.wikipedia.org/wiki/Functional_programming).
+Rust notion of trait is very similar to the concept of [typeclasses](https://en.wikipedia.org/wiki/Type_class) in [functional programming](https://en.wikipedia.org/wiki/Functional_programming).
 Typeclasses are also present in Coq, so translation of this construction is quite straightforward.
 
 For a given trait we create a typeclass with fields being just translated signatures of the methods of the trait.
-To allow for the use of method syntax we also define instances of `Notation.Dot` for every method name of the trait.
+To allow for the use of method syntax, we also define instances of `Notation.Dot` for every method name of the trait.
 We also add a parameter of type `Set` for every type parameter of the trait and translate trait bounds of the types into equivalent typeclass parameters.
 
 ## Translation of associated types
 
 Associated types are a bit harder than methods to translate, because it is possible to use `::` notation to access them.
-For that purpose we created another typeclass in `Notation` module:
+For that purpose, we created another typeclass in `Notation` module:
 
 ```coq
 Class DoubleColonType {Kind : Type} (type : Kind) (name : string) : Type := {
@@ -127,7 +127,7 @@ Notation "e1 ::type[ e2 ]" := (Notation.double_colon_type e1 e2)
   (at level 0).
 ```
 
-For every associated type we create a parameter and a field of the typeclass resulting from the trait translation and below we create an instance of `Notation.DoubleColonType`.
+For every associated type, we create a parameter and a field of the typeclass resulting from the trait translation, and below, we create an instance of `Notation.DoubleColonType`.
 
 ## The example in Coq
 
@@ -144,7 +144,7 @@ Module Sheep.
     name : ref str;
   }.
   Global Set Primitive Projections.
-  
+
   Global Instance Get_naked : Notation.Dot "naked" := {
     Notation.dot '(Build_t x0 _) := x0;
   }.
@@ -160,7 +160,7 @@ Module Animal.
     name `{H : State.Trait} : (ref Self) -> (M (H := H) (ref str));
     noise `{H : State.Trait} : (ref Self) -> (M (H := H) (ref str));
   }.
-  
+
   Global Instance Method_new `{H : State.Trait} `(Trait)
     : Notation.Dot "new" := {
     Notation.dot := new;
@@ -196,10 +196,10 @@ End Animal.
 
 Module Impl_traits_Sheep.
   Definition Self := traits.Sheep.
-  
+
   Definition is_naked `{H : State.Trait} (self : ref Self) : M (H := H) bool :=
     Pure self.["naked"].
-  
+
   Global Instance Method_is_naked `{H : State.Trait} :
     Notation.Dot "is_naked" := {
     Notation.dot := is_naked;
@@ -208,25 +208,25 @@ End Impl_traits_Sheep.
 
 Module Impl_traits_Animal_for_traits_Sheep.
   Definition Self := traits.Sheep.
-  
+
   Definition new
       `{H : State.Trait}
       (name : ref str)
       : M (H := H) traits.Sheep :=
     Pure {| traits.Sheep.name := name; traits.Sheep.naked := false; |}.
-  
+
   Global Instance AssociatedFunction_new `{H : State.Trait} :
     Notation.DoubleColon Self "new" := {
     Notation.double_colon := new;
   }.
-  
+
   Definition name `{H : State.Trait} (self : ref Self) : M (H := H) (ref str) :=
     Pure self.["name"].
-  
+
   Global Instance Method_name `{H : State.Trait} : Notation.Dot "name" := {
     Notation.dot := name;
   }.
-  
+
   Definition noise
       `{H : State.Trait}
       (self : ref Self)
@@ -236,11 +236,11 @@ Module Impl_traits_Animal_for_traits_Sheep.
       Pure "baaaaah?"
     else
       Pure "baaaaah!".
-  
+
   Global Instance Method_noise `{H : State.Trait} : Notation.Dot "noise" := {
     Notation.dot := noise;
   }.
-  
+
   Definition talk `{H : State.Trait} (self : ref Self) : M (H := H) unit :=
     let* _ :=
       let* _ :=
@@ -255,11 +255,11 @@ Module Impl_traits_Animal_for_traits_Sheep.
         std.io.stdio._print α3 in
       Pure tt in
     Pure tt.
-  
+
   Global Instance Method_talk `{H : State.Trait} : Notation.Dot "talk" := {
     Notation.dot := talk;
   }.
-  
+
   Global Instance I : traits.Animal.Trait Self := {
     traits.Animal.new `{H : State.Trait} := new;
     traits.Animal.name `{H : State.Trait} := name;
@@ -269,7 +269,7 @@ End Impl_traits_Animal_for_traits_Sheep.
 
 Module Impl_traits_Sheep_3.
   Definition Self := traits.Sheep.
-  
+
   Definition shear `{H : State.Trait} (self : mut_ref Self) : M (H := H) unit :=
     let* α0 := self.["is_naked"] in
     if (α0 : bool) then
@@ -298,7 +298,7 @@ Module Impl_traits_Sheep_3.
         Pure tt in
       let* _ := assign self.["naked"] true in
       Pure tt.
-  
+
   Global Instance Method_shear `{H : State.Trait} : Notation.Dot "shear" := {
     Notation.dot := shear;
   }.
@@ -315,54 +315,11 @@ Definition main `{H : State.Trait} : M (H := H) unit :=
   Pure tt.
 ```
 
-As we can see, trait `Animal` is translated to a module `Animal`:
-```coq
-Module Animal.
-  Class Trait (Self : Set) : Set := {
-    new `{H : State.Trait} : (ref str) -> (M (H := H) Self);
-    name `{H : State.Trait} : (ref Self) -> (M (H := H) (ref str));
-    noise `{H : State.Trait} : (ref Self) -> (M (H := H) (ref str));
-  }.
-  
-  Global Instance Method_new `{H : State.Trait} `(Trait)
-    : Notation.Dot "new" := {
-    Notation.dot := new;
-  }.
-  Global Instance Method_name `{H : State.Trait} `(Trait)
-    : Notation.Dot "name" := {
-    Notation.dot := name;
-  }.
-  Global Instance Method_noise `{H : State.Trait} `(Trait)
-    : Notation.Dot "noise" := {
-    Notation.dot := noise;
-  }.
-  Global Instance Method_talk `{H : State.Trait} `(Trait)
-    : Notation.Dot "talk" := {
-    Notation.dot (self : ref Self):=
-      (let* _ :=
-        let* _ :=
-          let* α0 := self.["name"] in
-          let* α1 := format_argument::["new_display"] (addr_of α0) in
-          let* α2 := self.["noise"] in
-          let* α3 := format_argument::["new_display"] (addr_of α2) in
-          let* α4 :=
-            format_arguments::["new_v1"]
-              (addr_of [ ""; " says "; "
-" ])
-              (addr_of [ α1; α3 ]) in
-          std.io.stdio._print α4 in
-        Pure tt in
-      Pure tt
-      : M (H := H) unit);
-  }.
-End Animal.
-```
-
-Everytime we want to refer to the trait we use the name `Trait` or `Animal.Trait`, depending on whether we do it inside or outside its module.
+As we can see, the trait `Animal` is translated to a module `Animal`. Every time we want to refer to the trait we use the name `Trait` or `Animal.Trait`, depending on whether we do it inside or outside its module.
 
 ## Conclusion
 
-Traits are simmilar enough to Coq classes to make the translation relatively intuitive.
+Traits are similar enough to Coq classes to make the translation relatively intuitive.
 The only hard case is a translation of associated types, for which we need a special notation.
 
 :::tip Contact
