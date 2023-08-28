@@ -1,6 +1,7 @@
 ---
 title: Trait representation in Coq
 tags: [coq-of-rust, Rust, Coq, trait]
+author: Bartłomiej Królikowski
 ---
 
 In our project [coq-of-rust](https://github.com/formal-land/coq-of-rust) we translate programs written in [Rust](https://www.rust-lang.org/) to equivalent programs in the language of the proof system [Coq&nbsp;🐓](https://coq.inria.fr/), which will later allow us to formally verify them.
