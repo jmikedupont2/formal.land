@@ -3,7 +3,7 @@ id: introduction
 title: What is coq-of-ocaml
 ---
 
-[**coq-of-ocaml**](https://github.com/formal-land/coq-of-ocaml) is a transpiler from the [OCaml](https://ocaml.org/) programming language to the [Coq](https://coq.inria.fr/) proof language. This allows to formally verify OCaml programs. We developed it for the [Tezos](https://tezos.com/) crypto-currency, verifying more that 100K lines of OCaml code in [Coq Tezos of OCaml&nbsp;💫](https://formal-land.gitlab.io/coq-tezos-of-ocaml/). The sources are on [Github](https://github.com/formal-land/coq-of-ocaml).
+[**coq-of-ocaml**](https://github.com/formal-land/coq-of-ocaml) is a transpiler from the [OCaml](https://ocaml.org/) programming language to the [Coq](https://coq.inria.fr/) proof language. It allows **formal verification** on OCaml programs. We developed it for the [Tezos](https://tezos.com/) crypto-currency, verifying more that 100K lines of OCaml code in [Coq Tezos of OCaml&nbsp;💫](https://formal-land.gitlab.io/coq-tezos-of-ocaml/). The sources are on [Github](https://github.com/formal-land/coq-of-ocaml).
 
 `coq-of-ocaml` generates idiomatic and human readable Coq code. Technically speaking, this is a [shallow embedding](https://cstheory.stackexchange.com/questions/1370/shallow-versus-deep-embeddings) of OCaml into Coq. We supports the purely functional parts of OCaml, including advanced features such as functors, first-class modules, and GADTs. Side-effects in an OCaml program can be translated when represented by a monad.
 
@@ -54,16 +54,6 @@ Fixpoint sum (tree : tree int) : int :=
 
 We map the algebraic datatype `tree` to an equivalent inductive type `tree` in Coq. With the `Arguments` command, we ask Coq to be able to infer the type parameter `a`, as it is done in OCaml. We translate the recursive function `sum` using the command `Fixpoint` of Coq. Here, we represent the `int` type of OCaml by `Z` in Coq, but this can be parametrized.
 
-## Concepts
-
-We can import to Coq the OCaml programs which are either purely functional or whose side-effects are in a [monad](https://caml.inria.fr/pub/docs/manual-ocaml/bindingops.html). We translate the primitive side-effects (references, exceptions, ...) to axioms. We have no proofs that we preserve the semantics of the source code. One should do manual reviews to assert that the generated Coq code is a correct formalization of the source code. We produce a dummy Coq term and an explicit message in case of error. In particular, we always generate something and no errors are fatal.
-
-We compile OCaml projects by pluging into the [LSP](https://microsoft.github.io/language-server-protocol/) of OCaml [Merlin](https://github.com/ocaml/merlin). This means that if you are using Merlin then you can run `coq-of-ocaml` with no additional configurations.
-
-We do not do special treatments for the termination of fixpoints. If needed, you can disable termination checks using the Coq's flag [Guard Checking](https://coq.inria.fr/refman/proof-engine/vernacular-commands.html#coq:flag.Guard-Checking). We erase the type parameters for the [GADTs](https://ocaml.org/manual/gadts.html). This makes sure that the type definitions are accepted, but can make the pattern matchings incomplete. In this case we offer the possibility to introduce dynamic casts guided by annotations in the OCaml code. We did not find a way to nicely represent GADTs in Coq yet. We think that this is hard because the dependent pattern matching works well on type indicies which are values, but does not with types.
-
-We support modules, module types, functors and first-class modules. For OCaml modules, we generate either Coq modules or polymorphic records depending on the case. We generate axioms for `.mli` files to help formalizations, but importing `.mli` files should not be necessary for a project to compile in Coq.
-
 ## Workflow
 
 `coq-of-ocaml` works by compiling the OCaml files one by one. Thanks to Merlin, we get access to the typing environment of each file. Thus names referencing external definitions are properly interpreted.
@@ -77,6 +67,16 @@ Generally, the generated Coq code for a project does not compile as it is. This 
 - fork `coq-of-ocaml` to modify the code translation;
 - post-process the output with a script;
 - post-process the output by hand.
+
+## Concepts
+
+We can import to Coq the OCaml programs which are either purely functional or whose side-effects are in a [monad](https://caml.inria.fr/pub/docs/manual-ocaml/bindingops.html). We translate the primitive side-effects (references, exceptions, ...) to axioms. We have no proofs that we preserve the semantics of the source code. One should do manual reviews to assert that the generated Coq code is a correct formalization of the source code. We produce a dummy Coq term and an explicit message in case of error. In particular, we always generate something and no errors are fatal.
+
+We compile OCaml projects by pluging into the [LSP](https://microsoft.github.io/language-server-protocol/) of OCaml [Merlin](https://github.com/ocaml/merlin). This means that if you are using Merlin then you can run `coq-of-ocaml` with no additional configurations.
+
+We do not do special treatments for the termination of fixpoints. If needed, you can disable termination checks using the Coq's flag [Guard Checking](https://coq.inria.fr/refman/proof-engine/vernacular-commands.html#coq:flag.Guard-Checking). We erase the type parameters for the [GADTs](https://ocaml.org/manual/gadts.html). This makes sure that the type definitions are accepted, but can make the pattern matchings incomplete. In this case we offer the possibility to introduce dynamic casts guided by annotations in the OCaml code. We did not find a way to nicely represent GADTs in Coq yet. We think that this is hard because the dependent pattern matching works well on type indicies which are values, but does not with types.
+
+We support modules, module types, functors and first-class modules. For OCaml modules, we generate either Coq modules or polymorphic records depending on the case. We generate axioms for `.mli` files to help formalizations, but importing `.mli` files should not be necessary for a project to compile in Coq.
 
 ## Related
 

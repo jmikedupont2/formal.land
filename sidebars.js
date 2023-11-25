@@ -82,5 +82,12 @@ module.exports = {
         },
       ],
     },
+    {
+      type: 'category',
+      label: '🦀 coq-of-rust',
+      items: [
+        'coq-of-rust/introduction',
+      ],
+    },
   ],
 };
