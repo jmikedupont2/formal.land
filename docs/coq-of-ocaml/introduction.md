@@ -3,7 +3,7 @@ id: introduction
 title: What is coq-of-ocaml
 ---
 
-[**coq-of-ocaml**](https://github.com/formal-land/coq-of-ocaml) is a transpiler from the [OCaml](https://ocaml.org/) programming language to the [Coq](https://coq.inria.fr/) proof language. It allows **formal verification** on OCaml programs. We developed it for the [Tezos](https://tezos.com/) crypto-currency, verifying more that 100K lines of OCaml code in [Coq Tezos of OCaml&nbsp;💫](https://formal-land.gitlab.io/coq-tezos-of-ocaml/). The sources are on [Github](https://github.com/formal-land/coq-of-ocaml).
+[**coq-of-ocaml**](https://github.com/formal-land/coq-of-ocaml) is a transpiler from the [🐫&nbsp;OCaml](https://ocaml.org/) programming language to the [🐓&nbsp;Coq](https://coq.inria.fr/) proof language. It allows **formal verification** on OCaml programs. We developed it for the [Tezos](https://tezos.com/) crypto-currency, verifying more that 100K lines of OCaml code in [Coq Tezos of OCaml&nbsp;💫](https://formal-land.gitlab.io/coq-tezos-of-ocaml/). The sources are on [Github](https://github.com/formal-land/coq-of-ocaml).
 
 `coq-of-ocaml` generates idiomatic and human readable Coq code. Technically speaking, this is a [shallow embedding](https://cstheory.stackexchange.com/questions/1370/shallow-versus-deep-embeddings) of OCaml into Coq. We supports the purely functional parts of OCaml, including advanced features such as functors, first-class modules, and GADTs. Side-effects in an OCaml program can be translated when represented by a monad.
 
