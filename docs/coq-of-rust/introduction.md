@@ -7,9 +7,9 @@ title: What is coq-of-rust
 
 `coq-of-rust` generates a [shallow embedding](https://cstheory.stackexchange.com/questions/1370/shallow-versus-deep-embeddings) of Rust into Coq. We run the translation from the [THIR](https://rustc-dev-guide.rust-lang.org/thir.html) level of the Rust compiler. The generated Coq code is more verbose than the source Rust as we explicit all the low-level details, such as the sequencing of effects or the implicit borrowing/dereferencing.
 
-:::tip Contact
+:::tip Purchase
 
-If you want to formally verify Rust programs or see what is possible, contact us at&nbsp;[&#099;&#111;&#110;&#116;&#097;&#099;&#116;&#064;formal&#046;&#108;&#097;&#110;&#100;](mailto:contact@formal.land).
+If you want to formally verify Rust programs, contact us at&nbsp;[&#099;&#111;&#110;&#116;&#097;&#099;&#116;&#064;formal&#046;&#108;&#097;&#110;&#100;](mailto:contact@formal.land)!
 
 :::
 
