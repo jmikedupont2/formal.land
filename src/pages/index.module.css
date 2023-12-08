@@ -26,11 +26,41 @@
 .hero__title {
   color: #fffbf1;
   animation: glow 1s ease-in-out infinite alternate;
-  font-size: 70px;
+  font-size: 90px;
+}
+
+.hero__subtitle {
+  color: #fffbf1;
+  font-size: 40px;
+}
+
+.hero__subsubtitle {
+  color: #fffbf1;
+  font-size: 1.5rem;
+}
+
+.hero__subsubtitle a {
+  color: #fffbf1;
+}
+
+@media screen and (max-width: 966px) {
+  .onlyDesktop {
+    display: none;
+  }
 }
 
 @keyframes glow {
   from {
+    text-shadow:
+      0 0 2px #fff,
+      0 0 4px #fff,
+      0 0 6px var(--ifm-color-primary),
+      0 0 8px var(--ifm-color-primary),
+      0 0 10px var(--ifm-color-primary),
+      0 0 12px var(--ifm-color-primary),
+      0 0 14px var(--ifm-color-primary);
+  }
+  to {
     text-shadow:
       0 0 3px #fff,
       0 0 6px #fff,
@@ -39,15 +69,5 @@
       0 0 15px var(--ifm-color-primary),
       0 0 18px var(--ifm-color-primary),
       0 0 21px var(--ifm-color-primary);
-  }
-  to {
-    text-shadow:
-      0 0 6px #fff,
-      0 0 12px #fff,
-      0 0 18px var(--ifm-color-primary),
-      0 0 24px var(--ifm-color-primary),
-      0 0 30px var(--ifm-color-primary),
-      0 0 36px var(--ifm-color-primary),
-      0 0 42px var(--ifm-color-primary);
   }
 }

@@ -33,10 +33,8 @@ Definition balance_of
     : M ltac:(erc20.Balance) :=
   let* self : M.Val (ref ltac:(Self)) := M.alloc self in
   let* owner : M.Val erc20.AccountId.t := M.alloc owner in
-  M.function_body
-    (let* α0 : ref erc20.Erc20.t := M.read self in
-    let* α1 : ref erc20.AccountId.t := borrow owner in
-    erc20.Erc20.t::["balance_of_impl"] α0 α1).
+  let* α0 : ref erc20.Erc20.t := M.read self in
+  erc20.Erc20.t::["balance_of_impl"] α0 (borrow owner).
 ```
 
 ## Workflow

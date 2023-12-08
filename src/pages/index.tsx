@@ -39,54 +39,62 @@ function HomepageHeader() {
       style={isDarkTheme ? {backgroundColor: "#6d6d6d"} : {}}
     >
       <div className="container">
-        <img
-            // alt={title}
-            // className={styles.featureSvg}
-            // src={isDarkTheme ? imageNight : image}
-            style={{float: "left", margin: 20, maxHeight: 256}}
-            src={isDarkTheme ? "img/icons/wolf-night.png" : "img/icons/land.png"}
-          />
-        <h1 className={clsx("hero__title", styles.hero__title)} style={{marginTop: 20}}>
-          {siteConfig.title}
-        </h1>
-        <p className="hero__subtitle">
-          {siteConfig.tagline}&nbsp;🏇
-        </p>
-        <div className={styles.buttons}>
-          {/* <Link
-            className="button button--success button--lg"
-            to="https://n25o5qrzcx2.typeform.com/to/mltUWY58">
-            Request an audit&nbsp;<ExternalLink />
-          </Link> */}
-          {/* <Link
-            className="button button--info button--lg"
-            to="https://koalendar.com/e/meet-with-formal-land">
-            Call us&nbsp;<ExternalLink />
-          </Link> */}
-          <Link
-            className="button button--info button--lg"
-            to="mailto:&#099;&#111;&#110;&#116;&#097;&#099;&#116;&#064;formal&#046;&#108;&#097;&#110;&#100;">
-            Contact us&nbsp;<ExternalLink />
-          </Link>
-          <Link
-            className="button button--secondary button--lg"
-            to="/docs/company/intro">
-            More info
-          </Link>
-          {/* <Link
-            className="button button--secondary button--lg"
-            to="/docs/company/intro">
-            Info
-          </Link> */}
-          {/* <Link
-            className="button button--danger button--lg"
-            to="/docs/company/careers">
-            Hiring
-          </Link> */}
+        <div style={{display: 'flex', flexDirection: 'row'}}>
+          <div className={styles.onlyDesktop} style={{flexShrink: 0}}>
+            <img
+              // alt={title}
+              // className={styles.featureSvg}
+              // src={isDarkTheme ? imageNight : image}
+              style={{margin: 20, maxHeight: 256}}
+              src={isDarkTheme ? "img/icons/wolf-night.png" : "img/icons/land.png"}
+            />
+          </div>
+          <div style={{flex: 1}}>
+            <h1 className={clsx("hero__title", styles.hero__title)} style={{marginTop: 20}}>
+              {siteConfig.title}
+            </h1>
+            <p className={styles.hero__subtitle}>
+              {siteConfig.tagline}
+            </p>
+            <div className={styles.buttons}>
+              {/* <Link
+                className="button button--success button--lg"
+                to="https://n25o5qrzcx2.typeform.com/to/mltUWY58">
+                Request an audit&nbsp;<ExternalLink />
+              </Link> */}
+              {/* <Link
+                className="button button--info button--lg"
+                to="https://koalendar.com/e/meet-with-formal-land">
+                Call us&nbsp;<ExternalLink />
+              </Link> */}
+              <Link
+                className="button button--info button--lg"
+                to="mailto:&#099;&#111;&#110;&#116;&#097;&#099;&#116;&#064;formal&#046;&#108;&#097;&#110;&#100;">
+                Contact us&nbsp;<ExternalLink />
+              </Link>
+              <Link
+                className="button button--secondary button--lg"
+                to="/docs/company/intro">
+                More info
+              </Link>
+              {/* <Link
+                className="button button--secondary button--lg"
+                to="/docs/company/intro">
+                Info
+              </Link> */}
+              {/* <Link
+                className="button button--danger button--lg"
+                to="/docs/company/careers">
+                Hiring
+              </Link> */}
+            </div>
+            {/* <p className={clsx("hero__subtitle")} style={{marginTop: 20}} title="Mathematically proven"> */}
+            <p className={styles.hero__subsubtitle} style={{marginTop: 20}}>
+              {/* <em><TypingText text="Formal verification for Rust, OCaml" /></em> */}
+              <em>Formal verification for <Link to="/docs/coq-of-rust/introduction">Rust</Link>, <Link to="/docs/coq-of-ocaml/introduction">OCaml</Link></em>
+            </p>
+          </div>
         </div>
-        <p className={clsx("hero__subtitle")} style={{marginTop: 20}} title="Mathematically proven">
-          <em><TypingText text="We promise 0% bugs!" /></em>
-        </p>
       </div>
     </header>
   );
