@@ -13,6 +13,8 @@ We present two main improvements we made to `coq-of-rust`:
 
 <!-- truncate -->
 
+![Rust and Coq](2023-11-08/rust_and_coq.png)
+
 ## THIR intermediate language
 
 To translate Rust programs to Coq, we plug into the compiler of Rust, which operates on a series of intermediate languages:
