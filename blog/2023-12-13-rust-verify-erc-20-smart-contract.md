@@ -22,7 +22,7 @@ This work and the development of [coq-of-rust](https://github.com/formal-land/co
 
 <!-- truncate -->
 
-![Rooster verifying](2023-12-08/rooster-verifying.png)
+![Rooster verifying](2023-12-13/rooster-verifying.png)
 
 ## Smart contract code&nbsp;🦀
 
@@ -212,7 +212,7 @@ More details of the translation are given in previous blog posts, but basically:
 
 ## Proof strategy
 
-![Proof strategy](2023-12-08/proof-strategy.png)
+![Proof strategy](2023-12-13/proof-strategy.png)
 
 We verify the code in two steps:
 
