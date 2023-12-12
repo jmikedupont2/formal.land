@@ -4,13 +4,19 @@ tags: [Aleph-Zero, coq-of-rust, Rust, Coq, ERC-20, ink!]
 authors: []
 ---
 
-Our tool [coq-of-rust](https://github.com/formal-land/coq-of-rust) enables formal verification of [🦀&nbsp;Rust](https://www.rust-lang.org/) code, to make sure that a program has no bugs given a precise specification. We work by translating Rust programs to the general proof system [🐓&nbsp;Coq](https://coq.inria.fr/).
+Our tool [coq-of-rust](https://github.com/formal-land/coq-of-rust) enables formal verification of [🦀&nbsp;Rust](https://www.rust-lang.org/) code to make sure that a program has no bugs given a precise specification. We work by translating Rust programs to the general proof system [🐓&nbsp;Coq](https://coq.inria.fr/).
 
-Here, we show how we formally verify an [ERC-20 smart contract](https://github.com/paritytech/ink/blob/master/integration-tests/erc20/lib.rs) written in Rust for the [Aleph Zero](https://alephzero.org/) blockchain. [ERC-20](https://en.wikipedia.org/wiki/Ethereum#ERC20) smart contracts are used to create new kind of tokens in an existing blockchain. Examples are stablecoins such as the [💲USDT](https://tether.to/).
+Here, we show how we formally verify an [ERC-20 smart contract](https://github.com/paritytech/ink/blob/master/integration-tests/erc20/lib.rs) written in Rust for the [Aleph Zero](https://alephzero.org/) blockchain. [ERC-20](https://en.wikipedia.org/wiki/Ethereum#ERC20) smart contracts are used to create new kinds of tokens in an existing blockchain. Examples are stablecoins such as the [💲USDT](https://tether.to/).
 
 :::tip Purchase
 
 To formally verify your Rust codebase and improve the security of your application, email us at&nbsp;[&#099;&#111;&#110;&#116;&#097;&#099;&#116;&#064;formal&#046;&#108;&#097;&#110;&#100;](mailto:contact@formal.land)! Formal verification is the only way to prevent all bugs by exploring all possible executions of your program.
+
+:::
+
+:::info Thanks
+
+This work and the development of [coq-of-rust](https://github.com/formal-land/coq-of-rust) is made possible thanks to the [Aleph Zero](https://alephzero.org/)'s Foundation, to develop an extra safe platform to build decentralized applications with formally verified smart contracts.
 
 :::
 
@@ -161,7 +167,7 @@ mod erc20 {
 }
 ```
 
-This whole code is rather short, and contains no loops, what will simplify our verification process. It uses a lot of macros such as `#[ink(message)]` that are specific to the [ink!](https://use.ink/) language for smart contracts, built on top of Rust. To verify this smart contract, we removed all the macros and added a mock of the dependencies, such as `ink::storage::Mapping` to get a map data structure.
+This whole code is rather short and contains no loops, which will simplify our verification process. It uses a lot of macros, such as `#[ink(message)]`, that are specific to the [ink!](https://use.ink/) language for smart contracts, built on top of Rust. To verify this smart contract, we removed all the macros and added a mock of the dependencies, such as `ink::storage::Mapping` to get a map data structure.
 
 ## The Coq translation&nbsp;🐓
 
@@ -210,10 +216,10 @@ More details of the translation are given in previous blog posts, but basically:
 
 We verify the code in two steps:
 
-1. Show that all the smart contract code can be simulated by a simpler, and purely functional, Coq code.
+1. Show that a simpler, purely functional Coq code can simulate all the smart contract code.
 2. Show that the simulation is correct.
 
-That way we can get rid once and for all of all the memory-related operations by showing the equivalence with a simulation. Then, we can focus on the functional code, which is simpler to reason about. We can cite another project, [Aeneas](https://github.com/AeneasVerif/aeneas), which proposes to do the first step (removing memory operations) automatically.
+That way, we can eliminate all the memory-related operations by showing the equivalence with a simulation. Then, we can focus on the functional code, which is more straightforward to reason about. We can cite another project, [Aeneas](https://github.com/AeneasVerif/aeneas), which proposes to do the first step (removing memory operations) automatically.
 
 ## Simulations
 
@@ -238,7 +244,7 @@ Module State.
 End State.
 ```
 
-It combines the state of the contract (type `Self` in the Rust code) and a list of events to represent the logs. The errors of the monad include the panic errors, as well as control flow primitives such as `return` or `break` that we implement with exceptions.
+It combines the state of the contract (type `Self` in the Rust code) and a list of events to represent the logs. The errors of the monad include panic errors, as well as control flow primitives such as `return` or `break` that we implement with exceptions.
 
 ### Equivalence statement
 
@@ -269,7 +275,7 @@ The main predicate is:
 {{ env, state | translated_code ⇓ result | final_state }}.
 ```
 
-This is the predicate that defines our semantics, explaining how to evaluate a translated Rust code in an environment `env` and a state `state`, to obtain a result `result` and a final state `final_state`. We use an environment in addition to a state to initialize various globals and other information related to the execution context. For example, here we use the environment to store the `caller` of the contract and the pointer to the list of logs.
+This predicate defines our semantics, explaining how to evaluate a translated Rust code in an environment `env` and a state `state`, to obtain a result `result` and a final state `final_state`. We use an environment in addition to a state to initialize various globals and other information related to the execution context. For example, here, we use the environment to store the `caller` of the contract and the pointer to the list of logs.
 
 ### Semantics
 
@@ -299,7 +305,7 @@ Module Primitive.
 End Primitive.
 ```
 
-For each of our monad construct we add a case to our evaluation predicate, that we will describe:
+For each of our monad constructs, we add a case to our evaluation predicate that we will describe:
 
 - `Pure` The result is the value itself, and the state is unchanged:
   ```coq
@@ -312,7 +318,7 @@ For each of our monad construct we add a case to our evaluation predicate, that 
     {{ env, state | k v ⇓ result | state' }} ->
     {{ env, state | LowM.Cast v k ⇓ result | state' }}
   ```
-  In this case we return the result of the continuation `k` of the cast. We do not change the state in the cast.
+  In this case, we return the result of the continuation `k` of the cast. We do not change the state in the cast.
 - We read the state using the primitive `State.read`, checking that the `address` is indeed allocated (it returns `None` otherwise). Note that the type of `v` depends on its address. We directly allocate values with their original type, to avoid serializations/deserializations to represent the state.
   ```coq
   | CallPrimitiveStateRead
@@ -337,7 +343,7 @@ For each of our monad construct we add a case to our evaluation predicate, that 
       LowM.CallPrimitive (Primitive.StateWrite address v) k ⇓ result
     | state' }}
   ```
-- To allocate a new value in memory, we have to make a choice depending on whether we want this value to be writable or not. For immutable values we do not actually create a new address, and instead say that the address is the value itself:
+- To allocate a new value in memory, we have to make a choice depending on whether we want this value to be writable or not. For immutable values, we do not create a new address and instead say that the address is the value itself:
   ```coq
   | CallPrimitiveStateAllocNone {B : Set}
       (state : State) (v : B)
@@ -347,7 +353,7 @@ For each of our monad construct we add a case to our evaluation predicate, that 
       LowM.CallPrimitive (Primitive.StateAlloc v) k ⇓ result
     | state' }}
   ```
-  If latter we attempt to update this value, it will not be possible to define a semantics and we will be stuck. It is up to the user to correctly anticipate if a value will be updated or not, in order to define the semantics. For values that might be updated we use:
+  If we later attempt to update this value, it will not be possible to define a semantics and we will be stuck. It is up to the user to correctly anticipate if a value will be updated or not to define the semantics. For values that might be updated, we use:
   ```coq
   | CallPrimitiveStateAllocSome
       (address : Address) (v : State.get_Set address)
@@ -363,7 +369,7 @@ For each of our monad construct we add a case to our evaluation predicate, that 
       LowM.CallPrimitive (Primitive.StateAlloc v) k ⇓ result
     | state' }}
   ```
-  We need to provide an address that is not already allocated: `State.read` should return `None`. At this point, we can make any choice of unallocated address in order to simplify the proofs later.
+  We need to provide an address not already allocated: `State.read` should return `None`. At this point, we can make any choice of unallocated address in order to simplify the proofs later.
 - Finally, we read the whole environment with:
   ```coq
   | CallPrimitiveEnvRead
@@ -378,7 +384,7 @@ For each of our monad construct we add a case to our evaluation predicate, that 
 
 We can make a few remarks about our semantics:
 
-- There are no cases for `M.Impossible` as this primitive correspond to impossible branches in the code.
+- There are no cases for `M.Impossible` as this primitive corresponds to impossible branches in the code.
 - The semantics is not computable, in the sense that we cannot define a function `run` to evaluate a monadic program in a certain environment and state. Indeed, the user needs to make a choice during the allocation of new values, to know if we allocate the value as immutable or mutable, and with which address. The `M.Cast` operator is also not computable, as we cannot decide if two types are equal.
 - We can choose the type that we use for the `State`, as well as the primitives `State.read` and `State.alloc_write`, as long as they verify well-formedness properties. For example, reading after a write at the same address should return the written value. One should choose a `State` that simplifies its proofs the most. To verify the smart contract, we have taken a record with two fields:
   1. the storage of the contract (the `Self` type in Rust),
@@ -425,8 +431,8 @@ run_symbolic.
 We manually handle the following cases:
 
 - branching (`if` or `match`),
-- external function calls: generally we apply an existing equivalence proof for a call to another function, instead of doing the symbolic evaluation of the function,
-- memory allocations: we need to choose the type of allocation (mutable or immutable), and the address of the allocation for mutable ones.
+- external function calls: generally, we apply an existing equivalence proof for a call to another function instead of doing the symbolic evaluation of the function,
+- memory allocations: we need to choose the type of allocation (mutable or immutable) and the address of the allocation for mutable ones.
 
 Here is the proof for the `transfer` function:
 
@@ -463,7 +469,7 @@ We distinguish the various types of integers used in Rust:
 - unsigned ones: `u8`, `u16`, `u32`, `u64`, `u128`, `usize`,
 - signed ones: `i8`, `i16`, `i32`, `i64`, `i128`, `isize`.
 
-We define a separate type for each of them, that is to say a wrapper around the `Z` type of unbounded integers from Coq:
+We define a separate type for each of them, that is to say, a wrapper around the `Z` type of unbounded integers from Coq:
 
 ```coq
 Module u8.
@@ -480,7 +486,7 @@ Module Valid.
 End Valid.
 ```
 
-All the integers types are of the class `Integer.C` with a `min`, `max`, and `to_Z` functions. We do not embed this predicate with the integer type ([refinement type](https://en.wikipedia.org/wiki/Refinement_type)) to avoid mixing proofs and code. We pay a cost by having to handle the values and the validity proofs separately.
+All integer types are of the class `Integer.C` with a `min`, `max`, and `to_Z` functions. We do not embed this predicate with the integer type ([refinement type](https://en.wikipedia.org/wiki/Refinement_type)) to avoid mixing proofs and code. We pay a cost by having to handle the values and the validity proofs separately.
 
 Depending on the configuration mode of Rust, integer operations can overflow or panic. We have several implementations of the arithmetic operations, depending on the mode:
 
@@ -567,7 +573,7 @@ Lemma read_message_no_panic
   | state }}.
 ```
 
-This is done by symbolic evaluation on the simulations:
+This is done by symbolic evaluation of the simulations:
 
 ```coq
 Proof.
@@ -648,10 +654,124 @@ let to_balance = self.balance_of_impl(to);
 self.balances.insert(*to, to_balance + value);
 ```
 
-so if there is a panic during the addition&nbsp;`+`, like an overflow, the final storage can have the `from` account modified but not the `to` account. So here the sum of the balances is not equal to the total supply anymore.
+So if there is a panic during the addition&nbsp;`+`, like an overflow, the final storage can have the `from` account modified but not the `to` account. So here, the balance sum is no longer equal to the total supply.
+
+### Total supply is constant
+
+We show that the total supply is also a constant, meaning that no calls to the smart contract can modify its value. The statement is the following:
+
+```coq
+Lemma write_dispatch_is_constant
+    (env : erc20.Env.t)
+    (storage : erc20.Erc20.t)
+    (write_message : WriteMessage.t) :
+  let state := State.of_storage storage in
+  let '(result, (storage', _)) :=
+    WriteMessage.simulation_dispatch env write_message (storage, []) in
+  match result with
+  | inl _ =>
+    storage.(erc20.Erc20.total_supply) =
+    storage'.(erc20.Erc20.total_supply)
+  | _ => True
+  end.
+```
+
+It says that for any initial `storage` and `write_message` sent to the smart contract, if we return a result without panicking (`inl _`), then the total supply in the final storage `storage'` is equal to the initial one. We verify this fact by symbolic evaluation of all the branches of the simulation. There are no difficulties in this proof as the code never modifies the `total_supply`.
+
+### Action from the logs
+
+We infer the action of the smart contract on the storage from its logs. This characterizes exactly what we modifications we can deduce on the storage from the logs. We define an action as a function from the storage to a set of possible new storages, given the knowledge of the logs of the contract:
+
+```coq
+Module Action.
+  Definition t : Type := erc20.Erc20.t -> erc20.Erc20.t -> Prop.
+End Action.
+```
+
+The main statement is the following:
+
+```coq
+Lemma retrieve_action_from_logs
+    (env : erc20.Env.t)
+    (storage : erc20.Erc20.t)
+    (write_message : WriteMessage.t)
+    (events : list erc20.Event.t) :
+  match
+    WriteMessage.simulation_dispatch env write_message (storage, [])
+  with
+  | (inl (result.Result.Ok tt), (storage', events)) =>
+    action_of_events events storage storage'
+  | _ => True
+  end.
+```
+
+This relates the final storage `storage'` to the initial storage `storage` using the logs `events` when there are no panics. We define the `action_of_events` predicate as the successive application of the `action_of_event` predicate, which is defined as:
+
+```coq
+Definition action_of_event (event : erc20.Event.t) : Action.t :=
+  fun storage storage' =>
+  match event with
+  | erc20.Event.Transfer (erc20.Transfer.Build_t
+      (option.Option.Some from)
+      (option.Option.Some to)
+      value
+    ) =>
+    (* In case of transfer event, we do not know how the allowances are
+       updated. *)
+    exists allowances',
+    storage' =
+    storage <|
+      erc20.Erc20.balances := balances_of_transfer storage from to value
+    |> <|
+      erc20.Erc20.allowances := allowances'
+    |>
+  | erc20.Event.Transfer (erc20.Transfer.Build_t _ _ _) => False
+  | erc20.Event.Approval (erc20.Approval.Build_t owner spender value) =>
+    storage' =
+    storage <|
+      erc20.Erc20.allowances :=
+        Lib.Mapping.insert (owner, spender) value
+          storage.(erc20.Erc20.allowances)
+    |>
+  end.
+```
+
+When the `event` in the logs is of kind `erc20.Event.Transfer`, the resulting storage has:
+
+- the `balances` updated according to the function `balances_of_transfer`;
+- the `allowances` updated to an unknown value `allowances'`.
+
+When the `event` in the logs is of kind `erc20.Event.Approval`, the resulting storage has:
+
+- the `allowances` updated calling `Lib.Mapping.insert` on `(owner, spender)`;
+- the `balances` unchanged.
+
+### Approve only on caller
+
+We added one last proof to say that when the `approve` function succeeds, it only modifies the allowance of the caller:
+
+```coq
+Lemma approve_only_changes_owner_allowance
+    (env : erc20.Env.t)
+    (storage : erc20.Erc20.t)
+    (spender : erc20.AccountId.t)
+    (value : ltac:(erc20.Balance)) :
+  let '(result, (storage', _)) :=
+    Simulations.erc20.approve env spender value (storage, []) in
+  match result with
+  | inl (result.Result.Ok tt) =>
+    forall owner spender,
+    Integer.to_Z (Simulations.erc20.allowance storage' owner spender) <>
+      Integer.to_Z (Simulations.erc20.allowance storage owner spender) ->
+    owner = Simulations.erc20.Env.caller env
+  | _ => True
+  end.
+```
+
+If an allowance changes after the call to `approve`, then the owner of the allowance is the caller of the smart contract. This is done by symbolic evaluation of the simulation.
 
 ## Conclusion
 
-We have illustrated in an example how we translate a simple function from Rust to Coq. In this example, we saw how the pointer operations are made explicit in the abstract syntax tree of Rust, and how we simplify them for the frequent cases.
+In this example, we have shown how we formally verify the ERC-20 smart contract written in Rust for the [Aleph Zero](https://alephzero.org/) project. Formally verifying smart contracts is extremely important as they can hold a lot of money, and a single bug can prove fatal as recent attacks continue to show: [List of crypto hacks in 2023](https://www.ccn.com/education/crypto-hacks-2023-full-list-of-scams-and-exploits-as-millions-go-missing/).
 
-If you have any comments or suggestions, feel free to email us at&nbsp;[&#099;&#111;&#110;&#116;&#097;&#099;&#116;&#064;formal&#046;&#108;&#097;&#110;&#100;](mailto:contact@formal.land). In future posts, we will go into more detail about the verification process itself.
+If you have Rust smart contracts to verify, feel free to email us at&nbsp;[&#099;&#111;&#110;&#116;&#097;&#099;&#116;&#064;formal&#046;&#108;&#097;&#110;&#100;](mailto:contact@formal.land). We will be happy to help!
