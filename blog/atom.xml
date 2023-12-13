@@ -2,11 +2,497 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://formal.land/blog</id>
     <title>Formal Land Blog</title>
-    <updated>2023-11-26T00:00:00.000Z</updated>
+    <updated>2023-12-13T00:00:00.000Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://formal.land/blog"/>
     <subtitle>Formal Land Blog</subtitle>
     <icon>https://formal.land/img/land-512.png</icon>
+    <entry>
+        <title type="html"><![CDATA[Verifying an ERC-20 smart contract in Rust]]></title>
+        <id>/2023/12/13/rust-verify-erc-20-smart-contract</id>
+        <link href="https://formal.land/blog/2023/12/13/rust-verify-erc-20-smart-contract"/>
+        <updated>2023-12-13T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Our tool coq-of-rust enables formal verification of 🦀&nbsp;Rust code to make sure that a program has no bugs given a precise specification. We work by translating Rust programs to the general proof system 🐓&nbsp;Coq.]]></summary>
+        <content type="html"><![CDATA[<p>Our tool <a href="https://github.com/formal-land/coq-of-rust">coq-of-rust</a> enables formal verification of <a href="https://www.rust-lang.org/">🦀<!-- --> <!-- -->Rust</a> code to make sure that a program has no bugs given a precise specification. We work by translating Rust programs to the general proof system <a href="https://coq.inria.fr/">🐓<!-- --> <!-- -->Coq</a>.</p><p>Here, we show how we formally verify an <a href="https://github.com/paritytech/ink/blob/master/integration-tests/erc20/lib.rs">ERC-20 smart contract</a> written in Rust for the <a href="https://alephzero.org/">Aleph Zero</a> blockchain. <a href="https://en.wikipedia.org/wiki/Ethereum#ERC20">ERC-20</a> smart contracts are used to create new kinds of tokens in an existing blockchain. Examples are stablecoins such as the <a href="https://tether.to/">💲USDT</a>.</p><p>:::tip Purchase</p><p>To formally verify your Rust codebase and improve the security of your application, email us at<!-- --> <a href="mailto:contact@formal.land">c<!-- -->o<!-- -->n<!-- -->t<!-- -->a<!-- -->c<!-- -->t<!-- -->@<!-- -->formal<!-- -->.<!-- -->l<!-- -->a<!-- -->n<!-- -->d</a>! Formal verification is the only way to prevent all bugs by exploring all possible executions of your program.</p><p>:::</p><p>:::info Thanks</p><p>This work and the development of <a href="https://github.com/formal-land/coq-of-rust">coq-of-rust</a> is made possible thanks to the <a href="https://alephzero.org/">Aleph Zero</a>&#x27;s Foundation, to develop an extra safe platform to build decentralized applications with formally verified smart contracts.</p><p>:::</p><p><img src="2023-12-13/rooster-verifying.png" alt="Rooster verifying"/></p><h2>Smart contract code<!-- --> <!-- -->🦀</h2><p>Here is the Rust code of the smart contract that we want to verify:</p><pre><code class="language-rust">#[ink::contract]
+mod erc20 {
+    use ink::storage::Mapping;
+
+    #[ink(storage)]
+    #[derive(Default)]
+    pub struct Erc20 {
+        total_supply: Balance,
+        balances: Mapping&lt;AccountId, Balance&gt;,
+        allowances: Mapping&lt;(AccountId, AccountId), Balance&gt;,
+    }
+
+    #[ink(event)]
+    pub struct Transfer {
+        // ...
+    }
+
+    #[ink(event)]
+    pub struct Approval {
+        // ...
+    }
+
+    #[derive(Debug, PartialEq, Eq)]
+    #[ink::scale_derive(Encode, Decode, TypeInfo)]
+    pub enum Error {
+        // ...
+    }
+
+    pub type Result&lt;T&gt; = core::result::Result&lt;T, Error&gt;;
+
+    impl Erc20 {
+        #[ink(constructor)]
+        pub fn new(total_supply: Balance) -&gt; Self {
+            let mut balances = Mapping::default();
+            let caller = Self::env().caller();
+            balances.insert(caller, &amp;total_supply);
+            Self::env().emit_event(Transfer {
+                from: None,
+                to: Some(caller),
+                value: total_supply,
+            });
+            Self {
+                total_supply,
+                balances,
+                allowances: Default::default(),
+            }
+        }
+
+        #[ink(message)]
+        pub fn total_supply(&amp;self) -&gt; Balance {
+            self.total_supply
+        }
+
+        #[ink(message)]
+        pub fn balance_of(&amp;self, owner: AccountId) -&gt; Balance {
+            self.balance_of_impl(&amp;owner)
+        }
+
+        #[inline]
+        fn balance_of_impl(&amp;self, owner: &amp;AccountId) -&gt; Balance {
+            self.balances.get(owner).unwrap_or_default()
+        }
+
+        #[ink(message)]
+        pub fn allowance(&amp;self, owner: AccountId, spender: AccountId) -&gt; Balance {
+            self.allowance_impl(&amp;owner, &amp;spender)
+        }
+
+        #[inline]
+        fn allowance_impl(&amp;self, owner: &amp;AccountId, spender: &amp;AccountId) -&gt; Balance {
+            self.allowances.get((owner, spender)).unwrap_or_default()
+        }
+
+        #[ink(message)]
+        pub fn transfer(&amp;mut self, to: AccountId, value: Balance) -&gt; Result&lt;()&gt; {
+            let from = self.env().caller();
+            self.transfer_from_to(&amp;from, &amp;to, value)
+        }
+
+        #[ink(message)]
+        pub fn approve(&amp;mut self, spender: AccountId, value: Balance) -&gt; Result&lt;()&gt; {
+            let owner = self.env().caller();
+            self.allowances.insert((&amp;owner, &amp;spender), &amp;value);
+            self.env().emit_event(Approval {
+                owner,
+                spender,
+                value,
+            });
+            Ok(())
+        }
+
+        #[ink(message)]
+        pub fn transfer_from(
+            &amp;mut self,
+            from: AccountId,
+            to: AccountId,
+            value: Balance,
+        ) -&gt; Result&lt;()&gt; {
+            let caller = self.env().caller();
+            let allowance = self.allowance_impl(&amp;from, &amp;caller);
+            if allowance &lt; value {
+                return Err(Error::InsufficientAllowance)
+            }
+            self.transfer_from_to(&amp;from, &amp;to, value)?;
+            // We checked that allowance &gt;= value
+            #[allow(clippy::arithmetic_side_effects)]
+            self.allowances
+                .insert((&amp;from, &amp;caller), &amp;(allowance - value));
+            Ok(())
+        }
+
+        fn transfer_from_to(
+            &amp;mut self,
+            from: &amp;AccountId,
+            to: &amp;AccountId,
+            value: Balance,
+        ) -&gt; Result&lt;()&gt; {
+            let from_balance = self.balance_of_impl(from);
+            if from_balance &lt; value {
+                return Err(Error::InsufficientBalance)
+            }
+            // We checked that from_balance &gt;= value
+            #[allow(clippy::arithmetic_side_effects)]
+            self.balances.insert(from, &amp;(from_balance - value));
+            let to_balance = self.balance_of_impl(to);
+            self.balances
+                .insert(to, &amp;(to_balance.checked_add(value).unwrap()));
+            self.env().emit_event(Transfer {
+                from: Some(*from),
+                to: Some(*to),
+                value,
+            });
+            Ok(())
+        }
+    }
+}
+</code></pre><p>This whole code is rather short and contains no loops, which will simplify our verification process. It uses a lot of macros, such as <code>#[ink(message)]</code>, that are specific to the <a href="https://use.ink/">ink!</a> language for smart contracts, built on top of Rust. To verify this smart contract, we removed all the macros and added a mock of the dependencies, such as <code>ink::storage::Mapping</code> to get a map data structure.</p><h2>The Coq translation<!-- --> <!-- -->🐓</h2><p>By running our tool <a href="https://github.com/formal-land/coq-of-rust">coq-of-rust</a> we automatically obtain the corresponding Coq code for the contract <a href="https://github.com/formal-land/coq-of-rust/blob/main/CoqOfRust/examples/default/examples/ink_contracts/erc20.v">erc20.v</a>. Here is an extract for the <code>transfer</code> function:</p><pre><code class="language-coq">(*
+    fn transfer(&amp;mut self, to: AccountId, value: Balance) -&gt; Result&lt;()&gt; {
+        let from = self.env().caller();
+        self.transfer_from_to(&amp;from, &amp;to, value)
+    }
+*)
+Definition transfer
+    (self : mut_ref ltac:(Self))
+    (to : erc20.AccountId.t)
+    (value : ltac:(erc20.Balance))
+    : M ltac:(erc20.Result unit) :=
+  let* self : M.Val (mut_ref ltac:(Self)) := M.alloc self in
+  let* to : M.Val erc20.AccountId.t := M.alloc to in
+  let* value : M.Val ltac:(erc20.Balance) := M.alloc value in
+  let* from : M.Val erc20.AccountId.t :=
+    let* α0 : mut_ref erc20.Erc20.t := M.read self in
+    let* α1 : erc20.Env.t :=
+      M.call (erc20.Erc20.t::[&quot;env&quot;] (borrow (deref α0))) in
+    let* α2 : M.Val erc20.Env.t := M.alloc α1 in
+    let* α3 : erc20.AccountId.t :=
+      M.call (erc20.Env.t::[&quot;caller&quot;] (borrow α2)) in
+    M.alloc α3 in
+  let* α0 : mut_ref erc20.Erc20.t := M.read self in
+  let* α1 : u128.t := M.read value in
+  let* α2 : core.result.Result.t unit erc20.Error.t :=
+    M.call
+      (erc20.Erc20.t::[&quot;transfer_from_to&quot;] α0 (borrow from) (borrow to) α1) in
+  let* α0 : M.Val (core.result.Result.t unit erc20.Error.t) := M.alloc α2 in
+  M.read α0.
+</code></pre><p>More details of the translation are given in previous blog posts, but basically:</p><ul><li>we make explicit all memory and implicit operations (like borrowing and dereferencing),</li><li>we apply a monadic translation to chain the primitive operations with <code>let*</code>.</li></ul><h2>Proof strategy</h2><p><img src="2023-12-13/proof-strategy.png" alt="Proof strategy"/></p><p>We verify the code in two steps:</p><ol><li>Show that a simpler, purely functional Coq code can simulate all the smart contract code.</li><li>Show that the simulation is correct.</li></ol><p>That way, we can eliminate all the memory-related operations by showing the equivalence with a simulation. Then, we can focus on the functional code, which is more straightforward to reason about. We can cite another project, <a href="https://github.com/AeneasVerif/aeneas">Aeneas</a>, which proposes to do the first step (removing memory operations) automatically.</p><h2>Simulations</h2><h3>Simulation code</h3><p>We will work on the example of the <code>transfer</code> function. We define the simulations in <a href="https://github.com/formal-land/coq-of-rust/blob/main/CoqOfRust/examples/default/examples/ink_contracts/Simulations/erc20.v">Simulations/erc20.v</a>. For the <code>transfer</code> function this is:</p><pre><code class="language-coq">Definition transfer
+    (env : erc20.Env.t)
+    (to : erc20.AccountId.t)
+    (value : ltac:(erc20.Balance)) :
+    MS? State.t ltac:(erc20.Result unit) :=
+  transfer_from_to (Env.caller env) to value.
+</code></pre><p>The function <code>transfer</code> is a wrapper around <code>transfer_from_to</code>, using the smart contract caller as the <code>from</code> account. The monad <code>MS?</code> combines the state and error effect. The state is given by the <code>State.t</code> type:</p><pre><code class="language-coq">Module State.
+  Definition t : Set := erc20.Erc20.t * list erc20.Event.t.
+End State.
+</code></pre><p>It combines the state of the contract (type <code>Self</code> in the Rust code) and a list of events to represent the logs. The errors of the monad include panic errors, as well as control flow primitives such as <code>return</code> or <code>break</code> that we implement with exceptions.</p><h3>Equivalence statement</h3><p>We write all our proofs in <a href="https://github.com/formal-land/coq-of-rust/blob/main/CoqOfRust/examples/default/examples/ink_contracts/Proofs/erc20.v">Proofs/erc20.v</a>. The lemma stating that the simulation is equivalent to the original code is:</p><pre><code class="language-coq">Lemma run_transfer
+    (env : erc20.Env.t)
+    (storage : erc20.Erc20.t)
+    (to : erc20.AccountId.t)
+    (value : ltac:(erc20.Balance))
+    (H_storage : Erc20.Valid.t storage)
+    (H_value : Integer.Valid.t value) :
+  let state := State.of_storage storage in
+  let self := Ref.mut_ref Address.storage in
+  let simulation :=
+    lift_simulation
+      (Simulations.erc20.transfer env to value) storage in
+  {{ Environment.of_env env, state |
+    erc20.Impl_erc20_Erc20_t_2.transfer self to value ⇓
+    simulation.(Output.result)
+  | simulation.(Output.state) }}.
+</code></pre><p>The main predicate is:</p><pre><code class="language-coq">{{ env, state | translated_code ⇓ result | final_state }}.
+</code></pre><p>This predicate defines our semantics, explaining how to evaluate a translated Rust code in an environment <code>env</code> and a state <code>state</code>, to obtain a result <code>result</code> and a final state <code>final_state</code>. We use an environment in addition to a state to initialize various globals and other information related to the execution context. For example, here, we use the environment to store the <code>caller</code> of the contract and the pointer to the list of logs.</p><h3>Semantics</h3><p>We define our monad for the translated code <code>M A</code> in a style by continuation:</p><pre><code class="language-coq">Inductive t (A : Set) : Set :=
+| Pure : A -&gt; t A
+| CallPrimitive {B : Set} : Primitive.t B -&gt; (B -&gt; t A) -&gt; t A
+| Cast {B1 B2 : Set} : B1 -&gt; (B2 -&gt; t A) -&gt; t A
+| Impossible : t A.
+Arguments Pure {_}.
+Arguments CallPrimitive {_ _}.
+Arguments Cast {_ _ _}.
+Arguments Impossible {_}.
+</code></pre><p>For now, we use the primitives to access the memory and the environment:</p><pre><code class="language-coq">Module Primitive.
+  Inductive t : Set -&gt; Set :=
+  | StateAlloc {A : Set} : A -&gt; t (Ref.t A)
+  | StateRead {Address A : Set} : Address -&gt; t A
+  | StateWrite {Address A : Set} : Address -&gt; A -&gt; t unit
+  | EnvRead {A : Set} : t A.
+End Primitive.
+</code></pre><p>For each of our monad constructs, we add a case to our evaluation predicate that we will describe:</p><ul><li><code>Pure</code> The result is the value itself, and the state is unchanged:<pre><code class="language-coq">| Pure :
+  {{ env, state&#x27; | LowM.Pure result ⇓ result | state&#x27; }}
+</code></pre></li><li><code>Cast</code> The evaluation is only possible when <code>B1</code> and <code>B2</code> are the same type <code>B</code>:<pre><code class="language-coq">| Cast {B : Set} (state : State) (v : B) (k : B -&gt; LowM A) :
+  {{ env, state | k v ⇓ result | state&#x27; }} -&gt;
+  {{ env, state | LowM.Cast v k ⇓ result | state&#x27; }}
+</code></pre>In this case, we return the result of the continuation <code>k</code> of the cast. We do not change the state in the cast.</li><li>We read the state using the primitive <code>State.read</code>, checking that the <code>address</code> is indeed allocated (it returns <code>None</code> otherwise). Note that the type of <code>v</code> depends on its address. We directly allocate values with their original type, to avoid serializations/deserializations to represent the state.<pre><code class="language-coq">| CallPrimitiveStateRead
+    (address : Address) (v : State.get_Set address)
+    (state : State)
+    (k : State.get_Set address -&gt; LowM A) :
+  State.read address state = Some v -&gt;
+  {{ env, state | k v ⇓ result | state&#x27; }} -&gt;
+  {{ env, state |
+    LowM.CallPrimitive (Primitive.StateRead address) k ⇓ result
+  | state&#x27; }}
+</code></pre></li><li>Similarly, we write into the state with <code>State.alloc_write</code>, that only succeeds for allocated addresses:<pre><code class="language-coq">| CallPrimitiveStateWrite
+    (address : Address) (v : State.get_Set address)
+    (state state_inter : State)
+    (k : unit -&gt; LowM A) :
+  State.alloc_write address state v = Some state_inter -&gt;
+  {{ env, state_inter | k tt ⇓ result | state&#x27; }} -&gt;
+  {{ env, state |
+    LowM.CallPrimitive (Primitive.StateWrite address v) k ⇓ result
+  | state&#x27; }}
+</code></pre></li><li>To allocate a new value in memory, we have to make a choice depending on whether we want this value to be writable or not. For immutable values, we do not create a new address and instead say that the address is the value itself:<pre><code class="language-coq">| CallPrimitiveStateAllocNone {B : Set}
+    (state : State) (v : B)
+    (k : Ref B -&gt; LowM A) :
+  {{ env, state | k (Ref.Imm v) ⇓ result | state&#x27; }} -&gt;
+  {{ env, state |
+    LowM.CallPrimitive (Primitive.StateAlloc v) k ⇓ result
+  | state&#x27; }}
+</code></pre>If we later attempt to update this value, it will not be possible to define a semantics and we will be stuck. It is up to the user to correctly anticipate if a value will be updated or not to define the semantics. For values that might be updated, we use:<pre><code class="language-coq">| CallPrimitiveStateAllocSome
+    (address : Address) (v : State.get_Set address)
+    (state : State)
+    (k : Ref (State.get_Set address) -&gt; LowM A) :
+  let r :=
+    Ref.MutRef (A := State.get_Set address) (B := State.get_Set address)
+      address (fun full_v =&gt; full_v) (fun v _full_v =&gt; v) in
+  State.read address state = None -&gt;
+  State.alloc_write address state v = Some state&#x27; -&gt;
+  {{ env, state | k r ⇓ result | state&#x27; }} -&gt;
+  {{ env, state |
+    LowM.CallPrimitive (Primitive.StateAlloc v) k ⇓ result
+  | state&#x27; }}
+</code></pre>We need to provide an address not already allocated: <code>State.read</code> should return <code>None</code>. At this point, we can make any choice of unallocated address in order to simplify the proofs later.</li><li>Finally, we read the whole environment with:<pre><code class="language-coq">| CallPrimitiveEnvRead
+    (state : State) (k : Env -&gt; LowM A) :
+  {{ env, state | k env ⇓ result | state&#x27; }} -&gt;
+  {{ env, state |
+    LowM.CallPrimitive Primitive.EnvRead k ⇓ result
+  | state&#x27; }}
+</code></pre></li></ul><h3>Semantics remarks</h3><p>We can make a few remarks about our semantics:</p><ul><li>There are no cases for <code>M.Impossible</code> as this primitive corresponds to impossible branches in the code.</li><li>The semantics is not computable, in the sense that we cannot define a function <code>run</code> to evaluate a monadic program in a certain environment and state. Indeed, the user needs to make a choice during the allocation of new values, to know if we allocate the value as immutable or mutable, and with which address. The <code>M.Cast</code> operator is also not computable, as we cannot decide if two types are equal.</li><li>We can choose the type that we use for the <code>State</code>, as well as the primitives <code>State.read</code> and <code>State.alloc_write</code>, as long as they verify well-formedness properties. For example, reading after a write at the same address should return the written value. One should choose a <code>State</code> that simplifies its proofs the most. To verify the smart contract, we have taken a record with two fields:<ol><li>the storage of the contract (the <code>Self</code> type in Rust),</li><li>the list of events logged by the contract.</li></ol></li><li>Even if the monad is in continuation-passing style, we add a primitive <code>M.Call</code> corresponding to a bind, to explicit the points in the code where we call user-defined functions. This is not necessary but helpful to track things in the proofs. Otherwise, the monadic bind is defined as a fixpoint with:<pre><code class="language-coq">Fixpoint bind {A B : Set} (e1 : t A) (f : A -&gt; t B) : t B :=
+  match e1 with
+  | Pure v =&gt; f v
+  | CallPrimitive primitive k =&gt;
+    CallPrimitive primitive (fun v =&gt; bind (k v) f)
+  | Cast v k =&gt;
+    Cast v (fun v&#x27; =&gt; bind (k v&#x27;) f)
+  | Impossible =&gt; Impossible
+  end.
+</code></pre></li><li>To handle the panic and <code>return</code>/<code>break</code> exceptions, we wrap our monad into an error monad:<pre><code class="language-coq">Definition M (A : Set) : Set :=
+  LowM (A + Exception.t).
+</code></pre>where <code>LowM</code> is the monad without errors as defined above and <code>Exception.t</code> is:<pre><code class="language-coq">Module Exception.
+  Inductive t : Set :=
+  (** exceptions for Rust&#x27;s `return` *)
+  | Return {A : Set} : A -&gt; t
+  (** exceptions for Rust&#x27;s `continue` *)
+  | Continue : t
+  (** exceptions for Rust&#x27;s `break` *)
+  | Break : t
+  | Panic : Coq.Strings.String.string -&gt; t.
+End Exception.
+</code></pre></li></ul><h3>Proof of equivalence</h3><p>To prove that the equivalence between the simulation and the original code holds, we proceed by induction on the monadic code. This corresponds to symbolically evaluating the monadic code, in the proof mode of Coq, applying the primitives of the semantics predicate at each step. We use the following tactic to automate this work:</p><pre><code class="language-coq">run_symbolic.
+</code></pre><p>We manually handle the following cases:</p><ul><li>branching (<code>if</code> or <code>match</code>),</li><li>external function calls: generally, we apply an existing equivalence proof for a call to another function instead of doing the symbolic evaluation of the function,</li><li>memory allocations: we need to choose the type of allocation (mutable or immutable) and the address of the allocation for mutable ones.</li></ul><p>Here is the proof for the <code>transfer</code> function:</p><pre><code class="language-coq">Proof.
+  unfold erc20.Impl_erc20_Erc20_t_2.transfer,
+    Simulations.erc20.transfer,
+    lift_simulation.
+  Opaque erc20.transfer_from_to.
+  run_symbolic.
+  eapply Run.Call. {
+    apply run_env.
+  }
+  run_symbolic.
+  eapply Run.Call. {
+    apply Env.run_caller.
+  }
+  run_symbolic.
+  eapply Run.Call. {
+    now apply run_transfer_from_to.
+  }
+  unfold lift_simulation.
+  destruct erc20.transfer_from_to as [[] [?storage ?logs]]; run_symbolic.
+  Transparent erc20.transfer_from_to.
+Qed.
+</code></pre><h2>Proofs</h2><h3>Handling of integers</h3><p>We distinguish the various types of integers used in Rust:</p><ul><li>unsigned ones: <code>u8</code>, <code>u16</code>, <code>u32</code>, <code>u64</code>, <code>u128</code>, <code>usize</code>,</li><li>signed ones: <code>i8</code>, <code>i16</code>, <code>i32</code>, <code>i64</code>, <code>i128</code>, <code>isize</code>.</li></ul><p>We define a separate type for each of them, that is to say, a wrapper around the <code>Z</code> type of unbounded integers from Coq:</p><pre><code class="language-coq">Module u8.
+  Inductive t : Set := Make (z : Z) : t.
+End u8.
+</code></pre><p>To enforce the bounds, we define a validity predicate for each type:</p><pre><code class="language-coq">Module Valid.
+  Definition t {A : Set} `{Integer.C A} (v : A) : Prop :=
+    Integer.min &lt;= Integer.to_Z v &lt;= Integer.max.
+End Valid.
+</code></pre><p>All integer types are of the class <code>Integer.C</code> with a <code>min</code>, <code>max</code>, and <code>to_Z</code> functions. We do not embed this predicate with the integer type (<a href="https://en.wikipedia.org/wiki/Refinement_type">refinement type</a>) to avoid mixing proofs and code. We pay a cost by having to handle the values and the validity proofs separately.</p><p>Depending on the configuration mode of Rust, integer operations can overflow or panic. We have several implementations of the arithmetic operations, depending on the mode:</p><pre><code class="language-coq">Module BinOp.
+  (** Operators with panic, in the monad. *)
+  Module Panic.
+    Definition add {A : Set} `{Integer.C A} (v1 v2 : A) : M A :=
+      (* ... *)
+
+    Definition sub (* ... *)
+  End Panic.
+
+  (** Operators with overflow, outside of the monad as
+      there cannot be any errors. *)
+  Module Wrap.
+    Definition add {A : Set} `{Integer.C A} (v1 v2 : A) : A :=
+      (* ... *)
+
+    Definition sub (* ... *)
+  End Wrap.
+End BinOp.
+</code></pre><p>We also have additional operators, useful for the definition of simulations:</p><ul><li>optimistic operators, operating on <code>Z</code> without checking the bounds of the result (for cases where we can prove that the result is never out of bounds),</li><li>operators returning in the option monad, to handle the case where the result is out of bounds.</li></ul><p>Note that the comparison operators (<code>=</code>, <code>&lt;</code>, ...) never panic or overflow. In the context of these smart contracts, the arithmetic operators are panicking in case of overflow.</p><h3>Definition of messages</h3><p>We can call the smart contract with three read primitives (<code>total_supply</code>, <code>balance_of</code>, <code>allowance</code>) and three write primitives (<code>transfer</code>, <code>approve</code>, <code>transfer_from</code>). We define two message types to formalize these access points. This will later allow us to express properties over all possible read and write messages:</p><pre><code class="language-coq">Module ReadMessage.
+  (** The type parameter is the type of result of the call. *)
+  Inductive t : Set -&gt; Set :=
+  | total_supply :
+    t ltac:(erc20.Balance)
+  | balance_of
+    (owner : erc20.AccountId.t) :
+    t ltac:(erc20.Balance)
+  | allowance
+    (owner : erc20.AccountId.t)
+    (spender : erc20.AccountId.t) :
+    t ltac:(erc20.Balance).
+End ReadMessage.
+
+Module WriteMessage.
+  Inductive t : Set :=
+  | transfer
+    (to : erc20.AccountId.t)
+    (value : ltac:(erc20.Balance)) :
+    t
+  | approve
+    (spender : erc20.AccountId.t)
+    (value : ltac:(erc20.Balance)) :
+    t
+  | transfer_from
+    (from : erc20.AccountId.t)
+    (to : erc20.AccountId.t)
+    (value : ltac:(erc20.Balance)) :
+    t.
+End WriteMessage.
+</code></pre><h3>No panics on read messages</h3><p>We show that for all possible read messages, the smart contract does not panic:</p><pre><code class="language-coq">Lemma read_message_no_panic
+    (env : erc20.Env.t)
+    (message : ReadMessage.t ltac:(erc20.Balance))
+    (storage : erc20.Erc20.t) :
+  let state := State.of_storage storage in
+  exists result,
+  {{ Environment.of_env env, state |
+    ReadMessage.dispatch message ⇓
+    (* [inl] means success (no panics) *)
+    inl result
+  | state }}.
+</code></pre><p>This is done by symbolic evaluation of the simulations:</p><pre><code class="language-coq">Proof.
+  destruct message; simpl.
+  { eexists.
+    apply run_total_supply.
+  }
+  { eexists.
+    apply run_balance_of.
+  }
+  { eexists.
+    apply run_allowance.
+  }
+Qed.
+</code></pre><h3>Invariants</h3><p>The data structure of the storage of the smart contract is as follows:</p><pre><code class="language-rust">pub struct Erc20 {
+    total_supply: Balance,
+    balances: Mapping&lt;AccountId, Balance&gt;,
+    allowances: Mapping&lt;(AccountId, AccountId), Balance&gt;,
+}
+</code></pre><p>An invariant is that the total supply is always equal to the sum of all the balances in the mapping <code>Mapping&lt;AccountId, Balance&gt;</code>. We define this invariant in Coq as:</p><pre><code class="language-coq">Definition sum_of_money (storage : erc20.Erc20.t) : Z :=
+  Lib.Mapping.sum Integer.to_Z storage.(erc20.Erc20.balances).
+
+Module Valid.
+  Definition t (storage : erc20.Erc20.t) : Prop :=
+    Integer.to_Z storage.(erc20.Erc20.total_supply) =
+    sum_of_money storage.
+End Valid.
+</code></pre><p>We show that this invariant holds for any output of the write messages, given that it holds for the input storage:</p><pre><code class="language-coq">Lemma write_dispatch_is_valid
+    (env : erc20.Env.t)
+    (storage : erc20.Erc20.t)
+    (write_message : WriteMessage.t)
+    (H_storage : Erc20.Valid.t storage)
+    (H_write_message : WriteMessage.Valid.t write_message) :
+  let state := State.of_storage storage in
+  let &#x27;(result, (storage, _)) :=
+    WriteMessage.simulation_dispatch env write_message (storage, []) in
+  match result with
+  | inl _ =&gt; Erc20.Valid.t storage
+  | _ =&gt; True
+  end.
+</code></pre><p>We assume that the initial storage is valid with the hypothesis:</p><pre><code class="language-coq">(H_storage : Erc20.Valid.t storage)
+</code></pre><p>We show the property in the case without panics with:</p><pre><code class="language-coq">match result with
+  | inl _ =&gt; ...
+</code></pre><p>When the smart contract panics (integer overflow), the storage is discarded anyways, and it might actually by invalid. For example, in the <code>transfer_from_to</code> function we have:</p><pre><code class="language-rust">self.balances.insert(*from, from_balance - value);
+let to_balance = self.balance_of_impl(to);
+self.balances.insert(*to, to_balance + value);
+</code></pre><p>So if there is a panic during the addition<!-- --> <code>+</code>, like an overflow, the final storage can have the <code>from</code> account modified but not the <code>to</code> account. So here, the balance sum is no longer equal to the total supply.</p><h3>Total supply is constant</h3><p>We show that the total supply is also a constant, meaning that no calls to the smart contract can modify its value. The statement is the following:</p><pre><code class="language-coq">Lemma write_dispatch_is_constant
+    (env : erc20.Env.t)
+    (storage : erc20.Erc20.t)
+    (write_message : WriteMessage.t) :
+  let state := State.of_storage storage in
+  let &#x27;(result, (storage&#x27;, _)) :=
+    WriteMessage.simulation_dispatch env write_message (storage, []) in
+  match result with
+  | inl _ =&gt;
+    storage.(erc20.Erc20.total_supply) =
+    storage&#x27;.(erc20.Erc20.total_supply)
+  | _ =&gt; True
+  end.
+</code></pre><p>It says that for any initial <code>storage</code> and <code>write_message</code> sent to the smart contract, if we return a result without panicking (<code>inl _</code>), then the total supply in the final storage <code>storage&#x27;</code> is equal to the initial one. We verify this fact by symbolic evaluation of all the branches of the simulation. There are no difficulties in this proof as the code never modifies the <code>total_supply</code>.</p><h3>Action from the logs</h3><p>We infer the action of the smart contract on the storage from its logs. This characterizes exactly what we modifications we can deduce on the storage from the logs. We define an action as a function from the storage to a set of possible new storages, given the knowledge of the logs of the contract:</p><pre><code class="language-coq">Module Action.
+  Definition t : Type := erc20.Erc20.t -&gt; erc20.Erc20.t -&gt; Prop.
+End Action.
+</code></pre><p>The main statement is the following:</p><pre><code class="language-coq">Lemma retrieve_action_from_logs
+    (env : erc20.Env.t)
+    (storage : erc20.Erc20.t)
+    (write_message : WriteMessage.t)
+    (events : list erc20.Event.t) :
+  match
+    WriteMessage.simulation_dispatch env write_message (storage, [])
+  with
+  | (inl (result.Result.Ok tt), (storage&#x27;, events)) =&gt;
+    action_of_events events storage storage&#x27;
+  | _ =&gt; True
+  end.
+</code></pre><p>This relates the final storage <code>storage&#x27;</code> to the initial storage <code>storage</code> using the logs <code>events</code> when there are no panics. We define the <code>action_of_events</code> predicate as the successive application of the <code>action_of_event</code> predicate, which is defined as:</p><pre><code class="language-coq">Definition action_of_event (event : erc20.Event.t) : Action.t :=
+  fun storage storage&#x27; =&gt;
+  match event with
+  | erc20.Event.Transfer (erc20.Transfer.Build_t
+      (option.Option.Some from)
+      (option.Option.Some to)
+      value
+    ) =&gt;
+    (* In case of transfer event, we do not know how the allowances are
+       updated. *)
+    exists allowances&#x27;,
+    storage&#x27; =
+    storage &lt;|
+      erc20.Erc20.balances := balances_of_transfer storage from to value
+    |&gt; &lt;|
+      erc20.Erc20.allowances := allowances&#x27;
+    |&gt;
+  | erc20.Event.Transfer (erc20.Transfer.Build_t _ _ _) =&gt; False
+  | erc20.Event.Approval (erc20.Approval.Build_t owner spender value) =&gt;
+    storage&#x27; =
+    storage &lt;|
+      erc20.Erc20.allowances :=
+        Lib.Mapping.insert (owner, spender) value
+          storage.(erc20.Erc20.allowances)
+    |&gt;
+  end.
+</code></pre><p>When the <code>event</code> in the logs is of kind <code>erc20.Event.Transfer</code>, the resulting storage has:</p><ul><li>the <code>balances</code> updated according to the function <code>balances_of_transfer</code>;</li><li>the <code>allowances</code> updated to an unknown value <code>allowances&#x27;</code>.</li></ul><p>When the <code>event</code> in the logs is of kind <code>erc20.Event.Approval</code>, the resulting storage has:</p><ul><li>the <code>allowances</code> updated calling <code>Lib.Mapping.insert</code> on <code>(owner, spender)</code>;</li><li>the <code>balances</code> unchanged.</li></ul><h3>Approve only on caller</h3><p>We added one last proof to say that when the <code>approve</code> function succeeds, it only modifies the allowance of the caller:</p><pre><code class="language-coq">Lemma approve_only_changes_owner_allowance
+    (env : erc20.Env.t)
+    (storage : erc20.Erc20.t)
+    (spender : erc20.AccountId.t)
+    (value : ltac:(erc20.Balance)) :
+  let &#x27;(result, (storage&#x27;, _)) :=
+    Simulations.erc20.approve env spender value (storage, []) in
+  match result with
+  | inl (result.Result.Ok tt) =&gt;
+    forall owner spender,
+    Integer.to_Z (Simulations.erc20.allowance storage&#x27; owner spender) &lt;&gt;
+      Integer.to_Z (Simulations.erc20.allowance storage owner spender) -&gt;
+    owner = Simulations.erc20.Env.caller env
+  | _ =&gt; True
+  end.
+</code></pre><p>If an allowance changes after the call to <code>approve</code>, then the owner of the allowance is the caller of the smart contract. This is done by symbolic evaluation of the simulation.</p><h2>Conclusion</h2><p>In this example, we have shown how we formally verify the ERC-20 smart contract written in Rust for the <a href="https://alephzero.org/">Aleph Zero</a> project. Formally verifying smart contracts is extremely important as they can hold a lot of money, and a single bug can prove fatal as recent attacks continue to show: <a href="https://www.ccn.com/education/crypto-hacks-2023-full-list-of-scams-and-exploits-as-millions-go-missing/">List of crypto hacks in 2023</a>.</p><p>If you have Rust smart contracts to verify, feel free to email us at<!-- --> <a href="mailto:contact@formal.land">c<!-- -->o<!-- -->n<!-- -->t<!-- -->a<!-- -->c<!-- -->t<!-- -->@<!-- -->formal<!-- -->.<!-- -->l<!-- -->a<!-- -->n<!-- -->d</a>. We will be happy to help!</p>]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Translation of function bodies from Rust to Coq]]></title>
         <id>/2023/11/26/rust-function-body</id>
