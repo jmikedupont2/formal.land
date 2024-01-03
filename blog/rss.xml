@@ -4,9 +4,92 @@
         <title>Formal Land Blog</title>
         <link>https://formal.land/blog</link>
         <description>Formal Land Blog</description>
-        <lastBuildDate>Wed, 13 Dec 2023 00:00:00 GMT</lastBuildDate>
+        <lastBuildDate>Thu, 04 Jan 2024 00:00:00 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
+        <item>
+            <title><![CDATA[Translating Rust match patterns to Coq with coq-of-rust]]></title>
+            <link>https://formal.land/blog/2024/01/04/rust-translating-match</link>
+            <guid>/2024/01/04/rust-translating-match</guid>
+            <pubDate>Thu, 04 Jan 2024 00:00:00 GMT</pubDate>
+            <description><![CDATA[Our tool coq-of-rust enables formal verification of 🦀&nbsp;Rust code to make sure that a program has no bugs. This technique checks all possible execution paths using mathematical techniques. This is important for example to ensure the security of smart contracts written in Rust language.]]></description>
+            <content:encoded><![CDATA[<p>Our tool <a href="https://github.com/formal-land/coq-of-rust">coq-of-rust</a> enables <a href="https://en.wikipedia.org/wiki/Formal_verification">formal verification</a> of <a href="https://www.rust-lang.org/">🦀<!-- --> <!-- -->Rust</a> code to make sure that a program has no bugs. This technique checks all possible execution paths using mathematical techniques. This is important for example to ensure the security of smart contracts written in Rust language.</p><p>Our tool <code>coq-of-rust</code> works by translating Rust programs to the general proof system <a href="https://coq.inria.fr/">🐓<!-- --> <!-- -->Coq</a>. Here we explain how we translate<a href="https://doc.rust-lang.org/book/ch06-02-match.html"> <code>match</code> patterns</a> from Rust to Coq. The specificity of Rust patterns is to be able to match values either by value or reference.</p><p>:::tip Purchase</p><p>To formally verify your Rust codebase and improve the security of your application, email us at<!-- --> <a href="mailto:contact@formal.land">c<!-- -->o<!-- -->n<!-- -->t<!-- -->a<!-- -->c<!-- -->t<!-- -->@<!-- -->formal<!-- -->.<!-- -->l<!-- -->a<!-- -->n<!-- -->d</a>! Formal verification is the only way to prevent all bugs by exploring all possible executions of your program.</p><p>:::</p><p>:::info Thanks</p><p>This work and the development of <a href="https://github.com/formal-land/coq-of-rust">coq-of-rust</a> is made possible thanks to the <a href="https://alephzero.org/">Aleph Zero</a>&#x27;s Foundation, to develop an extra safe platform to build decentralized applications with formally verified smart contracts.</p><p>:::</p><p><img src="2024-01-04/rust-rooster.png" alt="Rust rooster"/></p><h2>Rust example<!-- --> <!-- -->🦀</h2><p>To illustrate the pattern matching in Rust, we will use the following example featuring a match by reference:</p><pre><code class="language-rust">pub(crate) fn is_option_equal&lt;A&gt;(
+    is_equal: fn(x: &amp;A, y: &amp;A) -&gt; bool,
+    lhs: Option&lt;A&gt;,
+    rhs: &amp;A,
+) -&gt; bool {
+    match lhs {
+        None =&gt; false,
+        Some(ref value) =&gt; is_equal(value, rhs),
+    }
+}
+</code></pre><p>We take a function<!-- --> <code>is_equal</code> as a parameter, operating only on references to the type<!-- --> <code>A</code>. We apply it to compare two values<!-- --> <code>lhs</code> and<!-- --> <code>rhs</code>:</p><ul><li>if<!-- --> <code>lhs</code> is<!-- --> <code>None</code>, we return<!-- --> <code>false</code>,</li><li>if<!-- --> <code>lhs</code> is<!-- --> <code>Some</code>, we get its value by reference and apply<!-- --> <code>is_equal</code>.</li></ul><p>When we apply the pattern:</p><pre><code class="language-rust">Some(ref value) =&gt; ...
+</code></pre><p>we do something interesting: we read the value of<!-- --> <code>lhs</code> to know if we are in a<!-- --> <code>Some</code> case but leave it in place and return<!-- --> <code>value</code> the reference to its content.</p><p>To simulate this behavior in Coq, we need to match in two steps:</p><ol><li>match the value of<!-- --> <code>lhs</code> to know if we are in a<!-- --> <code>Some</code> case or not,</li><li>if we are in a<!-- --> <code>Some</code> case, create the reference to the content of a<!-- --> <code>Some</code> case based on the reference to<!-- --> <code>lhs</code>.</li></ol><h2>Coq translation<!-- --> <!-- -->🐓</h2><p>The Coq translation that our tool <a href="https://github.com/formal-land/coq-of-rust">coq-of-rust</a> generates is the following:</p><pre><code class="language-coq">Definition is_option_equal
+    {A : Set}
+    (is_equal : (ref A) -&gt; (ref A) -&gt; M bool.t)
+    (lhs : core.option.Option.t A)
+    (rhs : ref A)
+    : M bool.t :=
+  let* is_equal := M.alloc is_equal in
+  let* lhs := M.alloc lhs in
+  let* rhs := M.alloc rhs in
+  let* α0 : M.Val bool.t :=
+    match_operator
+      lhs
+      [
+        fun γ =&gt;
+          (let* α0 := M.read γ in
+          match α0 with
+          | core.option.Option.None =&gt; M.alloc false
+          | _ =&gt; M.break_match
+          end) :
+          M (M.Val bool.t);
+        fun γ =&gt;
+          (let* α0 := M.read γ in
+          match α0 with
+          | core.option.Option.Some _ =&gt;
+            let γ0_0 := γ.[&quot;Some.0&quot;] in
+            let* value := M.alloc (borrow γ0_0) in
+            let* α0 : (ref A) -&gt; (ref A) -&gt; M bool.t := M.read is_equal in
+            let* α1 : ref A := M.read value in
+            let* α2 : ref A := M.read rhs in
+            let* α3 : bool.t := M.call (α0 α1 α2) in
+            M.alloc α3
+          | _ =&gt; M.break_match
+          end) :
+          M (M.Val bool.t)
+      ] in
+  M.read α0.
+</code></pre><p>We run the<!-- --> <code>match_operator</code> on<!-- --> <code>lhs</code> and the two branches of the<!-- --> <code>match</code>. This operator is of type:</p><pre><code class="language-coq">Definition match_operator {A B : Set}
+    (scrutinee : A)
+    (arms : list (A -&gt; M B)) :
+    M B :=
+  ...
+</code></pre><p>It takes a<!-- --> <code>scrutinee</code> value to match as a parameter, and runs a sequence of functions<!-- --> <code>arms</code> on it. Each function<!-- --> <code>arms</code> takes the value of the<!-- --> <code>scrutinee</code> and returns a monadic value<!-- --> <code>M B</code>. This monadic value can either be a success value if the pattern matches, or a special failure value if the pattern does not match. We evaluate the branches until one succeeds.</p><h3><code>None</code> branch</h3><p>The<!-- --> <code>None</code> branch is the simplest one. We read the value at the address given by<!-- --> <code>lhs</code> (we represent each Rust variable by its address) and match it with the<!-- --> <code>None</code> constructor:</p><pre><code class="language-coq">fun γ =&gt;
+  (let* α0 := M.read γ in
+  match α0 with
+  | core.option.Option.None =&gt; M.alloc false
+  | _ =&gt; M.break_match
+  end) :
+  M (M.Val bool.t)
+</code></pre><p>If it matches, we return<!-- --> <code>false</code>. If it does not, we return the special value<!-- --> <code>M.break_match</code> to indicate that the pattern does not match.</p><h3><code>Some</code> branch</h3><p>In the<!-- --> <code>Some</code> branch, we first also read the value at the address given by<!-- --> <code>lhs</code> and match it with the<!-- --> <code>Some</code> constructor:</p><pre><code class="language-coq">fun γ =&gt;
+  (let* α0 := M.read γ in
+  match α0 with
+  | core.option.Option.Some _ =&gt;
+    let γ0_0 := γ.[&quot;Some.0&quot;] in
+    let* value := M.alloc (borrow γ0_0) in
+    let* α0 : (ref A) -&gt; (ref A) -&gt; M bool.t := M.read is_equal in
+    let* α1 : ref A := M.read value in
+    let* α2 : ref A := M.read rhs in
+    let* α3 : bool.t := M.call (α0 α1 α2) in
+    M.alloc α3
+  | _ =&gt; M.break_match
+  end) :
+  M (M.Val bool.t)
+</code></pre><p>If we are in that case, we create the value:</p><pre><code class="language-coq">let γ0_0 := γ.[&quot;Some.0&quot;] in
+</code></pre><p>with the address of the first field of the<!-- --> <code>Some</code> constructor, relative to the address of<!-- --> <code>lhs</code> given in<!-- --> <code>γ</code>. We define the operator<!-- --> <code>.[&quot;Some.0&quot;]</code> when we define the option type and generate such definitions for all user-defined enum types.</p><p>We then encapsulate the address<!-- --> <code>γ0_0</code> in a proper Rust reference:</p><pre><code class="language-coq">let* value := M.alloc (borrow γ0_0) in
+</code></pre><p>of type<!-- --> <code>ref A</code> in the original Rust code. Finally, we call the function<!-- --> <code>is_equal</code> on the two references<!-- --> <code>value</code> and<!-- --> <code>rhs</code>, with some boilerplate code to read and allocate the variables.</p><h2>General translation</h2><p>We generalize this translation to all patterns by:</p><ul><li>flattening all the or patterns <code>|</code> so that only patterns with a single choice remain,</li><li>evaluating each match branch in order with the<!-- --> <code>match_operator</code> operator,</li><li>in each branch, evaluating the inner patterns in order. This evaluation might fail at any point if the pattern does not match. In this case, we return the special value<!-- --> <code>M.break_match</code> and continue with the next branch.</li></ul><p>At least one branch should succeed as the Rust compiler checks that all cases are covered. We still have a special value<!-- --> <code>M.impossible</code> in Coq for the case where no patterns match and satisfy the type checker.</p><p>We distinguish and handle the following kind of patterns (and all their combinations):</p><ul><li>wild patterns<!-- --> <code>_</code>,</li><li>binding patterns<!-- --> <code>(ref) name</code> or<!-- --> <code>(ref) name as pattern</code> (the<!-- --> <code>ref</code> keyword is optional),</li><li>struct patterns<!-- --> <code>Name { field1: pattern1, ... }</code> or<!-- --> <code>Name(pattern1, ...)</code></li><li>tuple patterns<!-- --> <code>(pattern1, ...)</code>,</li><li>literal patterns<!-- --> <code>12</code>, <code>true</code>, ...,</li><li>slice patterns<!-- --> <code>[first, second, tail @ ..]</code>,</li><li>dereference patterns<!-- --> <code>&amp;pattern</code>.</li></ul><p>This was enough to cover all of our examples. The Rust compiler can also automatically add some<!-- --> <code>ref</code> patterns when matching on references. We do not need to handle this case as this is automatically done by the Rust compiler during its compilation to the intermediate<!-- --> <a href="https://rustc-dev-guide.rust-lang.org/thir.html">THIR</a> representation, and e directly read the THIR code.</p><h2>Conclusion</h2><p>In this blog post, we have presented how we translate Rust patterns to the proof system Coq. The difficult part is handling the<!-- --> <code>ref</code> patterns, which we do by matching in two steps: matching on the values and then computing the addresses of the sub-fields.</p><p>If you have Rust smart contracts or programs to verify, feel free to email us at<!-- --> <a href="mailto:contact@formal.land">c<!-- -->o<!-- -->n<!-- -->t<!-- -->a<!-- -->c<!-- -->t<!-- -->@<!-- -->formal<!-- -->.<!-- -->l<!-- -->a<!-- -->n<!-- -->d</a>. We will be happy to help!</p>]]></content:encoded>
+        </item>
         <item>
             <title><![CDATA[Verifying an ERC-20 smart contract in Rust]]></title>
             <link>https://formal.land/blog/2023/12/13/rust-verify-erc-20-smart-contract</link>
