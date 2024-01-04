@@ -8,13 +8,13 @@ Our tool [coq-of-rust](https://github.com/formal-land/coq-of-rust) enables forma
 
 Here, we present how we translate function bodies from Rust to Coq in an example. We also show some of the optimizations we made to reduce the size of the translation.
 
+<!-- truncate -->
+
 :::tip Purchase
 
 If you need to formally verify your Rust codebase to improve the security of your application, email us at&nbsp;[&#099;&#111;&#110;&#116;&#097;&#099;&#116;&#064;formal&#046;&#108;&#097;&#110;&#100;](mailto:contact@formal.land)!
 
 :::
-
-<!-- truncate -->
 
 ![Rust and Coq](2023-11-26/rust_and_coq.png)
 

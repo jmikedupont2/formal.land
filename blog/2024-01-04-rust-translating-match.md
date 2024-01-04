@@ -8,6 +8,8 @@ Our tool [coq-of-rust](https://github.com/formal-land/coq-of-rust) enables [form
 
 Our tool `coq-of-rust` works by translating Rust programs to the general proof system [🐓&nbsp;Coq](https://coq.inria.fr/). Here we explain how we translate[&nbsp;`match` patterns](https://doc.rust-lang.org/book/ch06-02-match.html) from Rust to Coq. The specificity of Rust patterns is to be able to match values either by value or reference.
 
+<!-- truncate -->
+
 :::tip Purchase
 
 To formally verify your Rust codebase and improve the security of your application, email us at&nbsp;[&#099;&#111;&#110;&#116;&#097;&#099;&#116;&#064;formal&#046;&#108;&#097;&#110;&#100;](mailto:contact@formal.land)! Formal verification is the only way to prevent all bugs by exploring all possible executions of your program.
@@ -19,8 +21,6 @@ To formally verify your Rust codebase and improve the security of your applicati
 This work and the development of [coq-of-rust](https://github.com/formal-land/coq-of-rust) is made possible thanks to the [Aleph Zero](https://alephzero.org/)'s Foundation, to develop an extra safe platform to build decentralized applications with formally verified smart contracts.
 
 :::
-
-<!-- truncate -->
 
 ![Rust rooster](2024-01-04/rust-rooster.png)
 

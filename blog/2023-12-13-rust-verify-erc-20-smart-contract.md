@@ -8,6 +8,8 @@ Our tool [coq-of-rust](https://github.com/formal-land/coq-of-rust) enables forma
 
 Here, we show how we formally verify an [ERC-20 smart contract](https://github.com/paritytech/ink/blob/master/integration-tests/erc20/lib.rs) written in Rust for the [Aleph Zero](https://alephzero.org/) blockchain. [ERC-20](https://en.wikipedia.org/wiki/Ethereum#ERC20) smart contracts are used to create new kinds of tokens in an existing blockchain. Examples are stablecoins such as the [💲USDT](https://tether.to/).
 
+<!-- truncate -->
+
 :::tip Purchase
 
 To formally verify your Rust codebase and improve the security of your application, email us at&nbsp;[&#099;&#111;&#110;&#116;&#097;&#099;&#116;&#064;formal&#046;&#108;&#097;&#110;&#100;](mailto:contact@formal.land)! Formal verification is the only way to prevent all bugs by exploring all possible executions of your program.
@@ -19,8 +21,6 @@ To formally verify your Rust codebase and improve the security of your applicati
 This work and the development of [coq-of-rust](https://github.com/formal-land/coq-of-rust) is made possible thanks to the [Aleph Zero](https://alephzero.org/)'s Foundation, to develop an extra safe platform to build decentralized applications with formally verified smart contracts.
 
 :::
-
-<!-- truncate -->
 
 ![Rooster verifying](2023-12-13/rooster-verifying.png)
 
