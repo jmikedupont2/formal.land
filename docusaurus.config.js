@@ -17,7 +17,7 @@ const liveChat = `<!-- Start of LiveChat (www.livechat.com) code -->
 const config = {
   title: 'Formal Land',
   // tagline: 'Formal verification for everyday-life programs',
-  tagline: 'Kill all bugs',
+  tagline: 'Prevent all bugs',
   // tagline: 'The more you are demanding, the more you need us',
   // tagline: 'Securing everyday-life programs thanks to formal verification',
   // tagline: 'Securing web3 with formal verification',
@@ -196,7 +196,7 @@ const config = {
           },
         ],
         // copyright: `Copyright © ${new Date().getFullYear()} Formal Land (Arae SARL) 🐦, Paris<br /><em>Formal verification for everyday-life programs 🏇</em>${liveChat}`,
-        copyright: `Copyright © ${new Date().getFullYear()} Formal Land (Arae SARL) 🐦, Paris<br /><em>Kill all bugs 🏇</em>${liveChat}`,
+        copyright: `Copyright © ${new Date().getFullYear()} Formal Land (Arae SARL) 🐦, Paris<br /><em>Prevent all bugs 🏇</em>${liveChat}`,
       },
       colorMode: {
         defaultMode: 'light',
