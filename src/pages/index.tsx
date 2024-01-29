@@ -91,7 +91,7 @@ function HomepageHeader() {
             {/* <p className={clsx("hero__subtitle")} style={{marginTop: 20}} title="Mathematically proven"> */}
             <p className={styles.hero__subsubtitle} style={{marginTop: 20}}>
               {/* <em><TypingText text="Formal verification for Rust, OCaml" /></em> */}
-              <em>Formal verification for <Link to="/docs/coq-of-rust/introduction">Rust</Link>, <Link to="/docs/coq-of-ocaml/introduction">OCaml</Link></em>
+              <em>We support <Link to="/docs/coq-of-rust/introduction">Rust</Link>, <Link to="/docs/coq-of-ocaml/introduction">OCaml</Link>, and more</em>
             </p>
           </div>
         </div>

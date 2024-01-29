@@ -17,7 +17,8 @@ const liveChat = `<!-- Start of LiveChat (www.livechat.com) code -->
 const config = {
   title: 'Formal Land',
   // tagline: 'Formal verification for everyday-life programs',
-  tagline: 'Prevent all bugs',
+  tagline: 'Formal verification for everyday-life applications 🏇',
+  // tagline: 'Prevent all bugs',
   // tagline: 'The more you are demanding, the more you need us',
   // tagline: 'Securing everyday-life programs thanks to formal verification',
   // tagline: 'Securing web3 with formal verification',
@@ -123,7 +124,7 @@ const config = {
         id: 'hiring',
         content:
           // 'We are hiring! 📣 See our <a href="/docs/company/careers">job offers 🌷</a>.',
-          'To purchase formal verification services, email us at <a href="mailto:&#099;&#111;&#110;&#116;&#097;&#099;&#116;&#064;formal&#046;&#108;&#097;&#110;&#100;">&#099;&#111;&#110;&#116;&#097;&#099;&#116;&#064;formal&#046;&#108;&#097;&#110;&#100;</a>! (Rust, OCaml)',
+          'For formal verification services, email us at <a href="mailto:&#099;&#111;&#110;&#116;&#097;&#099;&#116;&#064;formal&#046;&#108;&#097;&#110;&#100;">&#099;&#111;&#110;&#116;&#097;&#099;&#116;&#064;formal&#046;&#108;&#097;&#110;&#100;</a>! (Rust, OCaml)',
         backgroundColor: '#fafbfc',
         textColor: '#091E42',
         isCloseable: false,
@@ -196,7 +197,8 @@ const config = {
           },
         ],
         // copyright: `Copyright © ${new Date().getFullYear()} Formal Land (Arae SARL) 🐦, Paris<br /><em>Formal verification for everyday-life programs 🏇</em>${liveChat}`,
-        copyright: `Copyright © ${new Date().getFullYear()} Formal Land (Arae SARL) 🐦, Paris<br /><em>Prevent all bugs 🏇</em>${liveChat}`,
+        // copyright: `Copyright © ${new Date().getFullYear()} Formal Land (Arae SARL) 🐦, Paris<br /><em>Prevent all bugs 🏇</em>${liveChat}`,
+        copyright: `Copyright © ${new Date().getFullYear()} Formal Land (Arae SARL) 🐦, Paris<br /><em>Formal verification for everyday-life applications 🏇</em>${liveChat}`,
       },
       colorMode: {
         defaultMode: 'light',
