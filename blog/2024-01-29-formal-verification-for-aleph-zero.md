@@ -20,15 +20,17 @@ If you want to formally verify your codebase to improve the security of your app
 
 :::info Thanks
 
-The current development of our tool [coq-of-rust](https://github.com/formal-land/coq-of-rust), for the formal verification of Rust code, is made possible thanks to the [Aleph Zero](https://alephzero.org/)'s Foundation. The aim is to develop an extra safe platform to build decentralized applications with formally verified smart contracts.
+The current development of our tool [coq-of-rust](https://github.com/formal-land/coq-of-rust), for the formal verification of Rust code, is made possible thanks to the [Aleph Zero](https://alephzero.org/)'s Foundation and its [Ecosystem Funding Program](https://alephzero.org/ecosystem-funding-program). The aim is to develop an extra safe platform to build decentralized applications with formally verified smart contracts.
 
 :::
 
 ## What is formal verification?
 
-Formal verification is a set of techniques to check for the correctness of a program, reasoning at a symbolic level rather than executing a particular instance of the code. It relies on mathematical reasoning, checked by a dedicated program, to make sure that there are no mistakes or missing cases.
+Formal verification is a set of techniques to check for the complete correctness of a program, reasoning at a symbolic level rather than executing a particular instance of the code. By symbolic reasoning, we mean following the values of the variables by tracking their names and constraints, without necessarily giving them an example value. This is what we would do in our heads to understand a code where a variable&nbsp;`username` appears, following which functions it is given to, to know where we use the user name. The concrete user name that we consider is irrelevant, although some people prefer to think with an example.
 
-For example, we can say that the following Rust program is valid:
+In formal verification, we rely on precise mathematical reasoning to make sure that there are no mistakes or missing cases. We check this reasoning with a dedicated program ([SMT](https://en.wikipedia.org/wiki/Satisfiability_modulo_theories) solver, [Coq](https://coq.inria.fr/) proof system, ...). Indeed, as programs grow in complexity, it could be easy to forget an&nbsp;`if` branch or an error case.
+
+For example, to say that the following Rust program is valid:
 
 ```coq
 /// Return the maximum of [a] and [b]
@@ -41,14 +43,16 @@ fn get_max(a: u128, b: u128) -> u128 {
 }
 ```
 
-by reasoning on two cases:
+we reason on two cases (reasoning by disjunction):
 
 - `a > b` where&nbsp;`a` is the maximum,
-- `a <= b` where&nbsp;`b` is the maximum.
+- `a <= b` where&nbsp;`b` is the maximum,
 
-with the values of&nbsp;`a` and&nbsp;`b` being irrelevant (symbolic). This is in contrast with testing, where we would need to execute the program with all possible instances of&nbsp;`a` and&nbsp;`b` to check that the program is correct. This is infeasible in this case as the type&nbsp;`u128` is too large to be tested exhaustively.
+with the values of&nbsp;`a` and&nbsp;`b` being irrelevant (symbolic). In both cases, we can conclude that&nbsp;`get_max` returns the maximum.
 
-A program is shown correct with respect to a _formal specification_, which is a mathematical description of the expected behavior of the program expressed in a formal language. For example, we can specify the behavior of the previous program as:
+This is in contrast with testing, where we need to execute the program with all possible instances of&nbsp;`a` and&nbsp;`b` to check that the program is correct with 100% certainty. This is infeasible in this case as the type&nbsp;`u128` is too large to be tested exhaustively: there are&nbsp;`2^256` possible values for&nbsp;`a` and&nbsp;`b`, meaning `115792089237316195423570985008687907853269984665640564039457584007913129639936` possible values!
+
+A program is shown correct with respect to an expected behavior, called a _formal specification_. This is expressed in a mathematical language to be non-ambiguous. For example, we can specify the behavior of the previous program as:
 
 ```
 FORALL (a b : u128),
@@ -60,7 +64,7 @@ stating that we indeed return the maximum of&nbsp;`a` and&nbsp;`b`.
 
 When a program is formally verified, we are mathematically sure it will always follow its specifications. This is a way to eliminate all bugs, as long as we have a complete specification of what it is supposed to do or not do. This corresponds to the highest level of Evaluation Assurance Level, [EAL7](https://en.wikipedia.org/wiki/Evaluation_Assurance_Level#EAL7:_Formally_Verified_Design_and_Tested). This is used for critical applications, such as space rocket software, where a single bug can be extremely expensive (the loss of a rocket!).
 
-There are various formal verification tools, such as the proof system [Coq](https://coq.inria.fr/). The C compiler [CompCert](https://en.wikipedia.org/wiki/CompCert) is an example of large software verified in Coq. It is proven correct, in contrast to most other C compilers that contain [subtle bugs](https://users.cs.utah.edu/~regehr/papers/pldi11-preprint.pdf). CompCert is now used by Airbus to compile C programs embedded in planes.
+There are various formal verification tools, such as the proof system [Coq](https://coq.inria.fr/). The C compiler [CompCert](https://en.wikipedia.org/wiki/CompCert) is an example of large software verified in Coq. It is proven correct, in contrast to most other C compilers that contain [subtle bugs](https://users.cs.utah.edu/~regehr/papers/pldi11-preprint.pdf). CompCert is now used by Airbus to compile C programs embedded in planes&nbsp;🛫.
 
 ## Why is it such a useful tool?
 
