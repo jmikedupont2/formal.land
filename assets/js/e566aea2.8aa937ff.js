@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkformal_land=self.webpackChunkformal_land||[]).push([[7761],{7606:function(a){a.exports=JSON.parse('{"allTagsPath":"/blog/tags","slug":"/blog/tags/coq-of-hs","name":"coq-of-hs","count":1,"permalink":"/blog/tags/coq-of-hs"}')}}]);

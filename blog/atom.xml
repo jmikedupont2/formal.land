@@ -2,11 +2,51 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://formal.land/blog</id>
     <title>Formal Land Blog</title>
-    <updated>2024-02-02T00:00:00.000Z</updated>
+    <updated>2024-02-14T00:00:00.000Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://formal.land/blog"/>
     <subtitle>Formal Land Blog</subtitle>
     <icon>https://formal.land/img/land-512.png</icon>
+    <entry>
+        <title type="html"><![CDATA[Experiment on translation from Haskell to Coq]]></title>
+        <id>/2024/02/14/experiment-coq-of-hs</id>
+        <link href="https://formal.land/blog/2024/02/14/experiment-coq-of-hs"/>
+        <updated>2024-02-14T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[We present an experiment coq-of-hs that we have made on the translation of Haskell programs to the proof system Coq&nbsp;🐓. The goal is to formally verify Haskell programs to make them totally bug-free.]]></summary>
+        <content type="html"><![CDATA[<p>We present an experiment <a href="https://github.com/formal-land/coq-of-hs-experiment">coq-of-hs</a> that we have made on the translation of <a href="https://www.haskell.org/">Haskell</a> programs to the proof system <a href="https://coq.inria.fr/">Coq<!-- --> <!-- -->🐓</a>. The goal is to formally verify Haskell programs to make them totally bug-free.</p><p>Indeed, even with the use of a strict type system, there can still be bugs for properties that cannot be expressed with types. An example of such a property is the backward compatibility of an API endpoint for the new release of a web service when there has been code refactoring. Only formal verification can cover all execution cases and kinds of properties.</p><p>The code of the tool is at: <a href="https://github.com/formal-land/coq-of-hs-experiment">github.com/formal-land/coq-of-hs-experiment</a> (AGPL license)</p><p>:::tip Contact</p><p>We propose tools to make your codebase totally bug-free. Contact us at<!-- --> <a href="mailto:contact@formal.land">c<!-- -->o<!-- -->n<!-- -->t<!-- -->a<!-- -->c<!-- -->t<!-- -->@<!-- -->formal<!-- -->.<!-- -->l<!-- -->a<!-- -->n<!-- -->d</a> for more information! We offer a free audit to assess the feasibility of formal verification for your case.</p><p>:::</p><p>:::info Info</p><p>We estimate that the cost of formal verification should be 20% of the development cost. There are no reasons to still have bugs today!</p><p>:::</p><p><img src="2024-02-14/haskell_logo.svg" alt="Haskell Logo"/></p><h2>Goal of the experiment</h2><p>There are already some tools to formally verify Haskell programs:</p><ul><li><a href="https://github.com/plclub/hs-to-coq">🐓 hs-to-coq</a> translation from Haskell to Coq</li><li><a href="https://en.wikipedia.org/wiki/Liquid_Haskell">💧 Liquid Haskell</a> verification using <a href="https://en.wikipedia.org/wiki/Satisfiability_modulo_theories">SMT solvers</a></li></ul><p>In this experiment, we want to check the feasibility of translation from Haskell to Coq:</p><ul><li>👍 covering all the language without manual configuration or code changes,</li><li>👎 even if this is at the cost of a more verbose and low-level translation.</li></ul><h2>Example</h2><p>Here is an example of a Haskell function:</p><pre><code class="language-haskell">fixObvious :: (a -&gt; a) -&gt; a
+fixObvious f = f (fixObvious f)
+</code></pre><p>that <code>coq-of-hs</code> translates to this valid Coq code:</p><pre><code class="language-coq">CoFixpoint fixObvious : Val.t :=
+  (Val.Lam (fun (f : Val.t) =&gt; (Val.App f (Val.App fixObvious f)))).
+</code></pre><h2>Infrastructure</h2><p>We read the <a href="https://serokell.io/blog/haskell-to-core">Haskell Core</a> representation of Haskell using the GHC plugin system. Thus, we read the exact same code version as the one that is compiled down to assembly code by <a href="https://www.haskell.org/ghc/">GHC</a>, to take into account all compilation options.</p><p>Haskell Core is an intermediate representation of Haskell that is close to the lambda calculus and used by the Haskell compiler for various optimizations passes. Here are all the constructors of the<!-- --> <code>Expr</code> type of Haskell Core:</p><pre><code class="language-haskell">data Expr b
+  = Var   Id
+  | Lit   Literal
+  | App   (Expr b) (Arg b)
+  | Lam   b (Expr b)
+  | Let   (Bind b) (Expr b)
+  | Case  (Expr b) b Type [Alt b]
+  | Cast  (Expr b) Coercion
+  | Tick  (Tickish Id) (Expr b)
+  | Type  Type
+  | Coercion Coercion
+</code></pre><p>This paper <a href="https://repository.brynmawr.edu/cgi/viewcontent.cgi?article=1015&amp;context=compsci_pubs">System FC, as implemented in GHC</a> presents it as <a href="https://en.wikipedia.org/wiki/System_F">System F</a> plus coercions. We translate Haskell code to an untyped version of the lambda calculus in Coq, with co-induction to allow for infinite data structures:</p><pre><code class="language-coq">Module Val.
+  #[bypass_check(positivity)]
+  CoInductive t : Set :=
+  | Lit (_ : Lit.t)
+  | Con (_ : string) (_ : list t)
+  | App (_ _ : t)
+  | Lam (_ : t -&gt; t)
+  | Case (_ : t) (_ : t -&gt; list (Case.t t))
+  | Impossible.
+End Val.
+</code></pre><p>We make the translation by induction over the Haskell Core representation, and we translate each constructor to a corresponding constructor of the Coq representation. We pretty-print the Coq code directly without using an intermediate representation. We use the <a href="https://github.com/quchen/prettyprinter">prettyprinter</a> package with the two main following primitives:</p><pre><code class="language-haskell">concatNest :: [Doc ()] -&gt; Doc ()
+concatNest = group . nest 2 . vsep
+
+concatGroup :: [Doc ()] -&gt; Doc ()
+concatGroup = group . vsep
+</code></pre><p>to display a sub-term with or without indentation when splitting lines that are too long. This translation works well on all the Haskell expressions that we have tested.</p><h2>Missing features</h2><h3>Semantics</h3><p>We have not yet defined a semantics. For now, the terms that we generate in Coq are purely descriptive. We will wait to have examples of things to verify to define semantics that are practical to use.</p><h3>Type-classes</h3><p>We have not yet translated typeclasses. The Haskell Core language hides most of the typeclasses-related code. For example, it represents instances as additional function parameters for functions that have a typeclass constraints. But we still need to declare the functions corresponding to the member of the typeclasses, what we have not done yet.</p><h3>Multi-file projects</h3><p>We have not yet implemented the translation of multi-file projects. We have only tested the translation of a single-file project.</p><h3>Standard library</h3><p>Similarly to the handling of multi-file projects, we have not yet tested the translation of projects using external libraries or translating the base library of Haskell.</p><h3>Strict positivity</h3><p>We had to turn off the strict positivity condition for the definition of<!-- --> <code>Val.t</code> in Coq with:</p><pre><code class="language-coq">#[bypass_check(positivity)]
+</code></pre><p>This is for to the case:</p><pre><code class="language-coq">| Lam (_ : t -&gt; t)
+</code></pre><p>where<!-- --> <code>t</code> appears as a parameter of a function (negative position). We do not know if this causes any problem in practice, on values that correspond to well-typed Haskell programs.</p><h2>Conclusion</h2><p>We have presented an experiment on the translation of Haskell programs to Coq. If you are interested in this project, please get in touch with us at<!-- --> <a href="mailto:contact@formal.land">c<!-- -->o<!-- -->n<!-- -->t<!-- -->a<!-- -->c<!-- -->t<!-- -->@<!-- -->formal<!-- -->.<!-- -->l<!-- -->a<!-- -->n<!-- -->d</a> or go to the <a href="https://github.com/formal-land/coq-of-hs-experiment">GitHub repository</a> of the project.</p>]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[The importance of formal verification]]></title>
         <id>/2024/02/02/formal-verification-for-aleph-zero</id>
