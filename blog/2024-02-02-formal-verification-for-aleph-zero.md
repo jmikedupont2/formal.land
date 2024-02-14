@@ -10,7 +10,7 @@ In this blog post, we present what formal verification is and why this is such a
 
 <!-- truncate -->
 
-![Formal verification](2024-01-29/formal_verification.png)
+![Formal verification](2024-02-02/formal_verification.png)
 
 :::tip Contact
 
