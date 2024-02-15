@@ -208,7 +208,7 @@ const config = {
       prism: {
         theme: lightCodeTheme,
         darkTheme: darkCodeTheme,
-        additionalLanguages: ['coq', 'ocaml', 'rust', 'solidity'],
+        additionalLanguages: ['coq', 'haskell', 'ocaml', 'rust', 'solidity'],
       },
     }),
 };
