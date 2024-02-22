@@ -2,11 +2,194 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://formal.land/blog</id>
     <title>Formal Land Blog</title>
-    <updated>2024-02-14T00:00:00.000Z</updated>
+    <updated>2024-02-22T00:00:00.000Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://formal.land/blog"/>
     <subtitle>Formal Land Blog</subtitle>
     <icon>https://formal.land/img/land-512.png</icon>
+    <entry>
+        <title type="html"><![CDATA[Translating Go to Coq, part 1]]></title>
+        <id>/2024/02/22/journey-coq-of-go</id>
+        <link href="https://formal.land/blog/2024/02/22/journey-coq-of-go"/>
+        <updated>2024-02-22T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[In this blog post, we present our development steps to build a tool to translate Go programs to the proof system Coq.]]></summary>
+        <content type="html"><![CDATA[<p>In this blog post, we present our development steps to build a tool to translate Go programs to the proof system Coq.</p><p>The goal is to formally verify Go programs to make them totally bug-free. It is actually possible to make a program totally bug-free, as <a href="https://en.wikipedia.org/wiki/Formal_verification">formal verification</a> can cover all execution cases and kinds of properties thanks to the use of mathematical methods. This corresponds to the highest level of the <a href="https://en.wikipedia.org/wiki/Evaluation_Assurance_Level">Evaluation Assurance Levels</a> used for critical applications, such as the space industry.</p><p>All the code of our work is available on GitHub at <a href="https://github.com/formal-land/coq-of-go-experiment">github.com/formal-land/coq-of-go-experiment</a>.</p><h2>Introduction</h2><p>We believe that there are not yet a lot of formal verification tools for Go. We can cite <a href="https://github.com/tchajed/goose">Goose</a>, which is working by translation from Go to the proof system Coq. We will follow a similar approach, translating the Go language to our favorite proof system Coq. In contrast to Goose, we plan to support the whole Go language, even at the expense of the simplicity of the translation.</p><p>For that, we target the translation of the <a href="https://pkg.go.dev/golang.org/x/tools/go/ssa">SSA form of Go</a> of Go instead of the <a href="https://pkg.go.dev/go/ast">Go AST</a>. The SSA form is a more low-level representation of Go, so we hope to capture the semantics of the whole Go language more easily. This should be at the expense of the simplicity of the generated translation, but we hope that having full language support outweighs this.</p><p>Go is an interesting target as:</p><ul><li>this is quite a popular language,</li><li>it is focusing on simplicity, with a reduced set of language features,</li><li>a lot of critical backend applications are written in Go, including for very large companies (Google, Netflix, Uber, Twitch, etc.).</li></ul><p>Among interesting properties that we can verify are:</p><ul><li>the absence of reachable <code>panic</code> in the code,</li><li>the absence of race conditions or deadlocks,</li><li>the backward compatibility from release to release, for parts of the code whose behavior is not supposed to change,</li><li>the strict application of business rules.</li></ul><p>:::tip Contact</p><p>You can <a href="https://twitter.com/LandFoobar">follow us on X</a> to get our updates. We propose tools and services to make your codebase totally bug-free. Contact us at<!-- --> <a href="mailto:contact@formal.land">c<!-- -->o<!-- -->n<!-- -->t<!-- -->a<!-- -->c<!-- -->t<!-- -->@<!-- -->formal<!-- -->.<!-- -->l<!-- -->a<!-- -->n<!-- -->d</a> to chat! We offer a free audit to assess the feasibility of formal verification on your case.</p><p>:::</p><p>:::note Goal</p><p>Our company goal is to make formal verification accessible to all projects, reducing its cost to<!-- --> <!-- -->20% of the development cost. There should be no reason to have bugs in end-user products!</p><p>:::</p><p><img src="2024-02-22/mole_rooster.webp" alt="Mole and Rooster"/></p><h2>First target</h2><p>Our first target is to achieve the formal verification <em>including all the dependencies</em> of the hello world program:</p><pre><code class="language-go">package main
+
+import &quot;fmt&quot;
+
+func main() {
+    fmt.Println(&quot;Hello, World!&quot;)
+}
+</code></pre><p>What we want to show about this code is that it does a single and only thing: outputting the string &quot;Hello, World!&quot; to the standard output. Its only dependency is the <code>fmt</code> package, but when we look at the transitive dependencies of this package:</p><pre><code class="language-sh">go list -f &#x27;{{ .Deps }}&#x27; fmt
+</code></pre><p>we get around forty packages:</p><pre><code>errors
+internal/abi
+internal/bytealg
+internal/coverage/rtcov
+internal/cpu
+internal/fmtsort
+internal/goarch
+internal/godebugs
+internal/goexperiment
+internal/goos
+internal/itoa
+internal/oserror
+internal/poll
+internal/race
+internal/reflectlite
+internal/safefilepath
+internal/syscall/execenv
+internal/syscall/unix
+internal/testlog
+internal/unsafeheader
+io
+io/fs
+math
+math/bits
+os
+path
+reflect
+runtime
+runtime/internal/atomic
+runtime/internal/math
+runtime/internal/sys
+runtime/internal/syscall
+sort
+strconv
+sync
+sync/atomic
+syscall
+time
+unicode
+unicode/utf8
+unsafe
+</code></pre><p>We will need to translate all these packages to meaningful Coq code.</p><h2>The start</h2><p>We made the <code>coq-of-go</code> tool, with everything in a single file <a href="https://github.com/formal-land/coq-of-go-experiment/blob/main/main.go">main.go</a> for now. We retrieve the SSA form of a Go package provided as a command line parameter (code without the error handling):</p><pre><code class="language-go">func main() {
+    packageToTranslate := os.Args[1]
+    cfg := &amp;packages.Config{Mode: packages.LoadSyntax}
+    initial, _ := packages.Load(cfg, packageToTranslate)
+    _, pkgs := ssautil.Packages(initial, 0)
+    pkgs[0].Build()
+    members := pkgs[0].Members
+</code></pre><p>:::note SSA form</p><p>The <a href="https://en.wikipedia.org/wiki/Static_single-assignment_form">SSA form</a> of a program is generally used internally by compilers to have a simple representation to work on. The <a href="https://llvm.org/">LLVM</a> language is such an example. In SSA, each variable is assigned exactly once and the control flow is explicit, with jumps or conditional jumps to labels. There are no <code>for</code> loops, <code>if</code> statements, or non-primitive expressions.</p><p>:::</p><p>Then we iterate over all the SSA <code>members</code>, and directly print the corresponding Coq code to the standard output. We do not use an intermediate representation or make intermediate passes. We do not even do pretty-printing (splitting lines that are too long at the right place, and introducing indentation)! This should not be necessary as the SSA code cannot nest sub-expressions or statements. We still try to print a readable Coq code, as it will be used in the proofs.</p><p>There are four kinds of SSA members:</p><ul><li>named constants,</li><li>globals,</li><li>types,</li><li>functions.</li></ul><p>Named constants and globals are similar, and are for top-level variables whose value is either known at compile-time or computed at the program&#x27;s init. Types are for type definitions. We will focus on functions, as this is where the code is.</p><h2>Functions</h2><p>The SSA functions in Go are described by the type <a href="https://pkg.go.dev/golang.org/x/tools/go/ssa#Function"><code>ssa.Function</code></a>:</p><pre><code class="language-go">type Function struct {
+    Signature *types.Signature
+
+    // source information
+    Synthetic string // provenance of synthetic function; &quot;&quot; for true source functions
+
+    Pkg  *Package // enclosing package; nil for shared funcs (wrappers and error.Error)
+    Prog *Program // enclosing program
+
+    Params    []*Parameter  // function parameters; for methods, includes receiver
+    FreeVars  []*FreeVar    // free variables whose values must be supplied by closure
+    Locals    []*Alloc      // frame-allocated variables of this function
+    Blocks    []*BasicBlock // basic blocks of the function; nil =&gt; external
+    Recover   *BasicBlock   // optional; control transfers here after recovered panic
+    AnonFuncs []*Function   // anonymous functions directly beneath this one
+    // contains filtered or unexported fields
+}
+</code></pre><p>The main part of interest for us is<!-- --> <code>Blocks</code>. A block is a sequence of instructions, and the control flow is explicit. The last instruction of a block is a jump to another block, or a return. The first instructions of a block can be the special <code>Phi</code> instruction, which is used to merge control flow from different branches.</p><p>We decided to write a first version to see what the SSA code of Go looks like when printed in Coq, without thinking about generating a well-typed code. This looks like this:</p><pre><code class="language-coq">with MakeUint64 (α : list Val.t) : M (list Val.t) :=
+  M.Thunk (
+  match α with
+  | [x] =&gt;
+    M.Thunk (M.EvalBody [(0,
+      let* &quot;t0&quot; := Instr.BinOp x &quot;&lt;&quot; (Val.Lit (Lit.Int 9223372036854775808)) in
+      Instr.If (Register.read &quot;t0&quot;) 1 2
+    );
+    (1,
+      let* &quot;t1&quot; := Instr.Convert x in
+      let* &quot;t2&quot; := Instr.ChangeType (Register.read &quot;t1&quot;) in
+      let* &quot;t3&quot; := Instr.MakeInterface (Register.read &quot;t2&quot;) in
+      M.Return [(Register.read &quot;t3&quot;)]
+    );
+    (2,
+      let* &quot;t4&quot; := Instr.Alloc (* complit *) Alloc.Local &quot;*go/constant.intVal&quot; in
+      let* &quot;t5&quot; := Instr.FieldAddr (Register.read &quot;t4&quot;) 0 in
+      let* &quot;t6&quot; := Instr.Call (CallKind.Function (newInt [])) in
+      let* &quot;t7&quot; := Instr.Call (CallKind.Function (TODO_method [(Register.read &quot;t6&quot;); x])) in
+      do* Instr.Store (Register.read &quot;t5&quot;) (Register.read &quot;t7&quot;) in
+      let* &quot;t8&quot; := Instr.UnOp &quot;*&quot; (Register.read &quot;t4&quot;) in
+      let* &quot;t9&quot; := Instr.MakeInterface (Register.read &quot;t8&quot;) in
+      M.Return [(Register.read &quot;t9&quot;)]
+    )])
+  | _ =&gt; M.Thunk (M.EvalBody [])
+  end)
+</code></pre><p>for a source Go code (from the <a href="https://pkg.go.dev/go/constant">go/constant</a> package):</p><pre><code class="language-go">// MakeUint64 returns the [Int] value for x.
+func MakeUint64(x uint64) Value {
+    if x &lt; 1&lt;&lt;63 {
+        return int64Val(int64(x))
+    }
+    return intVal{newInt().SetUint64(x)}
+}
+</code></pre><p>There are three blocks of code, labeled with <code>0</code>, <code>1</code>, and <code>2</code>. The first block ends with a conditional jump <code>If</code> corresponding to the <code>if</code> statement in the Go code. The following blocks are corresponding to the two possible branches of the <code>if</code> statement. They both end with a <code>Return</code> instruction, corresponding to the <code>return</code> statement in the Go code. They run various primitive instructions that we have translated as we can.</p><p>The generated Coq code is still readable but more verbose than the original Go code. We will later develop proof techniques using simulations to enable the user to define equivalent but simpler versions of the translation. Being able to define simulations of an imperative program is also important for the proofs, as we can rewrite the code in functional style to make it easier to reason about.</p><h2>Type-checking</h2><p>From there, a second step is to have a generated code that type-checks, forgetting about making a code with sound semantics for now. We generate the various Coq definitions that are needed in a header of the generated code, using axioms for all the definitions. For example, for the allocations we do:</p><pre><code class="language-coq">Module Alloc.
+  Inductive t : Set :=
+  | Heap
+  | Local.
+End Alloc.
+
+Module Instr.
+  Parameter Alloc : Alloc.t -&gt; string -&gt; M Val.t.
+</code></pre><p>The <code>Inductive</code> keyword in Coq defines a type with two constructors <code>Heap</code> and <code>Local</code>. The <code>Parameter</code> keyword defines an axiomatized definition, where we only provide the type but not the definition itself. The <code>Instr.Alloc</code> instruction takes as parameters an allocation mode <code>Alloc.t</code> and a string and returns an <code>M Val.t</code> value.</p><h3>Representation of values</h3><p>We make the choice to remove the types while doing the translation, as the type system of Go is probably incompatible with the one of Coq in many ways. We thus translate everything to a single type <code>Val.t</code> in Coq to represent all kinds of possible Go values. The downside of this approach is that is makes the generated code less readable and less safe, as types are useful to track the correct use of values.</p><p>For now, we define the<!-- --> <code>Val.t</code> type as:</p><pre><code class="language-coq">Module Val.
+  Inductive t : Set :=
+  | Lit (_ : Lit.t)
+  | Tuple (_ : list t).
+End Val.
+</code></pre><p>with the literals<!-- --> <code>Lit.t</code> as:</p><pre><code class="language-coq">Module Lit.
+  Inductive t : Set :=
+  | Bool (_ : bool)
+  | Int (_ : Z)
+  | Float (_ : Rational)
+  | Complex (_ _ : Rational)
+  | String (_ : string)
+  | Nil.
+End Lit.
+</code></pre><p>We plan to refine this type and add more cases as we improve <code>coq-of-go</code>. Structures, pointers, and closures are missing for now.</p><h3>Monadic style</h3><p>In order to represent the side-effects of the Go code, we use a <a href="https://en.wikipedia.org/wiki/Monad_(functional_programming)">monadic style</a>. This is a standard approach to represent side-effects like mutations, exceptions, or non-termination in a purely function language such as Coq. We choose to use:</p><ul><li>A free monad, where all the primitives are constructor of the inductive type<!-- --> <code>M</code> of the monad. This simplifies the manipulation of the monad by allowing to compute on it and by delegating the actual implementation of the monadic primitives for later.</li><li>A co-inductive type, to allow potentially non-terminating programs. Co-inductive types are like lazy definitions in Haskell where it is possible to make an infinite list for example, as long as only a finite number of elements are consumed.</li></ul><p>In that sense, we follow the approach in the paper<!-- --> <a href="https://cambium.inria.fr/~eyoon/paper/vir.pdf">Modular, Compositional, and Executable Formal Semantics for LLVM IR</a>, that is using a co-inductive free monad (interaction tree) to formalize a reasonable subset of the LLVM language that is also an SSA representation but with more low-level instructions than Go.</p><p>Our definition for<!-- --> <code>M</code> for now is:</p><pre><code class="language-coq">Module M.
+  CoInductive t (A : Set) : Set :=
+  | Return (_ : A)
+  | Bind {B : Set} (_ : t B) (_ : B -&gt; t A)
+  | Thunk (_ : t A)
+  | EvalBody (_ : list (Z * t A)).
+  Arguments Return {A}.
+  Arguments Bind {A B}.
+  Arguments Thunk {A}.
+  Arguments EvalBody {A}.
+End M.
+Definition M : Set -&gt; Set := M.t.
+</code></pre><p>We define all the functions that we translate as mutually recursive with the <code>CoFixpoint ... with ...</code> keyword of Coq. Thus, we do not have to preserve the ordering of definitions that is required by Coq or care for recursive or mutually recursive functions in Go.</p><p>However, we did not achieve to make the type-checker of Coq happy for our<!-- --> <code>CoFixpoint</code> as many definitions are axiomatized, and the type-checker of Coq wants their definitions to know if they produce co-inductive constructors. So, for now, we admit this step by disabling the termination checker with this flag:</p><pre><code class="language-coq">Local Unset Guard Checking.
+</code></pre><h2>Next</h2><p>When we translate our hello world example we get the Coq code:</p><pre><code class="language-coq">CoFixpoint Main (α : list Val.t) : M (list Val.t) :=
+  M.Thunk (
+  match α with
+  | [] =&gt;
+    M.Thunk (M.EvalBody [(0,
+      let* &quot;t0&quot; := Instr.Alloc (* varargs *) Alloc.Heap &quot;*[1]any&quot; in
+      let* &quot;t1&quot; := Instr.IndexAddr (Register.read &quot;t0&quot;) (Val.Lit (Lit.Int 0)) in
+      let* &quot;t2&quot; := Instr.MakeInterface (Val.Lit (Lit.String &quot;Hello, World!&quot;)) in
+      do* Instr.Store (Register.read &quot;t1&quot;) (Register.read &quot;t2&quot;) in
+      let* &quot;t3&quot; := Instr.Slice (Register.read &quot;t0&quot;) None None in
+      let* &quot;t4&quot; := Instr.Call (CallKind.Function (fmt.Println [(Register.read &quot;t3&quot;)])) in
+      M.Return []
+    )])
+  | _ =&gt; M.Thunk (M.EvalBody [])
+  end)
+
+with init (α : list Val.t) : M (list Val.t) :=
+  M.Thunk (
+  match α with
+  | [] =&gt;
+    M.Thunk (M.EvalBody [(0,
+      let* &quot;t0&quot; := Instr.UnOp &quot;*&quot; (Register.read &quot;init$guard&quot;) in
+      Instr.If (Register.read &quot;t0&quot;) 2 1
+    );
+    (1,
+      do* Instr.Store (Register.read &quot;init$guard&quot;) (Val.Lit (Lit.Bool true)) in
+      let* &quot;t1&quot; := Instr.Call (CallKind.Function (fmt.init [])) in
+      Instr.Jump 2
+    );
+    (2,
+      M.Return []
+    )])
+  | _ =&gt; M.Thunk (M.EvalBody [])
+  end).
+</code></pre><p>The<!-- --> <code>init</code> function, which is automatically generated by the Go compiler to initialize global variables, does not do much here. It checks whether it was already called or not reading the<!-- --> <code>init$guard</code> variable, and if not, it calls the<!-- --> <code>fmt.init</code> function. The<!-- --> <code>Main</code> function is the one that we are interested in. It allocates a variable to store the string &quot;Hello, World!&quot;, and then calls the<!-- --> <code>fmt.Println</code> function to print it.</p><p>From there, to continue the project we have two possibilities:</p><ol><li>Give actual definitions to each primitive instruction that is used in this example (for now, everything is axiomatized).</li><li>Translate all the transitive dependencies of the hello world program to Coq, and make sure that we can compile everything together.</li></ol><p>For the next step, we choose to follow the second possibility as we are more confident in being able to define the semantics of the instructions, which is purely done on the Coq side, than in being able to use the Go compiler&#x27;s APIs to retrieve the definitions of all the dependencies and related them together.</p><h2>Conclusion</h2><p>We have presented the beginning of our journey to translate Go programs to Coq, to build a formal verification tool for Go. The translation type-checks on the few examples we have tried but has no semantics. We will follow by handling the translation of dependencies of a package.</p><p>If you are interested in this project, please contact us at<!-- --> <a href="mailto:contact@formal.land">c<!-- -->o<!-- -->n<!-- -->t<!-- -->a<!-- -->c<!-- -->t<!-- -->@<!-- -->formal<!-- -->.<!-- -->l<!-- -->a<!-- -->n<!-- -->d</a> or go to our <a href="https://github.com/formal-land/coq-of-go-experiment">GitHub repository</a>.</p>]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Experiment on translation from Haskell to Coq]]></title>
         <id>/2024/02/14/experiment-coq-of-hs</id>

@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkformal_land=self.webpackChunkformal_land||[]).push([[5666],{210:function(o){o.exports=JSON.parse('{"allTagsPath":"/blog/tags","slug":"/blog/tags/coq-of-go","name":"coq-of-go","count":1,"permalink":"/blog/tags/coq-of-go"}')}}]);
