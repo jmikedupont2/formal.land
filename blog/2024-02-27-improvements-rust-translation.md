@@ -106,9 +106,7 @@ This is for some cases of expressions [rustc_middle::thir::ExprKind::ZstLiteral]
 
 ```rust
 forwarded_impl! {
-    // highlight-start
-    (T), Reverse<T>, Reverse
-    // highlight-end
+    (T), Reverse<T>, Reverse // Here is the error
 }
 ```
 
@@ -124,9 +122,8 @@ where
         D: Deserializer<'de>,
     {
       Deserialize::deserialize(deserializer).map(
-          // highlight-start
+          // Here is the error:
           Wrapping
-          // highlight-end
       )
     }
 }
@@ -161,9 +158,8 @@ Module de.
     Module  Error.
     Section Error.
       Record t : Set := {
-        // highlight-start
+        (* Here is the error: *)
         err : ltac:(serde.de.value.ErrorImpl);
-        // highlight-end
       }.
 
       (* 180.000 more lines! *)
