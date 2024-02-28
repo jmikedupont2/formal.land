@@ -1,8 +1,8 @@
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
 
-const lightCodeTheme = require('prism-react-renderer/themes/github');
-const darkCodeTheme = require('prism-react-renderer/themes/dracula');
+import lightCodeTheme from 'prism-react-renderer/themes/github';
+import darkCodeTheme from 'prism-react-renderer/themes/dracula';
 
 const liveChat = `<!-- Start of LiveChat (www.livechat.com) code -->
 <script>
@@ -208,7 +208,16 @@ const config = {
       prism: {
         theme: lightCodeTheme,
         darkTheme: darkCodeTheme,
-        additionalLanguages: ['coq', 'haskell', 'ocaml', 'rust', 'solidity'],
+        additionalLanguages: [
+          'bash',
+          'coq',
+          'diff',
+          'haskell',
+          'json',
+          'ocaml',
+          'rust',
+          'solidity',
+        ],
       },
     }),
 };
