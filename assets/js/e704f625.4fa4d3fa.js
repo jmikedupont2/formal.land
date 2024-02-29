@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkformal_land=self.webpackChunkformal_land||[]).push([[2667],{306:function(o){o.exports=JSON.parse('{"allTagsPath":"/blog/tags","slug":"/blog/tags/coq-tezos-of-ocaml","name":"coq-tezos-of-ocaml","count":1,"permalink":"/blog/tags/coq-tezos-of-ocaml"}')}}]);

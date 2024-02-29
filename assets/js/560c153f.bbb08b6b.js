@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkformal_land=self.webpackChunkformal_land||[]).push([[423],{5515:function(a){a.exports=JSON.parse('{"allTagsPath":"/blog/tags","slug":"/blog/tags/erc-20","name":"ERC-20","count":1,"permalink":"/blog/tags/erc-20"}')}}]);

@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkformal_land=self.webpackChunkformal_land||[]).push([[2094],{1012:l=>{l.exports=JSON.parse('{"label":"Aleph-Zero","permalink":"/blog/tags/aleph-zero","allTagsPath":"/blog/tags","count":3,"unlisted":false}')}}]);

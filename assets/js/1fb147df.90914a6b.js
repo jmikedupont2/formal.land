@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkformal_land=self.webpackChunkformal_land||[]).push([[2644],{7416:a=>{a.exports=JSON.parse('{"label":"ocaml","permalink":"/blog/tags/ocaml","allTagsPath":"/blog/tags","count":1,"unlisted":false}')}}]);

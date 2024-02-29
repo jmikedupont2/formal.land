@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkformal_land=self.webpackChunkformal_land||[]).push([[8530],{9387:l=>{l.exports=JSON.parse('{"label":"Haskell","permalink":"/blog/tags/haskell","allTagsPath":"/blog/tags","count":1,"unlisted":false}')}}]);

@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkformal_land=self.webpackChunkformal_land||[]).push([[9611],{3599:a=>{a.exports=JSON.parse('{"label":"coq-of-go","permalink":"/blog/tags/coq-of-go","allTagsPath":"/blog/tags","count":1,"unlisted":false}')}}]);

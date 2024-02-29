@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkformal_land=self.webpackChunkformal_land||[]).push([[7224],{6100:l=>{l.exports=JSON.parse('{"permalink":"/blog/tags/coq-of-ocaml","page":1,"postsPerPage":10,"totalPages":1,"totalCount":6,"blogDescription":"Blog","blogTitle":"Blog"}')}}]);

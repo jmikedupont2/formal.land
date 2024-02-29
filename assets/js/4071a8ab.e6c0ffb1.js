@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkformal_land=self.webpackChunkformal_land||[]).push([[4497],{6006:a=>{a.exports=JSON.parse('{"label":"Tezos","permalink":"/blog/tags/tezos","allTagsPath":"/blog/tags","count":4,"unlisted":false}')}}]);

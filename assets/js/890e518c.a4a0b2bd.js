@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkformal_land=self.webpackChunkformal_land||[]).push([[574],{1632:a=>{a.exports=JSON.parse('{"label":"meetup","permalink":"/blog/tags/meetup","allTagsPath":"/blog/tags","count":1,"unlisted":false}')}}]);
