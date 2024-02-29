@@ -6,7 +6,7 @@
  */
 import React from 'react';
 import clsx from 'clsx';
-import useThemeContext from '@theme/hooks/useThemeContext';
+// import useThemeContext from '@theme/hooks/useThemeContext';
 import styles from './HomepageFeatures.module.css';
 
 type FeatureItem = {
@@ -78,7 +78,8 @@ const FeatureList: FeatureItem[] = [
 ];
 
 function Feature({title, image, imageNight, description}: FeatureItem) {
-  const { isDarkTheme } = useThemeContext();
+  // const { isDarkTheme } = useThemeContext();
+  const isDarkTheme = false;
 
   return (
     <div className={clsx('col col--4')}>
