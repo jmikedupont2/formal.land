@@ -13,6 +13,12 @@ We will present how we plan to improve our tool to address these limitations.
 
 <!-- truncate -->
 
+:::info
+
+- Next post: [Improvements in the Rust translation to Coq, part 2](/blog/2024/03/08/improvements-rust-translation-part-2)
+
+:::
+
 ## Introduction
 
 As emphasized in the [recent report from the White House](https://www.whitehouse.gov/wp-content/uploads/2024/02/Final-ONCD-Technical-Report.pdf), memory safety and formal verification are keys to ensure secure and correct software. Rust provides memory safety and we provide formal verification on top of it with `coq-of-rust`.
