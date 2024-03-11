@@ -15,6 +15,7 @@ With this new translation strategy, to support more Rust code, we want:
 
 :::info
 
+- Next post: [Improvements in the Rust translation to Coq, part 3](/blog/2024/03/09/improvements-rust-translation-part-3)
 - Previous post: [Improvements in the Rust translation to Coq, part 1](/blog/2024/02/29/improvements-rust-translation)
 
 :::

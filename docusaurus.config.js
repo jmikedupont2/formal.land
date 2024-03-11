@@ -149,7 +149,7 @@ const config = {
         id: 'hiring',
         content:
           // 'We are hiring! 📣 See our <a href="/docs/company/careers">job offers 🌷</a>.',
-          'For formal verification services, email us at <a href="mailto:&#099;&#111;&#110;&#116;&#097;&#099;&#116;&#064;formal&#046;&#108;&#097;&#110;&#100;">&#099;&#111;&#110;&#116;&#097;&#099;&#116;&#064;formal&#046;&#108;&#097;&#110;&#100;</a>!',
+          'For formal verification services, email us at <a href="mailto:&#099;&#111;&#110;&#116;&#097;&#099;&#116;&#064;formal&#046;&#108;&#097;&#110;&#100;">&#099;&#111;&#110;&#116;&#097;&#099;&#116;&#064;formal&#046;&#108;&#097;&#110;&#100;</a>&nbsp;💌&nbsp;!',
         backgroundColor: '#fafbfc',
         textColor: '#091E42',
         isCloseable: false,
