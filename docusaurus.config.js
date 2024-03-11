@@ -1,6 +1,9 @@
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
 
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
+
 const PrismReactRender = require('prism-react-renderer');
 
 const liveChat = `<!-- Start of LiveChat (www.livechat.com) code -->
@@ -48,12 +51,25 @@ const config = {
 */
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
-          remarkPlugins: [require('mdx-mermaid')],
+          remarkPlugins: [
+            require('mdx-mermaid'),
+            remarkMath,
+          ],
+          rehypePlugins: [
+            rehypeKatex,
+          ],
           // Please change this to your repo.
           // editUrl: 'https://github.com/facebook/docusaurus/edit/main/website/',
         },
         blog: {
           showReadingTime: true,
+          remarkPlugins: [
+            require('mdx-mermaid'),
+            remarkMath,
+          ],
+          rehypePlugins: [
+            rehypeKatex,
+          ],
           // Please change this to your repo.
           // editUrl:
           //   'https://github.com/facebook/docusaurus/edit/main/website/blog/',
@@ -63,6 +79,16 @@ const config = {
         },
       }),
     ],
+  ],
+
+  stylesheets: [
+    {
+      href: 'https://cdn.jsdelivr.net/npm/katex@0.13.24/dist/katex.min.css',
+      type: 'text/css',
+      integrity:
+        'sha384-odtC+0UGzzFL/6PNoE8rX/SPcQDXBJ+uRepguP4QkPCm2LBxH3FA3y+fKSiJ+AmM',
+      crossorigin: 'anonymous',
+    },
   ],
 
   plugins: [
