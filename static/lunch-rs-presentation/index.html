@@ -1,0 +1,505 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>Formal Land - Formal verification of Solidity</title>
+
+		<link rel="stylesheet" href="dist/reset.css">
+		<link rel="stylesheet" href="dist/theme/white.css">
+		<link rel="stylesheet" href="dist/reveal.css">
+
+		<link rel="shortcut icon" type="image/jpg" href="https://formal.land/img/icons/land.png" />
+
+		<!-- Theme used for syntax highlighted code -->
+		<link rel="stylesheet" href="plugin/highlight/monokai.css">
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				<section data-markdown>
+					<script type="text/template">
+						# `coq-of-rust`
+						<img src="https://formal.land/img/icons/land.png" alt="logo" width="200" />
+
+						> Formal verification for Rust 🦀
+
+						<small>[https://github.com/formal-land/coq-of-rust](https://github.com/formal-land/coq-of-rust)</small>
+					</script>
+				</section>
+				<section data-markdown>
+					<script type="text/template">
+						## Formal Land
+
+						* formal verification company
+						* languages: OCaml, Rust
+						* formal verification as a service
+
+						[https://formal.land/](https://formal.land/)
+					</script>
+				</section>
+				<section data-markdown>
+					<script type="text/template">
+						## What is it
+
+						* Formal verification tool for Rust
+						* By translation to the proof system [Coq](https://coq.inria.fr/)
+						* Open source: [coq-of-rust](https://github.com/formal-land/coq-of-rust)
+					</script>
+				</section>
+				<section data-markdown>
+					<script type="text/template">
+						## Formal verification
+
+						Using mathematical methods to prove the absence of bugs in a program.
+					</script>
+				</section>
+				<section data-markdown>
+					<script type="text/template">
+						## Rust guarantees
+
+						* type-safety
+						* memory-safety
+						* no memory races
+					</script>
+				</section>
+				<section data-markdown>
+					<script type="text/template">
+						## Example
+
+						```rust
+fn get_at_index(
+	vector: Vec<i32>,
+	index: usize
+) -> Option<i32> {
+	if index <= vector.len() {
+			return Some(vector[index]);
+	}
+	
+	None
+}
+						```
+
+						* panic if `index` is `vector.len()`
+						* not detected by the compiler
+					</script>
+				</section>
+				<section data-markdown>
+					<script type="text/template">
+						## Solutions
+
+						* Forbid panics?
+						* Maybe this is intentional (business rules)
+					</script>
+				</section>
+				<section data-markdown>
+					<script type="text/template">
+						## Solutions
+
+						* unit-tests
+						* fuzzing
+
+						Very good but not 100% reliable.
+					</script>
+				</section>
+				<section data-markdown>
+					<script type="text/template">
+						## Formal verification
+
+						* like type-system, 100% of cases
+						* any kinds of properties
+						* for critical code
+					</script>
+				</section>
+				<section data-markdown>
+					<script type="text/template">
+						## How
+
+						* symbolic execution
+						* induction (0, n+1)
+					</script>
+				</section>
+				<section data-markdown>
+					<script type="text/template">
+						## Properties
+
+						* no panics / dead-locks
+						* backward compatibility for new releases
+						* custom business rules
+						* absence of classes of attacks
+					</script>
+				</section>
+				<section data-markdown>
+					<script type="text/template">
+						## Applications
+
+						* hardware
+						* planes / automotive
+						* medical software
+						* banking applications
+					</script>
+				</section>
+				<section data-markdown>
+					<script type="text/template">
+						## `coq-of-rust`
+
+						1. translation of the Rust code to Coq
+						2. specifications in Coq
+						3. proofs that specifications are always valid
+					</script>
+				</section>
+				<section data-markdown>
+					<script type="text/template">
+						<img src="get_at_index.png" width="600" /><br />
+					</script>
+				</section>
+				<section data-markdown>
+					<script type="text/template">
+						## Original code
+
+						```rust
+fn get_at_index(
+	vector: Vec<i32>,
+	index: usize
+) -> Option<i32> {
+	if index <= vector.len() {
+			return Some(vector[index]);
+	}
+	
+	None
+}
+						```
+					</script>
+				</section>
+				<section data-markdown>
+					<script type="text/template">
+						## Coq Translation
+
+						* rather complex
+						* explicit the low-level operations of Rust
+					</script>
+				</section>
+				<section data-markdown>
+					<script type="text/template">
+						## Strengths
+
+						* handle a large variety of Rust code
+						* Coq can handle large proofs
+					</script>
+				</section>
+				<section data-markdown>
+					<script type="text/template">
+						## Coq proof system
+
+						* a purely functional language
+						* a specification language
+						* a proof language (verified)
+					</script>
+				</section>
+				<section data-markdown>
+					<script type="text/template">
+						## Example
+
+						```coq
+Inductive nat : Set :=
+| O : nat
+| S : nat -> nat.
+
+Fixpoint add n m :=
+  match n with
+  | 0 => m
+  | S p => S (add p m)
+  end.
+
+Lemma plus_n_O : forall n:nat, n = add n 0.
+Proof.
+  intro n; induction n; simpl; auto.
+Qed.
+						```
+					</script>
+				</section>
+				<section data-markdown>
+					<script type="text/template">
+						## Example
+
+						```coq
+vector: example.Vec.t example.i32.t
+index: example.usize.t
+State, Address: Set
+H: State.Trait State Address
+state: State
+env: Value.t
+--------------------------------------------------------
+1/1
+{{env, state |
+	code.example.get_at_index [] [
+		[φ vector; φ index] ⇓
+	inl (φ (simulations.example.get_at_index
+		vector index))
+| state}}
+						```
+					</script>
+				</section>
+				<section data-markdown>
+					<script type="text/template">
+						## Coq 🐓
+
+						* very expressive (any kind of maths)
+						* macro system (tactics)
+						* automated proofs (SMT solvers)
+					</script>
+				</section>
+				<section data-markdown>
+					<script type="text/template">
+						## Translation: how
+
+						Command: `cargo coq-of-rust`
+					</script>
+				</section>
+				<section data-markdown>
+					<script type="text/template">
+						## Translation: how
+
+						Plugging to the Rust compiler:
+
+						1. syntax tree
+						2. HIR: naming
+						3. [THIR](https://doc.rust-lang.org/nightly/nightly-rustc/rustc_middle/thir/enum.ExprKind.html): typing <= here
+						4. MIR: borrow-checker
+					</script>
+				</section>
+				<section data-markdown>
+					<script type="text/template">
+						## Translation: how
+
+						1. translation to our own syntax tree
+						2. wrapping everything into a monad
+						3. pretty-printing to Coq
+					</script>
+				</section>
+				<section data-markdown>
+					<script type="text/template">
+						## In Coq: semantics
+
+						* values are untyped
+						* types are marker to find trait methods
+						* no borrow-checker
+						* everything is in a monad (side-effects)
+					</script>
+				</section>
+				<section data-markdown>
+					<script type="text/template">
+						## Values
+
+						```coq
+						Inductive t : Set :=
+						| Bool : bool -> t
+						| Integer : Integer.t -> Z -> t
+						| UnicodeChar : Z -> t
+						| String : string -> t
+						| Tuple : list t -> t
+						| Array : list t -> t
+						| StructRecord : string -> list (string * t) -> t
+						| StructTuple : string -> list t -> t
+						| Pointer : Pointer.t t -> t
+						| Closure : {'(t, M) : Set * Set @ list t -> M} -> t
+						| Error (message : string)
+						| DeclaredButUndefined.
+						```
+					</script>
+				</section>
+				<section data-markdown>
+					<script type="text/template">
+						## Monad
+
+						* state mutations
+						* panics
+						* `return`, `break`, `continue`
+						* loops
+						* trait instance resolving
+						* IOs
+					</script>
+				</section>
+				<section data-markdown>
+					<script type="text/template">
+						## Monad
+
+						```coq
+						Inductive t (A : Set) : Set :=
+						| Pure (value : A)
+						| CallPrimitive
+							(primitive : Primitive.t)
+							(k : Value.t -> t A)
+						| CallClosure
+							(closure : Value.t)
+							(args : list Value.t)
+							(k : A -> t A)
+						| Loop (body : t A) (k : A -> t A)
+						| Impossible.
+						```
+					</script>
+				</section>
+				<section data-markdown>
+					<script type="text/template">
+						## Exceptions
+
+						```coq
+						Inductive t : Set :=
+						| Return : Value.t -> t
+						| Continue : t
+						| Break : t
+						| BreakMatch : t
+						| Panic : string -> t.
+						```
+					</script>
+				</section>
+				<section data-markdown>
+					<script type="text/template">
+						## Primitives
+
+						```coq
+						Inductive t : Set :=
+						| StateAlloc (value : Value.t)
+						| StateRead {Address : Set}
+							(address : Address)
+						| StateWrite {Address : Set}
+							(address : Address)
+							(value : Value.t)
+						| EnvRead
+						| GetFunction
+							(path : string)
+							(generic_tys : list Ty.t)
+						| GetAssociatedFunction
+							(ty : Ty.t)
+							(name : string)
+							(generic_tys : list Ty.t)
+						| GetTraitMethod
+							(trait : string)
+							(self_ty : Ty.t)
+							(trait_tys : list Ty.t)
+							(method : string)
+							(generic_tys : list Ty.t).
+						```
+					</script>
+				</section>
+				<section data-markdown>
+					<script type="text/template">
+						## Semantics
+
+						The user has to write a simulation of the code making choices:
+
+						* how to allocate values
+						* finding the trait instances
+						* finding associated functions
+					</script>
+				</section>
+				<section data-markdown>
+					<script type="text/template">
+						## Allocation
+
+						```coq
+						Inductive Pointer (Value : Set) : Set :=
+						| Immediate (value : Value)
+						| Mutable {Address : Set} (address : Address) (path : Path.t).
+						```
+					</script>
+				</section>
+				<section data-markdown>
+					<script type="text/template">
+						## Allocation
+
+						Semantics:
+
+						```coq
+						{{ env , state | e ⇓ result | state' }}
+						```
+					</script>
+				</section>
+				<section data-markdown>
+					<script type="text/template">
+						## Allocation
+
+						```coq
+						| CallPrimitiveStateAllocImmediate
+								(state : State) (v : Value.t)
+								(k : Value.t -> M) :
+							{{ env, state |
+								k (Value.Pointer (Pointer.Immediate v)) ⇓
+								result
+							| state' }} ->
+							{{ env, state |
+								LowM.CallPrimitive (Primitive.StateAlloc v) k ⇓
+								result
+							| state' }}
+						```
+					</script>
+				</section>
+				<section data-markdown>
+					<script type="text/template">
+						## Allocation
+
+						```coq
+						| CallPrimitiveStateAllocMutable
+								(address : Address) (v : Value.t)
+								(state : State)
+								(k : Value.t -> M) :
+							let r := Value.Pointer (Pointer.Mutable address []) in
+							State.read address state = None ->
+							State.alloc_write address state v = Some state' ->
+							{{ env, state | k r ⇓ result | state' }} ->
+							{{ env, state |
+								LowM.CallPrimitive (Primitive.StateAlloc v) k ⇓ result
+							| state' }}
+						```
+					</script>
+				</section>
+				<section data-markdown>
+					<script type="text/template">
+						## Proof strategy
+
+						1. write equivalent Coq code in functional style
+						2. show it is equivalent to the translated Rust code
+						3. prove properties about the functional code
+					</script>
+				</section>
+				<section data-markdown>
+					<script type="text/template">
+						## Alternatives
+
+						* [Kani](https://github.com/model-checking/kani) model checker
+						* [Creusot](https://github.com/creusot-rs/creusot) with prophecies and SMT solvers
+						* [Aeneas](https://github.com/AeneasVerif/aeneas) functional translation to Coq with the borrow-checker
+					</script>
+				</section>
+				<section data-markdown>
+					<script type="text/template">
+						# Thanks!
+						🌲&nbsp;Formal&nbsp;Land
+						> Formal verification for everyday-life applications
+
+						[https://formal.land/](https://formal.land/)
+
+						🏇
+					</script>
+				</section>
+			</div>
+		</div>
+
+		<script src="dist/reveal.js"></script>
+		<script src="plugin/notes/notes.js"></script>
+		<script src="plugin/markdown/markdown.js"></script>
+		<script src="plugin/highlight/highlight.js"></script>
+		<script>
+			// More info about initialization & config:
+			// - https://revealjs.com/initialization/
+			// - https://revealjs.com/config/
+			Reveal.initialize({
+				hash: true,
+
+				// Learn about plugins: https://revealjs.com/plugins/
+				plugins: [ RevealMarkdown, RevealHighlight, RevealNotes ]
+			});
+		</script>
+	</body>
+</html>
