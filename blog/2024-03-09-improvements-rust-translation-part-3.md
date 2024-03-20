@@ -95,9 +95,65 @@ pub(crate) enum ExprKind {
 
 Having access to the type of each sub-expressions was useful before to annotate the&nbsp;`let` expressions. This is not required anymore, as all the values have the type&nbsp;`Value.t`. Thus we remove the wrapper&nbsp;`Expr`, and rename&nbsp;`ExprKind` into&nbsp;`Expr`. The resulting code is easier to read, as wrapping everything with a type was verbose sometimes.
 
-We also cleaned some translated types that were not used anymore elsewhere in the code, as well as removed unused `Derive` traits. We removed the monadic translation on the types as this is not needed anymore.
+We also cleaned some translated types that were not used anymore in the code, removed unused `Derive` traits, and removed the monadic translation on the types.
 
-## Conclusion
+## Handling the remaining examples
+
+To handle the remaining examples of our test suite (extracted from the snippets of the [Rust by Example](https://doc.rust-lang.org/rust-by-example/) book), we mainly needed to re-implement the pattern-matching on the new untyped values. Here is an example of Rust code with matching:
+
+```rust
+fn matching(tuple: (i32, i32)) -> i32 {
+    match tuple {
+        (0, 0) => 0,
+        (_, _) => 1,
+    }
+}
+```
+
+with its translation in Coq:
+
+```coq showLineNumbers
+Definition matching (𝜏 : list Ty.t) (α : list Value.t) : M :=
+  match 𝜏, α with
+  | [], [ tuple ] =>
+    let* tuple := M.alloc tuple in
+    let* α0 :=
+      match_operator
+        tuple
+        [
+          fun γ =>
+            let* γ0_0 := M.get_tuple_field γ 0 in
+            let* γ0_1 := M.get_tuple_field γ 1 in
+            let* _ :=
+              let* α0 := M.read γ0_0 in
+              M.is_constant_or_break_match α0 (Value.Integer Integer.I32 0) in
+            let* _ :=
+              let* α0 := M.read γ0_1 in
+              M.is_constant_or_break_match α0 (Value.Integer Integer.I32 0) in
+            M.alloc (Value.Integer Integer.I32 0);
+          fun γ =>
+            let* γ0_0 := M.get_tuple_field γ 0 in
+            let* γ0_1 := M.get_tuple_field γ 1 in
+            M.alloc (Value.Integer Integer.I32 1)
+        ] in
+    M.read α0
+  | _, _ => M.impossible
+  end.
+```
+
+Here is a breakdown of how it works:
+
+- On line 6 we call the&nbsp;`match_operator` primitive that takes a value to match on,&nbsp;`tuple`, and a list of functions that try to match the value with a pattern and execute some code in case of success. We execute the matching functions successfully, until one succeeds and stop. There should be at least one succeeding function as pattern-match in Rust is exhaustive.
+- On line 10 we get the first element of the tuple. Note that, more precisely, what we get is the address of the first element of&nbsp;`γ` that is the address of the tuple&nbsp;`tuple` given as parameter to the function. Having the address might be required for some operations, like doing subsequent matching by reference or using the&nbsp;`&` operator in the&nbsp;`match`'s body.
+- On line 11 we do the same with the second element of the tuple. The indices for&nbsp;`γ` are generated to avoid name clashes. They correspond to the depth of the sub-pattern being considered, followed by the index of the current item in this sub-pattern.
+- On line 14, we check that the first element of the tuple is&nbsp;`0`. We use the&nbsp;`M.is_constant_or_break_match` primitive that checks if the value is a constant and if it is equal to the expected value. If it is not the case, it exits the current matching function, and the&nbsp;`match_operator` primitive will evaluate the next one, going to line 19.
+- On line 24 we return the final result. Note that we always do a&nbsp;`M.alloc` followed by&nbsp;`M.read` to return the result. This could be simplified as immediately reading an allocated value is like running the identity function.
+
+By implementing the new version of the pattern-matching, as well as a few other smaller fixes, we were able to make all the examples type-check again! We now need to fix the proofs we had on the [erc20.v](https://github.com/formal-land/coq-of-rust/blob/main/CoqOfRust/examples/default/examples/ink_contracts/erc20.v) example, as the generated code changed a lot.
+
+## Updating the proofs&nbsp;👩‍🚀
+
+## Conclusion&nbsp;✍️
 
 In the next blog post, we will see how we continue to translate the examples in full definition mode. There is still a lot to do to get to the same level of Rust support as before, but we are hopeful that our new approach will be more robust and easier to maintain.
 
