@@ -4,9 +4,9 @@ tags: [coq-of-rust, Rust, Coq, translation, monad]
 authors: []
 ---
 
-One of the challenges of our translation from Rust to Coq is that the generated code is very verbose. The size increase from Rust to Coq is about ten folds in our examples.
+At Formal Land our mission is to reduce the cost of finding bugs in software. We use [formal verification](https://runtimeverification.com/blog/formal-verification-lore), that is to say mathematical reasoning on code, to make sure we find more bugs than with testing. As part of this effort, we are working on a tool [coq-of-rust](https://github.com/formal-land/coq-of-rust) to translate Rust code to Coq, a proof assistant, to analyze Rust programs. Here we present a technical improvement we made in this tool.
 
-One of the reasons is that we use a monad to represent side effects in Coq, so we need to name each intermediate result and apply the `bind` operator. Here, we will present a monadic notation that prevents naming intermediate results to make the code more readable.
+One of the challenges of our translation from Rust to Coq is that the generated code is very verbose. The size increase is about ten folds in our examples. A reasons is that we use a monad to represent side effects in Coq, so we need to name each intermediate result and apply the `bind` operator. Here, we will present a monadic notation that prevents naming intermediate results to make the code more readable.
 
 <!-- truncate -->
 
@@ -33,7 +33,7 @@ fn add(a: i32, b: i32) -> i32 {
 }
 ```
 
-Before, we were generating the following Coq code:
+Before, we were generating the following Coq code, with `let*` as the notation for the bind:
 
 ```coq
 Definition add (τ : list Ty.t) (α : list Value.t) : M :=
@@ -127,11 +127,11 @@ The `M.monadic` tactic is defined in [M.v](https://github.com/formal-land/coq-of
 Ltac monadic e :=
   lazymatch e with
   (* ... *)
-  | context ctxt [run ?x] =>
-    lazymatch context ctxt [run x] with
-    | run x => monadic x
+  | context ctxt [M.run ?x] =>
+    lazymatch context ctxt [M.run x] with
+    | M.run x => monadic x
     | _ =>
-      refine (bind _ _);
+      refine (M.bind _ _);
         [ monadic x
         | let v := fresh "v" in
           intro v;
@@ -143,15 +143,21 @@ Ltac monadic e :=
   end.
 ```
 
-The `run` function is an axiom that we use as a marker to know where we need to apply the monadic `bind`. The type of `run` is:
+The `M.run` function is an axiom that we use as a marker to know where we need to apply the monadic bind of type `M A -> (A -> M B) -> M B`. The type of `M.run` is:
 
 ```coq
 Axiom run : forall {A : Set}, M A -> A.
 ```
 
-When we encounter a `run` (line 4) we apply the `bind` (line 8) to the monadic expression `x` (line 9) and its continuation `ctx` that we obtain thanks to the `context` keyword (line 4) of the matching of expressions in Ltac.
+The notation for monadic function calls is defined using the `M.run` axiom with:
 
-There is another case to handle the `let` expressions that is not shown here.
+```coq
+Notation "e (| e1 , .. , en |)" := (M.run ((.. (e e1) ..) en)).
+```
+
+When we encounter a `M.run` (line 4) we apply the `M.bind` (line 8) to the monadic expression `x` (line 9) and its continuation `ctx` that we obtain thanks to the `context` keyword (line 4) of the matching of expressions in Ltac.
+
+There is another case in the `M.monadic` tactic to handle the `let` expressions, that is not shown here.
 
 ## Conclusion
 
