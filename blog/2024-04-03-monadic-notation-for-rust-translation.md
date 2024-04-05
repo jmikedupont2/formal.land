@@ -143,10 +143,10 @@ Ltac monadic e :=
   end.
 ```
 
-The `M.run` function is an axiom that we use as a marker to know where we need to apply the monadic bind of type `M A -> (A -> M B) -> M B`. The type of `M.run` is:
+In our translation of Rust, all of the values have the common type&nbsp;`Value.t`. The monadic bind is of type `M -> (Value.t -> M) -> M` where&nbsp;`M` is the type of the monad. The `M.run` function is an axiom that we use as a marker to know where we need to apply `M.bind`. The type of `M.run` is:
 
 ```coq
-Axiom run : forall {A : Set}, M A -> A.
+Axiom run : M -> Value.t.
 ```
 
 The notation for monadic function calls is defined using the `M.run` axiom with:
