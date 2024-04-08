@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkformal_land=self.webpackChunkformal_land||[]).push([[2258],{113:a=>{a.exports=JSON.parse('{"label":"coq-of-rust","permalink":"/blog/tags/coq-of-rust","allTagsPath":"/blog/tags","count":12,"unlisted":false}')}}]);

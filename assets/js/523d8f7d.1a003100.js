@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkformal_land=self.webpackChunkformal_land||[]).push([[1716],{2760:a=>{a.exports=JSON.parse('{"label":"Rust","permalink":"/blog/tags/rust","allTagsPath":"/blog/tags","count":13,"unlisted":false}')}}]);

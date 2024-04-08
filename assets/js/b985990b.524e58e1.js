@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkformal_land=self.webpackChunkformal_land||[]).push([[501],{1825:a=>{a.exports=JSON.parse('{"label":"monad","permalink":"/blog/tags/monad","allTagsPath":"/blog/tags","count":2,"unlisted":false}')}}]);
