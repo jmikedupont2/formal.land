@@ -1,0 +1,156 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>Formal Land - coq-of-rust</title>
+
+		<link rel="stylesheet" href="dist/reset.css">
+		<link rel="stylesheet" href="dist/theme/white.css">
+		<link rel="stylesheet" href="dist/reveal.css">
+
+		<link rel="shortcut icon" type="image/jpg" href="https://formal.land/img/icons/land.png" />
+
+		<!-- Theme used for syntax highlighted code -->
+		<link rel="stylesheet" href="plugin/highlight/monokai.css">
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				<section data-markdown>
+					<script type="text/template">
+						# `coq-of-rust`
+						<img src="https://formal.land/img/icons/land.png" alt="logo" width="200" />
+
+						> Formal Land
+
+						<small>[github.com/formal-land/coq-of-rust](https://github.com/formal-land/coq-of-rust)</small>
+					</script>
+				</section>
+				<section data-markdown>
+					<script type="text/template">
+						## Formal Land
+
+						* formal verification company
+						* languages: OCaml, Rust
+						* formal verification as a service
+
+						[https://formal.land/](https://formal.land/)
+					</script>
+				</section>
+				<section data-markdown>
+					<script type="text/template">
+						## coq-of-rust
+
+						* Translation from Rust to the proof system Coq
+						* Open source [github.com/formal-land/coq-of-rust](https://github.com/formal-land/coq-of-rust)
+					</script>
+				</section>
+				<section data-markdown>
+					<script type="text/template">
+						## How
+
+						* From THIR
+						* Shallow embedding
+						* Mutations in a monad
+					</script>
+				</section>
+				<section data-markdown>
+					<script type="text/template">
+						## Example
+
+						`add.rs`
+						```rust
+fn add(a: i32, b: i32) -> i32 {
+    a + b
+}
+						```
+					</script>
+				</section>
+				<section data-markdown>
+					<script type="text/template">
+						## Example
+
+						`add.v`
+						```coq
+Definition add (τ : list Ty.t) (α : list Value.t) : M :=
+  match τ, α with
+  | [], [ a; b ] =>
+    ltac:(M.monadic
+      (let a := M.alloc (| a |) in
+      let b := M.alloc (| b |) in
+        BinOp.Panic.add (|
+          M.read (| a |),
+          M.read (| b |)
+        |)))
+  | _, _ => M.impossible
+  end.
+						```
+					</script>
+				</section>
+				<section data-markdown>
+					<script type="text/template">
+						## Translation
+
+						* very verbose (x10 code size)
+						* convert `alloc` crate, 75% of `core`
+						* with holes
+					</script>
+				</section>
+				<section data-markdown>
+					<script type="text/template">
+						## Support
+
+						* `match`, loop
+						* recursive functions / types
+						* traits
+						* mutations
+					</script>
+				</section>
+				<section data-markdown>
+					<script type="text/template">
+						## Proof strategy
+
+						1. Show equivalence with idiomatic Coq
+						2. Prove the Coq code
+					</script>
+				</section>
+				<section data-markdown>
+					<script type="text/template">
+						## Application
+
+						* smart contracts verification
+					</script>
+				</section>
+				<section data-markdown>
+					<script type="text/template">
+						# Thanks!
+						🌲&nbsp;Formal&nbsp;Land
+						> Formal verification for everyday-life applications
+
+						[https://formal.land/](https://formal.land/)
+
+						🏇
+					</script>
+				</section>
+			</div>
+		</div>
+
+		<script src="dist/reveal.js"></script>
+		<script src="plugin/notes/notes.js"></script>
+		<script src="plugin/markdown/markdown.js"></script>
+		<script src="plugin/highlight/highlight.js"></script>
+		<script>
+			// More info about initialization & config:
+			// - https://revealjs.com/initialization/
+			// - https://revealjs.com/config/
+			Reveal.initialize({
+				hash: true,
+
+				// Learn about plugins: https://revealjs.com/plugins/
+				plugins: [ RevealMarkdown, RevealHighlight, RevealNotes ]
+			});
+		</script>
+	</body>
+</html>
