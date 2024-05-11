@@ -1,22 +1,22 @@
 ---
-title: Translation of Python code
+title: Translation of Python code to Coq
 tags: [coq-of-python, Python, Coq, translation, Ethereum]
 authors: []
 ---
 
-We are starting to work on a new product, [coq-of-python](https://github.com/formal-land). The idea of this tool is, as you can guess, to translate Python code to the [proof system Coq](https://coq.inria.fr/).
+We are starting to work on a new product, [coq-of-python](https://github.com/formal-land/coq-of-python). The idea of this tool is, as you can guess, to translate Python code to the [proof system Coq](https://coq.inria.fr/).
 
-We want to import specifications written in Python to a formal system like Coq. In particular we are interested by the [reference specification](https://github.com/ethereum/execution-specs) of [Ethereum](https://ethereum.org/) which describes how [EVM smart contracts](https://ethereum.org/en/developers/docs/evm/) run. Then we will be able to use this specification to either formally verification the various implementations of the EVM, or smart contracts using it.
+We want to import specifications written in Python to a formal system like Coq. In particular, we are interested in the [reference specification](https://github.com/ethereum/execution-specs) of [Ethereum](https://ethereum.org/), which describes how [EVM smart contracts](https://ethereum.org/en/developers/docs/evm/) run. Then, we will be able to use this specification to either formally verify the various implementations of the EVM or smart contracts.
 
-All this effort follows a Tweet from [Vitalik Buterin](https://twitter.com/VitalikButerin/status/1759369749887332577) hoping for more formal verification to limit the risk of bugs in the Ethereum code:
+All this effort follows [a Tweet](https://twitter.com/VitalikButerin/status/1759369749887332577) from [Vitalik Buterin](https://en.wikipedia.org/wiki/Vitalik_Buterin) hoping for more formal verification of the Ethereum's code:
 
 > One application of AI that I am excited about is AI-assisted formal verification of code and bug finding.
 >
 > Right now ethereum's biggest technical risk probably is bugs in code, and anything that could significantly change the game on that would be amazing.
+>
+> &mdash; <cite>Vitalik Buterin</cite>
 
-Vitalik Buterin
-
-We will now describe the technical development of `coq-of-python`.
+We will now describe the technical development of `coq-of-python`. For the curious, all the code is on GitHub: [formal-land/coq-of-python](https://github.com/formal-land/coq-of-python).
 
 <!-- truncate -->
 
@@ -27,7 +27,7 @@ We will now describe the technical development of `coq-of-python`.
 
 ## Reading Python code 📖
 
-A first we need to do to translate Python code is to read it in a programmatic way. For simplicity and better integration, we chose to write `coq-of-python` in Python.
+A first step we need to do to translate Python code is to read it in a programmatic way. For simplicity and better integration, we chose to write `coq-of-python` in Python.
 
 We use the [ast](https://docs.python.org/3/library/ast.html) module to parse the code and get an abstract syntax tree (AST) of the code. This is a tree representation of the code that we can manipulate in Python. We could have used other representations, such as the Python bytecode, but it seemed too low-level to be understandable by a human.
 
@@ -41,7 +41,7 @@ def read_python_file(path: str) -> ast.Module:
         return ast.parse(file.read())
 ```
 
-This code is very short and we benefit from the general elegance of Python. There is no typing or advanced data types in Python, keeping the AST rather small. Here is an extract of it:
+This code is very short, and we benefit from the general elegance of Python. There is no typing or advanced data types in Python, keeping the AST rather small. Here is an extract of it:
 
 ```
 expr = BoolOp(boolop op, expr* values)
@@ -67,7 +67,7 @@ corresponds to the case `BinOp` with `1` as the `left` expression, `+` as the `o
 
 ## Outputting Coq code 📝
 
-We translate each element of the AST of Python to a string of Coq code. We keep track of the current indentation level in order to present a nice output. Here is the code to translate the binary operator expressions:
+We translate each element of the Python's AST into a string of Coq code. We keep track of the current indentation level in order to present a nice output. Here is the code to translate the binary operator expressions:
 
 ```python
 def generate_expr(indent, is_with_paren, node: ast.expr):
@@ -86,7 +86,7 @@ def generate_expr(indent, is_with_paren, node: ast.expr):
     elif ...
 ```
 
-We have the current number of indentation levels in the `indent` variable. We use the flag `is_with_paren` to know whether we should add parenthesis around the current expression, in case it is the sub-expression of another one.
+We have the current number of indentation levels in the `indent` variable. We use the flag `is_with_paren` to know whether we should add parenthesis around the current expression if it is the sub-expression of another one.
 
 We apply the `node.op` operator on the two parameters `node.left` and `node.right`. For example, the translation of the Python code `1 + 2` will be:
 
@@ -97,11 +97,11 @@ BinOp.add (|
 |)
 ```
 
-We use a special notation `f (| x1, ..., xn |)` to represent a function application in a monadic context. We explain in the next section why we need this notation.
+We use a special notation `f (| x1, ..., xn |)` to represent a function application in a monadic context. In the next section, we explain why we need this notation.
 
 ## Monad and values 🔮
 
-One of the difficulty in translating some code to a language such as Coq is that Coq is purely functional. This means that a function can never modify a variable or raise an exception. The non-purely functional actions are called side-effects.
+One of the difficulties in translating some code to a language such as Coq is that Coq is purely functional. This means that a function can never modify a variable or raise an exception. The non-purely functional actions are called side-effects.
 
 To solve this issue, we represent the side-effects of the Python code in a [monad](<https://en.wikipedia.org/wiki/Monad_(functional_programming)>) in Coq. A monad is a special data structure representing the side-effects of a computation. We can chain monadic actions together to represent a sequence of side-effects.
 
@@ -110,7 +110,7 @@ We thus have two Coq types:
 - `Value.t` for the Python values (there is only one type for all values, as Python is a dynamically typed language),
 - `M` for the monadic expressions.
 
-Note that we do not need to parametrize the monad by the type of the values, as we only have one type of values.
+Note that we do not need to parametrize the monad by the type of the values, as we only have one type of value.
 
 ### Values
 
@@ -167,146 +167,161 @@ We describe a `Value.t` by:
 - its type, given by a class name `klass` and a module name `globals` from which the class is defined,
 - its value, given by a pointer to an object.
 
-A `Pointer.t` is either an immutable object `Imm` or a mutable object `Mutable` with an address and a function to get the object from what is stored in the memory. This function `to_object` is required as we plan later to allow the user to provide its own custom memory model.
+A `Pointer.t` is either an immutable object `Imm` or a mutable object `Mutable` with an address and a function to get the object from what is stored in the memory. This function `to_object` is required as we plan to allow the user to provide its own custom memory model.
 
-An `Object.t` has a list of named fiels that we can populate in the `__init__` method of a class. It also has a special field `internal` that we can use to store special kinds of data, like primitive values.
+An `Object.t` has a list of named fields that we can populate in the `__init__` method of a class. It also has a special `internal` field that we can use to store special kinds of data, like primitive values.
 
-In `Data.t` we list the various primitive values, which we use to define the primitive types of the Python language. We have:
+In `Data.t`, we list the various primitive values that we use to define the primitive types of the Python language. We have:
 
 - atomic values such as booleans, integers, strings, ...
 - composite values such as tuples, lists, dictionaries, ...
 - closures with a function that takes the two arguments `*args` and `**kwargs` and returns a monadic value,
 - classes with their bases, class methods, and instance methods.
 
-## Splitting the generated code 🪓
+### Monad
 
-The main change we made was to split the output generated by `coq-of-rust` with one file for each input Rust file. This is possible because our translation is insensitive to the order of definitions and context-free. So, even if there are typically cyclic dependencies between the files in Rust, something that is forbidden in Coq, we can still split them.
-
-We get the following sizes as output:
-
-- `alloc`: 54 Coq files, 171,783 lines of Coq code
-- `core`: 190 Coq files, 592,065 lines of Coq code
-
-The advantages of having the code split are:
-
-- it is easier to read and navigate in the generated code
-- it is easier to compile as we can parallelize the compilation
-- it is easier to debug as we can focus on one file at a time
-- it is easier to ignore files that do not compile
-- it will be easier to maintain, as it is easier to follow the diff of a single file
-
-## Fixing some bugs 🐞
-
-We had some bugs related to the collisions between module names. These can occur when we choose a name for the module for an `impl` block. We fixed these by adding more information in the module names to make them more unique, like the `where` clauses that were missing. For example, for the implementation of the `Default` trait for the `Mapping` type:
-
-```rust
-#[derive(Default)]
-struct Mapping<K, V> {
-    // ...
-}
-```
-
-we were generating the following Coq code:
+For now, we axiomatize the monad `M`:
 
 ```coq
-Module Impl_core_default_Default_for_dns_Mapping_K_V.
-  (* ...trait implementation ... *)
-End Impl_core_default_Default_for_dns_Mapping_K_V.
+Parameter M : Set.
 ```
 
-We now generate:
+We will see later how to define it, probably by taking some inspiration from our monad from our similar project [coq-of-rust](https://github.com/formal-land/coq-of-rust).
+
+To make the monadic code less heavy, we use a notation inspired by the `async/await` notation of many languages. We believe it to be less heavy than the monadic notation of languages like [Haskell](https://www.haskell.org/). We note:
 
 ```coq
-Module Impl_core_default_Default_where_core_default_Default_K_where_core_default_Default_V_for_dns_Mapping_K_V.
-  (* ... *)
+f (| x1, ..., xn |)
 ```
 
-with a module name that includes the `where` clauses of the `impl` block, stating that both `K` and `V` should implement the `Default` trait.
-
-Here is the list of files that do not compile in Coq, as of today:
-
-- `alloc/boxed.v`
-- `core/any.v`
-- `core/array/mod.v`
-- `core/cmp/bytewise.v`
-- `core/error.v`
-- `core/escape.v`
-- `core/iter/adapters/flatten.v`
-- `core/net/ip_addr.v`
-
-This represents 4% of the files. Note that in the files that compile there are some unhandled Rust constructs that are axiomatized, so this does not give the whole picture of what we do not support.
-
-## Example 🔎
-
-Here is the source code of the `unwrap_or_default` method for the `Option` type:
-
-```rust
-pub fn unwrap_or_default(self) -> T
-where
-    T: Default,
-{
-    match self {
-        Some(x) => x,
-        None => T::default(),
-    }
-}
-```
-
-We translate it to:
+to call a function `f` of type:
 
 ```coq
-Definition unwrap_or_default (T : Ty.t) (τ : list Ty.t) (α : list Value.t) : M :=
-  let Self : Ty.t := Self T in
-  match τ, α with
-  | [], [ self ] =>
-    ltac:(M.monadic
-      (let self := M.alloc (| self |) in
-      M.read (|
-        M.match_operator (|
-          self,
-          [
-            fun γ =>
-              ltac:(M.monadic
-                (let γ0_0 :=
-                  M.get_struct_tuple_field_or_break_match (|
-                    γ,
-                    "core::option::Option::Some",
-                    0
-                  |) in
-                let x := M.copy (| γ0_0 |) in
-                x));
-            fun γ =>
-              ltac:(M.monadic
-                (M.alloc (|
-                  M.call_closure (|
-                    M.get_trait_method (| "core::default::Default", T, [], "default", [] |),
-                    []
-                  |)
-                |)))
-          ]
+Value.t -> ... -> Value.t -> M
+```
+
+with the arguments `x1`, ..., `xn` of type `Value.t` and binds its result to the current continuation in the context of the tactic `ltac:(M.monadic ...)`. See our blog post [Monadic notation for the Rust translation](/blog/2024/04/03/monadic-notation-for-rust-translation) for more information.
+
+In summary:
+
+- `f (| x1, ..., xn |)` is like `await`,
+- `ltac:(M.monadic ...)` is like `async`.
+
+## Handling of the names 🏷️
+
+Now we talk about how we handle the variable names and link them to their definitions. In the reference manual of Python, the part [Execution model](https://docs.python.org/3/reference/executionmodel.html) gives some information.
+
+For now, we distinguish between two scopes, the global one (top-level definitions) and the local one for variables defined in a function. We might introduce a stack of local scopes to handle nested functions.
+
+We name the global scope with a string, that is the path of the current file. Having absolute names helps us translating each file independently. The only file that a translated file requires is `CoqOfPython.CoqOfPython`, to have the definition of the values and the monad.
+
+To translate `import` statements, we use assertions:
+
+```coq
+Axiom ethereum_crypto_imports_elliptic_curve :
+  IsImported globals "ethereum.crypto" "elliptic_curve".
+Axiom ethereum_crypto_imports_finite_field :
+  IsImported globals "ethereum.crypto" "finite_field".
+```
+
+This represents:
+
+```python
+from . import elliptic_curve, finite_field
+```
+
+It means that in the current global scope `globals` we can use the name `"elliptic_curve"` from the other global scope `"ethereum.crypto"`.
+
+We set the local scope at the entry of a function with the call:
+
+```coq
+M.set_locals (| args, kwargs, [ "x1"; ...; "xn" ] |)
+```
+
+for a function whose parameter names are `x1`, ..., `xn`. For uniformity, we always group the function's parameters as `*args` and `**kwargs`. We do not yet handle the default values.
+
+When a user creates or updates a local variable `x` with a value `value`, we run:
+
+```coq
+M.assign_local "x" value : M
+```
+
+To read a variable, we have a primitive:
+
+```coq
+M.get_name : string -> string -> M
+```
+
+It takes as a parameter the name of the current global scope and the name of the variable the are reading. The local scope should be accessible from the monad. For now all these primitives are axiomatized.
+
+## Some numbers 📊
+
+The code base that we analyze, the Python specification of Ethereum, contains _28,455 lines_ of Python, excluding comments. When we translate it to Coq we obtain _299,484 lines_. This is a roughly ten times increase.
+
+The generated code completely compiles. For now, we avoid some complex Python expressions, like list comprehension, by generating a dummy expression instead. Having all the code that compiles will allow us to iterate and add support for more Python features with a simple check: making sure that all the code still compiles.
+
+As an example, we translate the following function:
+
+```python
+def bnf2_to_bnf12(x: BNF2) -> BNF12:
+    """
+    Lift a field element in `BNF2` to `BNF12`.
+    """
+    return BNF12.from_int(x[0]) + BNF12.from_int(x[1]) * (
+        BNF12.i_plus_9 - BNF12.from_int(9)
+    )
+```
+
+to the Coq code:
+
+```coq
+Definition bnf2_to_bnf12 : Value.t -> Value.t -> M :=
+  fun (args kwargs : Value.t) => ltac:(M.monadic (
+    let _ := M.set_locals (| args, kwargs, [ "x" ] |) in
+    let _ := Constant.str "
+    Lift a field element in `BNF2` to `BNF12`.
+    " in
+    let _ := M.return_ (|
+      BinOp.add (|
+        M.call (|
+          M.get_field (| M.get_name (| globals, "BNF12" |), "from_int" |),
+          make_list [
+            M.get_subscript (|
+              M.get_name (| globals, "x" |),
+              Constant.int 0
+            |)
+          ],
+          make_dict []
+        |),
+        BinOp.mult (|
+          M.call (|
+            M.get_field (| M.get_name (| globals, "BNF12" |), "from_int" |),
+            make_list [
+              M.get_subscript (|
+                M.get_name (| globals, "x" |),
+                Constant.int 1
+              |)
+            ],
+            make_dict []
+          |),
+          BinOp.sub (|
+            M.get_field (| M.get_name (| globals, "BNF12" |), "i_plus_9" |),
+            M.call (|
+              M.get_field (| M.get_name (| globals, "BNF12" |), "from_int" |),
+              make_list [
+                Constant.int 9
+              ],
+              make_dict []
+            |)
+          |)
         |)
-      |)))
-  | _, _ => M.impossible
-  end.
+      |)
+    |) in
+    M.pure Constant.None_)).
 ```
-
-We prove that it is equivalent to the simpler functional code:
-
-```coq
-Definition unwrap_or_default {T : Set}
-    {_ : core.simulations.default.Default.Trait T}
-    (self : Self T) :
-    T :=
-  match self with
-  | None => core.simulations.default.Default.default (Self := T)
-  | Some x => x
-  end.
-```
-
-This simpler definition is what we use when verifying code. The proof of equivalence is in [CoqOfRust/core/proofs/option.v](https://github.com/formal-land/coq-of-rust/blob/main/CoqOfRust/core/proofs/option.v). In case the original source code changes, we are sure to capture these changes thanks to our proof. Because the translation of the `core` library was done automatically, we trust the generated definitions more than definitions that would be done by hand. However, there can still be mistakes or incompleteness in `coq-of-rust`, so we still need to check at proof time that the code makes sense.
 
 ## Conclusion
 
-We can now work on the verification of Rust programs with more trust in our formalization of the standard library. Our next target is to simplify our proof process, which is still tedious. In particular, showing that simulations are equivalent to the original Rust code requires doing the name resolution, introduction of high-level types, and removal of the side-effects. We would like to split these steps.
+We continue working on the translation from Python to Coq, especially to now add a semantics to the translation. Our next goal is to have a version, written in idiomatic Coq, of the file [src/ethereum/paris/vm/instructions/arithmetic.py](https://github.com/ethereum/execution-specs/blob/master/src/ethereum/paris/vm/instructions/arithmetic.py), and proven equal to the original code. This will open the door to making a Coq specification of the EVM that is always synchronized to the Python's version.
 
-If you are interested in formally verifying your Rust projects, do not hesitate to get in touch with us at&nbsp;[&#099;&#111;&#110;&#116;&#097;&#099;&#116;&#064;formal&#046;&#108;&#097;&#110;&#100;](mailto:contact@formal.land)&nbsp;💌! Formal verification provides the highest level of safety for critical applications, with a mathematical guarantee of the absence of bugs for a given specification.
+For our services, reach us at&nbsp;[&#099;&#111;&#110;&#116;&#097;&#099;&#116;&#064;formal&#046;&#108;&#097;&#110;&#100;](mailto:contact@formal.land)&nbsp;🏇! We want to ensure the blockchain's L1 and L2 are bug-free, thanks to a mathematical analysis of the code. See [our previous project](https://formal-land.gitlab.io/coq-tezos-of-ocaml/) on the L1 of Tezos.
