@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkformal_land=self.webpackChunkformal_land||[]).push([[3187],{9620:e=>{e.exports=JSON.parse('{"label":"Ethereum","permalink":"/blog/tags/ethereum","allTagsPath":"/blog/tags","count":1,"unlisted":false}')}}]);
