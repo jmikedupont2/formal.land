@@ -262,6 +262,6 @@ We believe that it has a size and readability close to the original Python code.
 
 ## Conclusion
 
-We have seen how to write a simulation for one example of a Python function. We now need to do it for the rest of the code of the interpreter. We wil also see in a following article how to prove that the simulation behaves as the automatic translation of the Python code in Coq.
+We have seen how to write a simulation for one example of a Python function. We now need to do it for the rest of the code of the interpreter. We will also see in a following article how to prove that the simulation behaves as the automatic translation of the Python code in Coq.
 
 For our formal verification services, reach us at&nbsp;[&#099;&#111;&#110;&#116;&#097;&#099;&#116;&#064;formal&#046;&#108;&#097;&#110;&#100;](mailto:contact@formal.land)&nbsp;🏇! To know more about what we have done, see [our previous project](https://formal-land.gitlab.io/coq-tezos-of-ocaml/) on the verification of the L1 of Tezos.
