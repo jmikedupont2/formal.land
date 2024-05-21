@@ -31,3 +31,9 @@ html[data-theme='dark'] .docusaurus-highlight-code-line {
 .button {
   margin: 10px;
 }
+
+@media (min-width: 1440px) {
+  .container {
+    max-width: 1700px;
+  }
+}

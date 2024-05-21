@@ -39,7 +39,7 @@ function HomepageHeader() {
       className={clsx('hero hero--primary', styles.heroBanner)}
       style={isDarkTheme ? {backgroundColor: "#6d6d6d"} : {}}
     >
-      <div className="" style={{margin: 0, paddingLeft: 80, paddingRight: 80}}>
+      <div className={clsx('container', styles.hero__container)} style={{margin: 0}}>
         <div
           style={{
             display: 'flex',
@@ -62,8 +62,6 @@ function HomepageHeader() {
             <h1
               className={clsx("hero__title", styles.hero__title)}
               style={{
-                marginTop: 100,
-                marginBottom: 150,
                 letterSpacing: '0.03em',
               }}
             >
@@ -84,14 +82,13 @@ function HomepageHeader() {
                 Call us&nbsp;<ExternalLink />
               </Link> */}
               <Link
-                className="button button--info button--lg"
-                style={{marginRight: 50}}
+                className={clsx('button button--info button--lg', styles.hero__button)}
                 to="mailto:&#099;&#111;&#110;&#116;&#097;&#099;&#116;&#064;formal&#046;&#108;&#097;&#110;&#100;"
               >
                 Contact us&nbsp;<ExternalLink />
               </Link>
               <Link
-                className="button button--secondary button--lg"
+                className={clsx('button button--secondary button--lg', styles.hero__button)}
                 to="/docs/company/intro">
                 More info
               </Link>
@@ -126,7 +123,7 @@ export default function Home(): JSX.Element {
       description={siteConfig.tagline}
     >
       <HomepageHeader />
-      <main style={{marginTop: 100, marginBottom: 100}}>
+      <main style={{marginTop: 50, marginBottom: 50}}>
         <HomepageFeatures />
       </main>
     </Layout>

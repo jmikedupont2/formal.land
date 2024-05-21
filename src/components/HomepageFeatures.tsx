@@ -85,7 +85,7 @@ function Feature({title, image, imageNight, description}: FeatureItem) {
   const isDarkTheme = false;
 
   return (
-    <div className={clsx('col col--4')}>
+    <div className={clsx('col col--4')} style={{marginTop: 50}}>
       <div className="text--center">
         <img
           alt={title}
