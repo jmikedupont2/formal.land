@@ -33,8 +33,7 @@ const FeatureList: FeatureItem[] = [
     imageNight: 'img/icons/river-night.png',
     description: (
       <>
-        We provide cutting-edge formal verification services to ensure that your software is bug-free. Leveraging the power of mathematical proofs, we analyze and verify the correctness of your code, covering all possible user input cases&nbsp;🔍.<br />
-        No need for manual testing or writing tests for each combination of inputs. We can prove that a program is bug-free at scale&nbsp;🚀.
+        We provide cutting-edge formal verification services to ensure that your software is bug-free. We can prove that a program is bug-free at scale, verifying the implementation&nbsp;🚀.
       </>
     ),
   },
@@ -44,7 +43,7 @@ const FeatureList: FeatureItem[] = [
     imageNight: 'img/icons/hills-night.png',
     description: (
       <>
-        We utilize <a href="https://coq.inria.fr/">🐓&nbsp;Coq</a>, one of the most mature proof assistants, to represent and prove that your code is correct. This process, called <a href="https://en.wikipedia.org/wiki/Formal_verification">formal verification</a>, allows us to guarantee 0% bugs in your software&nbsp;✅.
+        We utilize the proof assistant <a href="https://coq.inria.fr/">🐓&nbsp;Coq</a> to prove that your code is correct. This process, called <a href="https://en.wikipedia.org/wiki/Formal_verification">formal verification</a>, covers all execution cases in your software&nbsp;✅.
       </>
     ),
   },
@@ -59,19 +58,23 @@ const FeatureList: FeatureItem[] = [
   //   ),
   // },
   {
-    title: 'Applications',
+    title: 'Use cases',
     image: 'img/icons/canyon.png',
     imageNight: 'img/icons/canyon-night.png',
     description: (
       <>
-        Formal verification is ideal for applications in various industries, including:
-        <ul style={{listStylePosition: "inside", paddingLeft: 0}}>
-          <li>databases&nbsp;📚</li>
-          <li>smart contracts&nbsp;💸</li>
-          <li>banks&nbsp;🏦</li>
-          <li>automotive&nbsp;🚗</li>
+        Some formal verification projects we made:
+        <ul style={{listStylePosition: "inside", paddingLeft: 0, marginTop: 20}}>
+          <li>
+            Verifying large parts of the <a href="https://formal-land.gitlab.io/coq-tezos-of-ocaml/">Tezos's L1</a>
+          </li>
+          <li>
+            <a href="https://github.com/formal-land/coq-of-rust">coq-of-rust</a> tool to verify Rust programs
+          </li>
+          <li>
+            Verification of the <a href="https://github.com/formal-land/coq-of-python">EVM specification</a> (ongoing)
+          </li>
         </ul>
-        One of our most notable use cases involved <a href="https://formal-land.gitlab.io/coq-tezos-of-ocaml/">verifying the nodes</a> of the cryptocurrency <a href="https://tezos.com/">Tezos</a>, which consisted of 100,000 lines of code.
       </>
     ),
   },
