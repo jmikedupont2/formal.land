@@ -66,7 +66,7 @@ const FeatureList: FeatureItem[] = [
         Some formal verification projects we made:
         <ul style={{listStylePosition: "inside", paddingLeft: 0, marginTop: 20}}>
           <li>
-            Verifying large parts of the <a href="https://formal-land.gitlab.io/coq-tezos-of-ocaml/">Tezos's L1</a>
+            Verifying large parts of the <a href="https://formal-land.gitlab.io/coq-tezos-of-ocaml/">Tezos' L1</a>
           </li>
           <li>
             <a href="https://github.com/formal-land/coq-of-rust">coq-of-rust</a> tool to verify Rust programs
@@ -75,6 +75,7 @@ const FeatureList: FeatureItem[] = [
             Verification of the <a href="https://github.com/formal-land/coq-of-python">EVM specification</a> (ongoing)
           </li>
         </ul>
+        To talk with us, write at&nbsp;<a href="mailto:contact@formal.land">&#099;&#111;&#110;&#116;&#097;&#099;&#116;&#064;formal&#046;&#108;&#097;&#110;&#100;&nbsp;🏇</a>!
       </>
     ),
   },
