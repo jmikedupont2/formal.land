@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkformal_land=self.webpackChunkformal_land||[]).push([[8468],{7795:a=>{a.exports=JSON.parse('{"label":"coq-of-python","permalink":"/blog/tags/coq-of-python","allTagsPath":"/blog/tags","count":3,"unlisted":false}')}}]);

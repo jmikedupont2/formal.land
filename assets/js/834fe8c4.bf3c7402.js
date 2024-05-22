@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkformal_land=self.webpackChunkformal_land||[]).push([[5440],{4043:a=>{a.exports=JSON.parse('{"permalink":"/blog/tags/coq/page/2","page":2,"postsPerPage":10,"totalPages":2,"totalCount":19,"previousPage":"/blog/tags/coq","blogDescription":"Blog","blogTitle":"Blog"}')}}]);
