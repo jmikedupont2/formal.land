@@ -39,25 +39,38 @@ function HomepageHeader() {
       className={clsx('hero hero--primary', styles.heroBanner)}
       style={isDarkTheme ? {backgroundColor: "#6d6d6d"} : {}}
     >
-      <div className="container">
-        <div style={{display: 'flex', flexDirection: 'row'}}>
-          <div className={styles.onlyDesktop} style={{flexShrink: 0}}>
+      <div className={clsx('container', styles.hero__container)} style={{margin: 0}}>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            // Vertically center the content
+            alignItems: 'center',
+            justifyContent: 'space-between'
+          }}
+        >
+          <div className={styles.onlyDesktop} style={{flexShrink: 0, padding: 120}}>
             <img
               // alt={title}
               // className={styles.featureSvg}
               // src={isDarkTheme ? imageNight : image}
-              style={{margin: 20, maxHeight: 256}}
+              style={{maxHeight: 350}}
               src={isDarkTheme ? "img/icons/wolf-night.png" : "img/icons/land.png"}
             />
           </div>
           <div style={{flex: 1}}>
-            <h1 className={clsx("hero__title", styles.hero__title)} style={{marginTop: 20}}>
+            <h1
+              className={clsx("hero__title", styles.hero__title)}
+              style={{
+                letterSpacing: '0.03em',
+              }}
+            >
               {siteConfig.title}
             </h1>
-            <p className={styles.hero__subtitle}>
+            <p className={styles.hero__subtitle} style={{marginTop: 50}}>
               {siteConfig.tagline}
             </p>
-            <div className={styles.buttons}>
+            <div className={styles.buttons} style={{marginTop: 50}}>
               {/* <Link
                 className="button button--success button--lg"
                 to="https://n25o5qrzcx2.typeform.com/to/mltUWY58">
@@ -69,12 +82,13 @@ function HomepageHeader() {
                 Call us&nbsp;<ExternalLink />
               </Link> */}
               <Link
-                className="button button--info button--lg"
-                to="mailto:&#099;&#111;&#110;&#116;&#097;&#099;&#116;&#064;formal&#046;&#108;&#097;&#110;&#100;">
+                className={clsx('button button--info button--lg', styles.hero__button)}
+                to="mailto:&#099;&#111;&#110;&#116;&#097;&#099;&#116;&#064;formal&#046;&#108;&#097;&#110;&#100;"
+              >
                 Contact us&nbsp;<ExternalLink />
               </Link>
               <Link
-                className="button button--secondary button--lg"
+                className={clsx('button button--secondary button--lg', styles.hero__button)}
                 to="/docs/company/intro">
                 More info
               </Link>
@@ -90,9 +104,9 @@ function HomepageHeader() {
               </Link> */}
             </div>
             {/* <p className={clsx("hero__subtitle")} style={{marginTop: 20}} title="Mathematically proven"> */}
-            <p className={styles.hero__subsubtitle} style={{marginTop: 20}}>
+            <p className={styles.hero__subsubtitle} style={{marginTop: 50, marginBottom: 80}}>
               {/* <em><TypingText text="Formal verification for Rust, OCaml" /></em> */}
-              <em>We support <Link to="/docs/coq-of-rust/introduction">Rust</Link>, <Link to="/docs/coq-of-ocaml/introduction">OCaml</Link>, and more</em>
+              <em>We support <Link to="/docs/coq-of-rust/introduction">Rust</Link>, <Link to="/docs/coq-of-ocaml/introduction">OCaml</Link>, and <Link to="/blog/2024/05/14/translation-of-python-code-simulations">more</Link></em>
             </p>
           </div>
         </div>
@@ -109,7 +123,7 @@ export default function Home(): JSX.Element {
       description={siteConfig.tagline}
     >
       <HomepageHeader />
-      <main>
+      <main style={{marginTop: 50, marginBottom: 50}}>
         <HomepageFeatures />
       </main>
     </Layout>
