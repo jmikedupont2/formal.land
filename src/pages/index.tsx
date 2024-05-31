@@ -67,8 +67,16 @@ function HomepageHeader() {
             >
               {siteConfig.title}
             </h1>
-            <p className={styles.hero__subtitle} style={{marginTop: 50}}>
-              {siteConfig.tagline}
+            <p className={styles.hero__subtitle}>
+              {/* {siteConfig.tagline} */}
+              <em>Vitalik Buterin:</em> <u>Safety</u> is now the<br />
+              #1 priority for Ethereum, especially <u>formal verification of zkVMs</u>
+            </p>
+            <p className={styles.hero__subsubtitle} style={{marginTop: 100, marginBottom: 80}}>
+              <em>What is your organization doing about that?</em>
+            </p>
+            <p className={styles.hero__subsubtitle} style={{marginTop: 50, marginBottom: 80}}>
+              We provide advanced formal verification services for <Link href="https://github.com/formal-land/coq-of-rust">Rust</Link> and the blockchain, 👉&nbsp;<u><Link href="mailto:verify-my-zk-vm@formal.land">contact us to verify your zkVM!</Link></u>&nbsp;👈
             </p>
             <div className={styles.buttons} style={{marginTop: 50}}>
               {/* <Link
@@ -104,10 +112,9 @@ function HomepageHeader() {
               </Link> */}
             </div>
             {/* <p className={clsx("hero__subtitle")} style={{marginTop: 20}} title="Mathematically proven"> */}
-            <p className={styles.hero__subsubtitle} style={{marginTop: 50, marginBottom: 80}}>
-              {/* <em><TypingText text="Formal verification for Rust, OCaml" /></em> */}
+            {/* <p className={styles.hero__subsubtitle} style={{marginTop: 50, marginBottom: 80}}>
               <em>We support <Link to="/docs/coq-of-rust/introduction">Rust</Link>, <Link to="/docs/coq-of-ocaml/introduction">OCaml</Link>, and <Link to="/blog/2024/05/14/translation-of-python-code-simulations">more</Link></em>
-            </p>
+            </p> */}
           </div>
         </div>
       </div>

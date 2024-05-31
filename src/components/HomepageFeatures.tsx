@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 import React from 'react';
+import Link from '@docusaurus/Link';
 import clsx from 'clsx';
 // import useThemeContext from '@theme/hooks/useThemeContext';
 import styles from './HomepageFeatures.module.css';
@@ -81,6 +82,62 @@ const FeatureList: FeatureItem[] = [
   },
 ];
 
+const FeatureListPastProjects: FeatureItem[] = [
+  {
+    title: 'L1 of Tezos',
+    image: 'img/icons/river.png',
+    imageNight: 'img/icons/river-night.png',
+    description: (
+      <>
+        We <a href="https://formal-land.gitlab.io/coq-tezos-of-ocaml/">formally verified&nbsp;🔍</a> the <em>code</em> of the layer 1 of the security-focused blockchain <a href="https://tezos.com/">Tezos</a>.
+        This is a significant achievement as no other blockchains have done that, verifying <em>models</em> of the implementation at best.<br />
+        We covered a codebase of more than 100,000 lines of <a href="">OCaml</a> code, including the storage system and the smart contracts VM, thanks to our <a href="https://github.com/formal-land/coq-of-ocaml">innovative tools</a> and methods. See the <a href="https://formal-land.gitlab.io/coq-tezos-of-ocaml/blog">blog of the project</a> for more details.
+      </>
+    ),
+  },
+  {
+    title: 'Rust',
+    image: 'img/icons/hills.png',
+    imageNight: 'img/icons/hills-night.png',
+    description: (
+      <>
+        We developed the tool <a href="https://github.com/formal-land/coq-of-rust">coq-of-rust</a> for the cryptocurrency <a href="https://alephzero.org/">Aleph Zero</a>. We can very arbitrarily large Rust programs, thanks to the use of the interactive theorem prover <a href="https://coq.inria.fr/">Coq</a> and our support of the <Link to="/blog/2024/04/26/translation-core-alloc-crates">Rust standard library</Link>.<br />
+        We are now improving our reasoning principles for Rust, in order to make the verification process more efficient.
+      </>
+    ),
+  },
+  {
+    title: 'EVM',
+    image: 'img/icons/canyon.png',
+    imageNight: 'img/icons/canyon-night.png',
+    description: (
+      <>
+        We are verifying that the two following EVM implementations:
+        <ul style={{listStylePosition: "inside", paddingLeft: 0, marginTop: 20}}>
+          <li>
+            the reference <a href="https://github.com/ethereum/execution-specs">Python EVM</a>, and
+          </li>
+          <li>
+            the Rust EVM <a href="https://github.com/bluealloy/revm">Revm</a>
+          </li>
+        </ul>
+        are equivalent for every possible inputs. This would be the first time that one, and actually two, EVM implementations are formally verified.<br />
+        This work relies on our tools <a href="https://github.com/formal-land/coq-of-rust">coq-of-rust</a> and <a href="https://github.com/formal-land/coq-of-python">coq-of-python</a>.
+      </>
+    ),
+  },
+  {
+    title: 'More to come!',
+    image: 'img/icons/water.png',
+    imageNight: 'img/icons/wolf-night.png',
+    description: (
+      <>
+        We are working on another formal verification project that we will be announcing soon. This will help dApps to greatly reduce their risks.
+      </>
+    ),
+  },
+];
+
 function Feature({title, image, imageNight, description}: FeatureItem) {
   // const { isDarkTheme } = useThemeContext();
   const isDarkTheme = false;
@@ -106,8 +163,11 @@ export default function HomepageFeatures(): JSX.Element {
   return (
     <section className={styles.features}>
       <div className="container">
+        <h2 className="margin-bottom--lg text--center">
+          Our projects
+        </h2>
         <div className="row">
-          {FeatureList.map((props, idx) => (
+          {FeatureListPastProjects.map((props, idx) => (
             <Feature key={idx} {...props} />
           ))}
         </div>
