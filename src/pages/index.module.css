@@ -43,7 +43,7 @@
 .hero__title {
   color: #fffbf1;
   animation: glow 1s ease-in-out infinite alternate;
-  font-size: 80px;
+  font-size: 90px;
   margin-top: 50px;
   margin-bottom: 100px;
 }

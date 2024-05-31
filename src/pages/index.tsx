@@ -69,14 +69,14 @@ function HomepageHeader() {
             </h1>
             <p className={styles.hero__subtitle}>
               {/* {siteConfig.tagline} */}
-              <em>Vitalik Buterin:</em> <u>Safety</u> is now the<br />
+              <em>Vitalik Buterin:</em> <u>Security</u> is now the<br />
               #1 priority for Ethereum, especially <u>formal verification of zkVMs</u>
             </p>
             <p className={styles.hero__subsubtitle} style={{marginTop: 100, marginBottom: 80}}>
               <em>What is your organization doing about that?</em>
             </p>
             <p className={styles.hero__subsubtitle} style={{marginTop: 50, marginBottom: 80}}>
-              We provide advanced formal verification services for <Link href="https://github.com/formal-land/coq-of-rust">Rust</Link> and the blockchain, 👉&nbsp;<u><Link href="mailto:verify-my-zk-vm@formal.land">contact us to verify your zkVM!</Link></u>&nbsp;👈
+              👉&nbsp;<u><Link href="mailto:verify-my-zk-vm@formal.land">Contact us to verify your zkVM!</Link></u>&nbsp;👈 We provide advanced formal verification services for <Link to="/docs/coq-of-rust/introduction">Rust</Link> and the blockchain.
             </p>
             <div className={styles.buttons} style={{marginTop: 50}}>
               {/* <Link
@@ -97,7 +97,7 @@ function HomepageHeader() {
               </Link>
               <Link
                 className={clsx('button button--secondary button--lg', styles.hero__button)}
-                to="/docs/company/intro">
+                to="/docs/company/about">
                 More info
               </Link>
               {/* <Link
@@ -124,6 +124,18 @@ function HomepageHeader() {
 
 export default function Home(): JSX.Element {
   const {siteConfig} = useDocusaurusContext();
+  const formHtml = `
+    <script charset="utf-8" type="text/javascript" src="//js-eu1.hsforms.net/forms/embed/v2.js"></script>
+    <script>
+      hbspt.forms.create({
+        region: "eu1",
+        portalId: "144793130",
+        formId: "d619eca5-2354-43f4-b927-a01af8af6bf4"
+      });
+      console.log("hello");
+    </script>
+  `;
+
   return (
     <Layout
       title={siteConfig.tagline}
@@ -133,6 +145,7 @@ export default function Home(): JSX.Element {
       <main style={{marginTop: 50, marginBottom: 50}}>
         <HomepageFeatures />
       </main>
+      {/* <div dangerouslySetInnerHTML={{__html: formHtml}} /> */}
     </Layout>
   );
 }

@@ -1,20 +1,26 @@
 # 📣 Claims
+
 Here are our claims.
 
 ## Verify
+
 ### Mathematical methods
+
 With formal verification, we can check that a program verifies a boolean property for all possible inputs. This is true even if the set of inputs is infinite. For that, we use mathematical reasoning verified by the proof system Coq. The Coq system offers a language to write mathematical proofs and check that nothing is missing. To verify a program, we typically reason by symbolic evaluation or by recursion. The online book [Certified Programming with Dependent Types](http://adam.chlipala.net/cpdt/) from [Adam Chlipala](http://adam.chlipala.net/) offers an in-depth introduction to program verification.
 
 ### Scale your code
+
 As a project grows, it can become harder to add new program layers or change legacy code. Indeed, any change might break implicit requirements or introduce security issues. We think formal verification can change this state of affairs, making scaling more predictable. Thanks to explicit specifications and proofs, we can change an existing code and know if we impact other components. We can build safe new layers on top of formally specified code. Formal specifications act like documentation, plus we can verify and keep it in sync with the implementation.
 
 ### Onboard new developers
+
 With formal specifications, we can simplify the onboarding of new developers having explicit code specifications. New developers can work with limited risk of breaking existing invariants and read the specifications to understand how things are supposed to work.
 
 ### Perfect code reviews
+
 We can formally specify new features during a code review and verify that they follow the specification. This forces us to have a clear semantic of what is being added and ensures that we do not introduce new bugs. This can also help to simplify the code to have cleaner proofs. Finally, with formal verification, we can make precise remarks on every detail of the code thanks to the help of Coq to step through the definitions.
 
-## Battle-tested
+<!-- ## Battle-tested
 ### Verify the implementation of Tezos
 We work on the formal verification of the crypto-currency [Tezos](https://tezos.com/) with the project [Coq Tezos of OCaml](https://nomadic-labs.gitlab.io/coq-tezos-of-ocaml/). This amounts to the verification of around [100,000 lines of code](https://gitlab.com/tezos/tezos/-/tree/master/src/proto_alpha/lib_protocol) written in the [OCaml](https://ocaml.org/) language. We verify various properties, including the validity of the serialization functions, the storage system, and the smart contracts interpreter. Note that this proof effort is still an ongoing project. Eventually, we hope to attain proof volume equivalent to those of the code.
 
@@ -41,4 +47,4 @@ We believe that we are still able to catch most of the bugs. However, for cases 
 * consider the generated Coq code as the new reference and use [program extraction](https://coq.inria.fr/refman/addendum/extraction.html) to compile the code.
 
 ### Everyday-life programs
-We claim to target everyday-life programs, as we handle general-purpose programming languages with a cost similar to the tests or code review. As an illustration, we work on the [implementation](https://nomadic-labs.gitlab.io/coq-tezos-of-ocaml/) of the crypto-currency [Tezos](https://tezos.com/), while (to our knowledge) most other projects verify models of crypto-currencies or smart contracts.
+We claim to target everyday-life programs, as we handle general-purpose programming languages with a cost similar to the tests or code review. As an illustration, we work on the [implementation](https://nomadic-labs.gitlab.io/coq-tezos-of-ocaml/) of the crypto-currency [Tezos](https://tezos.com/), while (to our knowledge) most other projects verify models of crypto-currencies or smart contracts. -->
