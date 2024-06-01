@@ -48,17 +48,13 @@
   margin-bottom: 100px;
 }
 
-@media screen and (max-width: 966px) {
-  .hero__title {
-    font-size: 80px;
-    margin-top: 50px;
-    margin-bottom: 50px;
-  }
-}
-
 .hero__subtitle {
   color: #fffbf1;
   font-size: 60px;
+}
+
+.hero__subtitle a {
+  color: #fffbf1;
 }
 
 .hero__subsubtitle {
@@ -70,9 +66,29 @@
   color: #fffbf1;
 }
 
-@media screen and (max-width: 1200px) {
+@media screen and (max-width: 966px) {
+  .hero__title {
+    font-size: 60px;
+    margin-top: 50px;
+    margin-bottom: 50px;
+  }
+
+  .hero__subtitle {
+    font-size: 30px;
+  }
+
+  .hero__subsubtitle {
+    font-size: 1.8rem;
+  }
+}
+
+@media screen and (max-width: 1500px) {
   .onlyDesktop {
     display: none;
+  }
+
+  .container {
+    max-width: 1400px;
   }
 }
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import clsx from 'clsx';
 import Layout from '@theme/Layout';
 import Link from '@docusaurus/Link';
@@ -39,7 +39,7 @@ function HomepageHeader() {
       className={clsx('hero hero--primary', styles.heroBanner)}
       style={isDarkTheme ? {backgroundColor: "#6d6d6d"} : {}}
     >
-      <div className={clsx('container', styles.hero__container)} style={{margin: 0}}>
+      <div className={clsx('container', styles.hero__container)}>
         <div
           style={{
             display: 'flex',
@@ -69,11 +69,11 @@ function HomepageHeader() {
             </h1>
             <p className={styles.hero__subtitle}>
               {/* {siteConfig.tagline} */}
-              <em>Vitalik Buterin:</em> <u>Security</u> is now the<br />
+              <em><Link href="https://en.wikipedia.org/wiki/Vitalik_Buterin">Vitalik Buterin</Link>:</em> <u>Security</u> is now the<br />
               #1 priority for Ethereum, especially <u>formal verification of zkVMs</u>
             </p>
             <p className={styles.hero__subsubtitle} style={{marginTop: 100, marginBottom: 80}}>
-              <em>What is your organization doing about that?</em>
+              <em>What is your organization doing about it?</em>
             </p>
             <p className={styles.hero__subsubtitle} style={{marginTop: 50, marginBottom: 80}}>
               👉&nbsp;<u><Link href="mailto:verify-my-zk-vm@formal.land">Contact us to verify your zkVM!</Link></u>&nbsp;👈 We provide advanced formal verification services for <Link to="/docs/coq-of-rust/introduction">Rust</Link> and the blockchain.
@@ -122,19 +122,36 @@ function HomepageHeader() {
   );
 }
 
+const HubspotContactForm = () => {
+  useEffect(() => {
+      const script = document.createElement('script');
+      script.src='https://js.hsforms.net/forms/v2.js';
+      document.body.appendChild(script);
+
+      script.addEventListener('load', () => {
+          // @ts-ignore
+          if (window.hbspt) {
+              // @ts-ignore
+              window.hbspt.forms.create({
+                  portalId: "144793130",
+                  formId: "44518a92-58ae-4923-8ae0-e8400fcff12c",
+                  region: "eu1",
+                  target: '#hubspotForm'
+              })
+          }
+      });
+  }, []);
+
+  return (
+      <div>
+          <div id="hubspotForm" />
+      </div>
+  );
+
+}
+
 export default function Home(): JSX.Element {
   const {siteConfig} = useDocusaurusContext();
-  const formHtml = `
-    <script charset="utf-8" type="text/javascript" src="//js-eu1.hsforms.net/forms/embed/v2.js"></script>
-    <script>
-      hbspt.forms.create({
-        region: "eu1",
-        portalId: "144793130",
-        formId: "d619eca5-2354-43f4-b927-a01af8af6bf4"
-      });
-      console.log("hello");
-    </script>
-  `;
 
   return (
     <Layout
@@ -144,8 +161,15 @@ export default function Home(): JSX.Element {
       <HomepageHeader />
       <main style={{marginTop: 50, marginBottom: 50}}>
         <HomepageFeatures />
+        <section style={{marginTop: 80, marginBottom: 80}}>
+          <div className="container" style={{maxWidth: 800}}>
+            <h2 className="margin-bottom--lg text--center">
+              Contact us
+            </h2>
+            <HubspotContactForm />
+          </div>
+        </section>
       </main>
-      {/* <div dangerouslySetInnerHTML={{__html: formHtml}} /> */}
     </Layout>
   );
 }

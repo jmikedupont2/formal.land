@@ -120,11 +120,11 @@ const FeatureListPastProjects: FeatureItem[] = [
             the reference <a href="https://github.com/ethereum/execution-specs">Python&nbsp;🐍 EVM</a>, and
           </li>
           <li>
-            the Rust EVM <a href="https://github.com/bluealloy/revm">Revm</a>
+            the Rust EVM <a href="https://github.com/bluealloy/revm">Revm&nbsp;🦀</a>
           </li>
         </ul>
         <p>
-          are equivalent&nbsp;🟰 for every possible inputs. This would be the first time that one, and actually two, EVM implementations are formally verified.&nbsp;🏁<br />
+          are equivalent for every possible inputs. This would be the first time that one, and actually two, EVM implementations are formally verified.&nbsp;🏁<br />
           This work relies on our tools <a href="https://github.com/formal-land/coq-of-rust">coq-of-rust</a> and <a href="https://github.com/formal-land/coq-of-python">coq-of-python</a>.
         </p>
       </>
