@@ -166,6 +166,7 @@ export default function Home(): JSX.Element {
             <h2 className="margin-bottom--lg text--center">
               Contact us
             </h2>
+            <p>Contact us to formally verify your projects or for general discussions.</p>
             <HubspotContactForm />
           </div>
         </section>

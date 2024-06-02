@@ -96,7 +96,7 @@ const FeatureListPastProjects: FeatureItem[] = [
     ),
   },
   {
-    title: 'Rust',
+    title: 'Rust language',
     image: 'img/icons/hills.png',
     imageNight: 'img/icons/hills-night.png',
     description: (
@@ -155,7 +155,7 @@ function Feature({title, image, imageNight, description}: FeatureItem) {
           src={isDarkTheme ? imageNight : image}
         />
       </div>
-      <div className="text--center padding-horiz--md">
+      <div className="text--center padding-horiz--md" style={{marginTop: 30}}>
         <h3>{title}</h3>
         {description}
       </div>
@@ -168,7 +168,7 @@ export default function HomepageFeatures(): JSX.Element {
     <section className={styles.features}>
       <div className="container">
         <h2 className="margin-bottom--lg text--center">
-          Our projects
+          Our formal verification projects
         </h2>
         <div className="row">
           {FeatureListPastProjects.map((props, idx) => (
