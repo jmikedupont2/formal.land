@@ -43,14 +43,14 @@
 .hero__title {
   color: #fffbf1;
   animation: glow 1s ease-in-out infinite alternate;
-  font-size: 90px;
-  margin-top: 50px;
-  margin-bottom: 100px;
+  font-size: 70px;
+  margin-top: 30px;
+  margin-bottom: 50px;
 }
 
 .hero__subtitle {
   color: #fffbf1;
-  font-size: 60px;
+  font-size: 35px;
 }
 
 .hero__subtitle a {
@@ -59,7 +59,7 @@
 
 .hero__subsubtitle {
   color: #fffbf1;
-  font-size: 2.2rem;
+  font-size: 25px;
 }
 
 .hero__subsubtitle a {
@@ -68,7 +68,7 @@
 
 @media screen and (max-width: 966px) {
   .hero__title {
-    font-size: 60px;
+    font-size: 50px;
     margin-top: 50px;
     margin-bottom: 50px;
   }
@@ -78,7 +78,7 @@
   }
 
   .hero__subsubtitle {
-    font-size: 1.8rem;
+    font-size: 20px;
   }
 }
 

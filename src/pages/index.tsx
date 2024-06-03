@@ -72,10 +72,10 @@ function HomepageHeader() {
               <em><Link href="https://en.wikipedia.org/wiki/Vitalik_Buterin">Vitalik Buterin</Link>:</em> <u>Security</u> is now the<br />
               #1 priority for Ethereum, especially <u>formal verification of zkVMs</u>
             </p>
-            <p className={styles.hero__subsubtitle} style={{marginTop: 100, marginBottom: 80}}>
+            <p className={styles.hero__subsubtitle} style={{marginTop: 60, marginBottom: 30}}>
               <em>What is your organization doing about it?</em>
             </p>
-            <p className={styles.hero__subsubtitle} style={{marginTop: 50, marginBottom: 80}}>
+            <p className={styles.hero__subsubtitle} style={{marginTop: 50, marginBottom: 50}}>
               👉&nbsp;<u><Link href="mailto:verify-my-zk-vm@formal.land">Contact us to verify your zkVM!</Link></u>&nbsp;👈 We provide advanced formal verification services for <Link to="/docs/coq-of-rust/introduction">Rust</Link> and the blockchain.
             </p>
             <div className={styles.buttons} style={{marginTop: 50}}>

@@ -147,17 +147,19 @@ function Feature({title, image, imageNight, description}: FeatureItem) {
   const isDarkTheme = false;
 
   return (
-    <div className={clsx('col col--4')} style={{marginTop: 50}}>
-      <div className="text--center">
-        <img
-          alt={title}
-          className={styles.featureImg}
-          src={isDarkTheme ? imageNight : image}
-        />
-      </div>
-      <div className="text--center padding-horiz--md" style={{marginTop: 30}}>
-        <h3>{title}</h3>
-        {description}
+    <div className={clsx('col col--6')} style={{marginTop: 50}}>
+      <div style={{margin: "auto", maxWidth: 500}}>
+        <div className="text--center">
+          <img
+            alt={title}
+            className={styles.featureImg}
+            src={isDarkTheme ? imageNight : image}
+          />
+        </div>
+        <div className="text--center padding-horiz--md" style={{marginTop: 30}}>
+          <h3>{title}</h3>
+          {description}
+        </div>
       </div>
     </div>
   );
