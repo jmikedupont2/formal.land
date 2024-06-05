@@ -1,5 +1,5 @@
 ---
-title: Improvements in the Rust translation to Coq, part 2
+title: 🦀 Improvements in the Rust translation to Coq, part 2
 tags: [coq-of-rust, Rust, Coq, translation]
 authors: []
 ---

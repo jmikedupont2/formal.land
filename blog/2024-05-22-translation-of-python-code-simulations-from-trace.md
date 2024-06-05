@@ -1,5 +1,5 @@
 ---
-title: Simulation of Python code from traces in Coq
+title: 🐍 Simulation of Python code from traces in Coq
 tags: [coq-of-python, Python, Coq, translation, Ethereum, simulation, trace]
 authors: []
 ---

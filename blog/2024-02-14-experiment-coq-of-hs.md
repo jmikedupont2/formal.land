@@ -1,5 +1,5 @@
 ---
-title: Experiment on translation from Haskell to Coq
+title: λ Experiment on translation from Haskell to Coq
 tags: [coq-of-hs, Haskell, Coq, translation]
 authors: []
 ---

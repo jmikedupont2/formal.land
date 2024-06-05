@@ -1,5 +1,5 @@
 ---
-title: Simulation of Python code in Coq
+title: 🐍 Simulation of Python code in Coq
 tags: [coq-of-python, Python, Coq, translation, Ethereum]
 authors: []
 ---
