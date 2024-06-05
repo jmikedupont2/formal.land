@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkformal_land=self.webpackChunkformal_land||[]).push([[7802],{8148:l=>{l.exports=JSON.parse('{"label":"first principles","permalink":"/blog/tags/first-principles","allTagsPath":"/blog/tags","count":1,"unlisted":false}')}}]);
