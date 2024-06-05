@@ -1,12 +1,12 @@
 ---
 title: 🦄 Software correctness from first principles
-tags: [formal verification, software correctness]
+tags: [formal verification, software correctness, first principles, example, Python]
 authors: []
 ---
 
 **Formal verification** is a technique to verify the absence of bugs in a program by reasoning from **first principles**. Instead of testing a program on examples, what can only cover a finite number of cases, formal verification checks all possible cases. It does so by going back to the definition of programming languages, showing why the whole code is correct given how each individual keyword behaves.
 
-We will present this idea in details and illustrate how it works on a very simple example.
+We will present this idea in detail and illustrate how it works for a very simple example.
 
 <!-- truncate -->
 
@@ -19,16 +19,11 @@ We typically use formal verification for critical applications, where either:
 
 With formal verification, in theory, **we can guarantee that the software will never fail**, as we can check **all possible cases** for a given property. A property can be that no non-admin users can read sensitive data, or that a program never fails with  uncaught exceptions.
 
-<!-- 1. Verify the whole system: for example, we rarely formally verify the operating system itself, while a bug in it, even if unlikely, can crash any applications.
-2. Verify all the required *properties*. A property can be that a new software release is backward compatible with the previous one, if the goal is to make a release that only adds new features.
-
-Even if these two conditions are rarely met, formal verification is a powerful tool to reduce the number of bugs, sometimes down to zero. -->
-
-In this research paper [Finding and Understanding Bugs in C Compilers](https://users.cs.utah.edu/~regehr/papers/pldi11-preprint.pdf), no bugs were found in the middle-end of the formally verified [CompCert](https://en.wikipedia.org/wiki/CompCert) C compiler, while the other C compilers (GCC, LLVM, ...) all contained subtle bugs. This illustrate that formal verification can be an effective way to make complex software with zero bugs!
+In this research paper [Finding and Understanding Bugs in C Compilers](https://users.cs.utah.edu/~regehr/papers/pldi11-preprint.pdf), no bugs were found in the middle-end of the formally verified [CompCert](https://en.wikipedia.org/wiki/CompCert) C compiler, while the other C compilers (GCC, LLVM, ...) all contained subtle bugs. This illustrates that formal verification can be an effective way to make complex software with zero bugs!
 
 ## Definition of programming languages
 
-To be able to reason on a program, we go back to the definition of what is a programming language. These languages (C, JavaScript, Python, ...) are generally defined with a precise set of rules. For example, in Python, the `if` statement is [defined in the reference manual](https://docs.python.org/3/reference/compound_stmts.html#if) by:
+To be able to reason on a program we go back to the definition of a programming language. These languages (C, JavaScript, Python, ...) are generally defined with a precise set of rules. For example, in Python, the `if` statement is [defined in the reference manual](https://docs.python.org/3/reference/compound_stmts.html#if) by:
 
 ```python
 if_stmt ::=  "if" assignment_expression ":" suite
@@ -48,12 +43,12 @@ else:
 
 will execute `a` when the `condition` is true, and `b` otherwise. There are similar rules for all other program constructs (loops, function definitions, classes, ...).
 
-To make these rules more manageable, there are generally split into two parts:
+To make these rules more manageable, we generally split them into two parts:
 
-- The syntax, that defines what is a valid program in the language. For example, in Python, the syntax is defined by the [grammar](https://docs.python.org/3/reference/grammar.html).
-- The semantics, that defines what a program does. This is what we have seen above with the description of the behavior of the `if` statement.
+- The syntax part, that defines what is a valid program in the language. For example, in Python, the syntax is defined by the [grammar](https://docs.python.org/3/reference/grammar.html).
+- The semantics part, that defines what a program does. This is what we have seen above with the description of the behavior of the `if` statement.
 
-In formal verification, we will focus on the semantics of programs,  assuming that the syntax is already verified by the compiler or interpreter.
+In formal verification, we will focus on the semantics of programs,  assuming that the syntax is already verified by the compiler or interpreter, generating "syntax errors" in case of ill-formed programs.
 
 ## Example to verify
 
@@ -78,7 +73,7 @@ my_max([1, 3, 2]) # => 3
 
 it always returns&nbsp;`3`, the biggest number in the list! But can we make sure this is always the case?
 
-We can certainly not run&nbsp;`my_max` on all possible lists of integers, as there are infinitely many of them. We need to reason from the definition of the Python language, what we call formal verification reasoning.
+We can certainly not run&nbsp;`my_max` on all possible lists of integers, as there are infinitely many of them. We need to reason from the definition of the Python language, which is what we call formal verification reasoning.
 
 ## Formal verification
 
@@ -97,7 +92,7 @@ To verify this property for all possible list&nbsp;`l`, we reason by induction. 
 - a list with one element, where the maximum is the only element, or
 - a list with at least two elements, where the maximum is either the last element or the maximum of the rest of the list.
 
-At the start of the code we will always have:
+At the start of the code, we will always have:
 
 ```python
 def my_max(l):
@@ -106,7 +101,7 @@ def my_max(l):
 
 with `m` being equal to the first item of the list. Then:
 
-- If the list has only one element, we iterate only once in the `for` loop, with `x` equals to `l[0]`. The condition:
+- If the list has only one element, we iterate only once in the `for` loop, with `x` equal to `l[0]`. The condition:
   ```python
   if x > m:
   ```
@@ -128,17 +123,34 @@ with `m` being equal to the first item of the list. Then:
         m = x
     ```
     with `x` being `l[len(l) - 1]`. There are two possibilities. Either *(i)* `x` is less than or equal to `m`, and we do not update `m`, or *(ii)* `x` is greater than `m`, and we update `m` to `x`. In both cases, the property is verified for the last element of the list, as:
-    1. In the first case, `m` stays the same so is still larger or equal to all the elements of the list except the last one, as well as larger or equal to the last one according to this last&nbsp;`if` statement.
+    1. In the first case, `m` stays the same, so it is still larger or equal to all the elements of the list except the last one, as well as larger or equal to the last one according to this last&nbsp;`if` statement.
     2. In the second case, `m` is updated to `x`, which is the last element of the list and a greater value than the original&nbsp;`m`. Then it means that `m` is still larger or equal to all the elements of the list except the last one, being larger that the original&nbsp;`m`, and larger or equal to the last one as it is in fact equals to the last one.
 
-We have now closed our induction proof and verified that our property is true for all possible lists of integers! The reasoning above is rather verbose, but should actually correspond to the intuition of most programmers when reading this code.
+We have now closed our induction proof and verified that our property is true for all possible lists of integers! The reasoning above is rather verbose but should actually correspond to the intuition of most programmers when reading this code.
+
+In practice, with formal verification, the reasoning above is done in a proof assistance such as [Coq](https://coq.inria.fr/) to help making sure that we did not forget any case and add automation for most simple cases. Having a proof written in a proof language like Coq also allows us to re-run it to check that it is still valid after a change in the code, or some third-party person to check it without reading all the details.
 
 ## Completing the property
 
-<!-- talk about verifying that the element is indeed in the list -->
+An additional property that we did not verify is:
+
+```python
+forall (l : list[int]),
+    exists (index : int),
+        0 ≤ index < len(l) and
+        l[index] = my_max(l)
+```
+
+It says that the maximum of the list is actually in the list. We can verify it by induction in the same way as we did for the first property. You can detail this verification as an exercise.
+
+:::info Contact
+
+If you want to go into more details for the formal verification of Python programs, you can look at our [coq-of-python](https://github.com/formal-land/coq-of-python) project, where we define the semantics of Python in Coq and verify properties of Python programs (ongoing project!). We also provide formal verification services for [Rust](https://github.com/formal-land/coq-of-rust) and other languages like [OCaml](https://github.com/formal-land/coq-of-ocaml). Contact us at&nbsp;[&#099;&#111;&#110;&#116;&#097;&#099;&#116;&#064;formal&#046;&#108;&#097;&#110;&#100;](mailto:contact@formal.land) to discuss!
+
+:::
 
 ## Conclusion
 
-We have presented an alternative way to build simulations of imperative Python code in purely functional Coq code. The idea is to enable faster reasoning over Python code by removing the need to build explicit simulations. We plan to port this technique to other tools like [coq-of-rust](https://github.com/formal-land/coq-of-rust) as well.
+We have presented here the idea of **formal verification**, a technique to verify the absence of bugs in a program by reasoning from **first principles**. We have illustrated this idea for a simple Python example, showing how we can verify that a function computing the maximum of a list is correct **for all possible lists of integers**.
 
-To see what we can do for you talk with us at&nbsp;[&#099;&#111;&#110;&#116;&#097;&#099;&#116;&#064;formal&#046;&#108;&#097;&#110;&#100;](mailto:contact@formal.land)&nbsp;🏇. For our previous projects, see our [formal verification of the Tezos' L1](https://formal-land.gitlab.io/coq-tezos-of-ocaml/)!
+We will continue with more blog posts explaining what we can do with formal verification and why it matters. Feel free to share this post and tell us what subjects you would like to see covered!
