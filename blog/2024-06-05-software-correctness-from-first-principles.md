@@ -4,7 +4,7 @@ tags: [formal verification, software correctness, first principles, example, Pyt
 authors: []
 ---
 
-**Formal verification** is a technique to verify the absence of bugs in a program by reasoning from **first principles**. Instead of testing a program on examples, what can only cover a finite number of cases, formal verification checks all possible cases. It does so by going back to the definition of programming languages, showing why the whole code is correct given how each individual keyword behaves.
+**Formal verification** is a technique to verify the **absence of bugs** in a program by reasoning from **first principles**. Instead of testing a program on examples, what covers a finite number of cases, formal verification checks **all possible cases**. It does so by going back to the **definition of programming languages**, showing why the whole code is correct given how each individual keyword behaves.
 
 We will present this idea in detail and illustrate how it works for a very simple example.
 
@@ -128,7 +128,7 @@ with `m` being equal to the first item of the list. Then:
 
 We have now closed our induction proof and verified that our property is true for all possible lists of integers! The reasoning above is rather verbose but should actually correspond to the intuition of most programmers when reading this code.
 
-In practice, with formal verification, the reasoning above is done in a proof assistance such as [Coq](https://coq.inria.fr/) to help making sure that we did not forget any case and add automation for most simple cases. Having a proof written in a proof language like Coq also allows us to re-run it to check that it is still valid after a change in the code, or some third-party person to check it without reading all the details.
+In practice, with formal verification, the reasoning above is done in a proof assistance such as [Coq](https://coq.inria.fr/) to help making sure that we did not forget any case, and automatically solve simple cases for us. Having a proof written in a proof language like Coq also allows us to re-run it to check that it is still valid after a change in the code, and allows third-party persons to check it without reading all the details.
 
 ## Completing the property
 
@@ -143,7 +143,7 @@ forall (l : list[int]),
 
 It says that the maximum of the list is actually in the list. We can verify it by induction in the same way as we did for the first property. You can detail this verification as an exercise.
 
-:::info Contact
+:::info For more
 
 If you want to go into more details for the formal verification of Python programs, you can look at our [coq-of-python](https://github.com/formal-land/coq-of-python) project, where we define the semantics of Python in Coq and verify properties of Python programs (ongoing project!). We also provide formal verification services for [Rust](https://github.com/formal-land/coq-of-rust) and other languages like [OCaml](https://github.com/formal-land/coq-of-ocaml). Contact us at&nbsp;[&#099;&#111;&#110;&#116;&#097;&#099;&#116;&#064;formal&#046;&#108;&#097;&#110;&#100;](mailto:contact@formal.land) to discuss!
 
@@ -153,4 +153,4 @@ If you want to go into more details for the formal verification of Python progra
 
 We have presented here the idea of **formal verification**, a technique to verify the absence of bugs in a program by reasoning from **first principles**. We have illustrated this idea for a simple Python example, showing how we can verify that a function computing the maximum of a list is correct **for all possible lists of integers**.
 
-We will continue with more blog posts explaining what we can do with formal verification and why it matters. Feel free to share this post and tell us what subjects you would like to see covered!
+We will continue with more blog posts explaining what we can do with formal verification and why it matters. Feel free to share this post and to tell us what subjects you want to see covered!
