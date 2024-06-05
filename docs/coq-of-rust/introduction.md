@@ -3,11 +3,11 @@ id: introduction
 title: What is coq-of-rust
 ---
 
-[**coq-of-rust**](https://github.com/formal-land/coq-of-rust) is a transpiler from the [🦀&nbsp;Rust](https://www.rust-lang.org/) programming language to the [🐓&nbsp;Coq](https://coq.inria.fr/) proof language. It allows **formal verification** on Rust programs. The sources are on [Github](https://github.com/formal-land/coq-of-rust).
+[**coq-of-rust**](https://github.com/formal-land/coq-of-rust) is a transpiler from the [🦀&nbsp;Rust](https://www.rust-lang.org/) programming language to the [🐓&nbsp;Coq](https://coq.inria.fr/) proof language. It allows **formal verification** on Rust programs. You can download it from [GitHub](https://github.com/formal-land/coq-of-rust).
 
 `coq-of-rust` generates a [shallow embedding](https://cstheory.stackexchange.com/questions/1370/shallow-versus-deep-embeddings) of Rust into Coq. We run the translation from the [THIR](https://rustc-dev-guide.rust-lang.org/thir.html) level of the Rust compiler. The generated Coq code is more verbose than the source Rust as we explicit all the low-level details, such as the sequencing of effects or the implicit borrowing/dereferencing.
 
-:::tip Purchase
+:::tip Services
 
 If you want to formally verify Rust programs, contact us at&nbsp;[&#099;&#111;&#110;&#116;&#097;&#099;&#116;&#064;formal&#046;&#108;&#097;&#110;&#100;](mailto:contact@formal.land)!
 
@@ -47,4 +47,4 @@ To formally verify a Rust project using `coq-of-rust` we work as follows:
 4. verify that these simulations are equivalent to the source code
 5. prove properties over these simulations
 
-As some of the work is very verbose and repetitive, such as the definition of the simulation functions, we make a heavy use of LLM tools such as [Github Copilot](https://github.com/features/copilot).
+As some of the work is very verbose and repetitive, such as the definition of the simulation functions, but thankfully generative AI tools such as [Github Copilot](https://github.com/features/copilot) are better and better at code generation.

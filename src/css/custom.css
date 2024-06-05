@@ -37,3 +37,8 @@ html[data-theme='dark'] .docusaurus-highlight-code-line {
     max-width: 1700px;
   }
 }
+
+/* To hide the "Create your own free forms" from the contact form */
+div.hs-form__virality-link {
+  opacity: 0.1;
+}

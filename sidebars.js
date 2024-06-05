@@ -26,24 +26,31 @@ module.exports = {
         'company/press',
       ],
     },
+    // {
+    //   type: 'category',
+    //   label: 'Formal verification',
+    //   items: [
+    //     'verification/ocaml',
+    //     'verification/rust',
+    //     'verification/typescript',
+    //     'verification/solidity',
+    //   ],
+    // },
+    // {
+    //   type: 'category',
+    //   label: 'Services',
+    //   items: [
+    //     'services/ocaml-development',
+    //     'services/rust-development',
+    //     'services/typescript-development',
+    //     'services/solidity-development',
+    //   ],
+    // },
     {
       type: 'category',
-      label: 'Formal verification',
+      label: '🦀 coq-of-rust',
       items: [
-        'verification/ocaml',
-        'verification/rust',
-        'verification/typescript',
-        'verification/solidity',
-      ],
-    },
-    {
-      type: 'category',
-      label: 'Services',
-      items: [
-        'services/ocaml-development',
-        'services/rust-development',
-        'services/typescript-development',
-        'services/solidity-development',
+        'coq-of-rust/introduction',
       ],
     },
     {
@@ -80,13 +87,6 @@ module.exports = {
             'coq-of-ocaml/faq',
           ],
         },
-      ],
-    },
-    {
-      type: 'category',
-      label: '🦀 coq-of-rust',
-      items: [
-        'coq-of-rust/introduction',
       ],
     },
   ],

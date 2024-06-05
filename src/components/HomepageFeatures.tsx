@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 import React from 'react';
+import Link from '@docusaurus/Link';
 import clsx from 'clsx';
 // import useThemeContext from '@theme/hooks/useThemeContext';
 import styles from './HomepageFeatures.module.css';
@@ -32,9 +33,9 @@ const FeatureList: FeatureItem[] = [
     image: 'img/icons/river.png',
     imageNight: 'img/icons/river-night.png',
     description: (
-      <>
+      <p>
         We provide cutting-edge formal verification services to ensure that your software is bug-free. We can prove that a program is bug-free at scale, verifying the implementation&nbsp;🚀.
-      </>
+      </p>
     ),
   },
   {
@@ -42,9 +43,9 @@ const FeatureList: FeatureItem[] = [
     image: 'img/icons/hills.png',
     imageNight: 'img/icons/hills-night.png',
     description: (
-      <>
+      <p>
         We utilize the proof assistant <a href="https://coq.inria.fr/">🐓&nbsp;Coq</a> to prove that your code is correct. This process, called <a href="https://en.wikipedia.org/wiki/Formal_verification">formal verification</a>, covers all execution cases in your software&nbsp;✅.
-      </>
+      </p>
     ),
   },
   // {
@@ -62,7 +63,7 @@ const FeatureList: FeatureItem[] = [
     image: 'img/icons/canyon.png',
     imageNight: 'img/icons/canyon-night.png',
     description: (
-      <>
+      <p>
         Some formal verification projects we made:
         <ul style={{listStylePosition: "inside", paddingLeft: 0, marginTop: 20}}>
           <li>
@@ -76,7 +77,67 @@ const FeatureList: FeatureItem[] = [
           </li>
         </ul>
         To talk with us, write at&nbsp;<a href="mailto:contact@formal.land">&#099;&#111;&#110;&#116;&#097;&#099;&#116;&#064;formal&#046;&#108;&#097;&#110;&#100;&nbsp;🏇</a>!
+      </p>
+    ),
+  },
+];
+
+const FeatureListPastProjects: FeatureItem[] = [
+  {
+    title: 'L1 of Tezos',
+    image: 'img/icons/river.png',
+    imageNight: 'img/icons/river-night.png',
+    description: (
+      <p>
+        We <a href="https://formal-land.gitlab.io/coq-tezos-of-ocaml/">formally verified&nbsp;🔍</a> the <em>code</em> of the layer 1 of the security-focused blockchain <a href="https://tezos.com/">Tezos</a>.
+        This is a significant achievement as no other blockchains have done that, verifying <em>models</em> of the implementation at best.<br />
+        We covered a codebase of more than 100,000 lines of <a href="">OCaml</a>&nbsp;🐫 code, including the storage system and the smart contracts VM, thanks to our <a href="https://github.com/formal-land/coq-of-ocaml">innovative tools</a> and methods. See the <a href="https://formal-land.gitlab.io/coq-tezos-of-ocaml/blog">blog of the project</a> for more details&nbsp;📚.
+      </p>
+    ),
+  },
+  {
+    title: 'Rust language',
+    image: 'img/icons/hills.png',
+    imageNight: 'img/icons/hills-night.png',
+    description: (
+      <p>
+        We developed the formal verification tool for Rust&nbsp;🦀 <a href="https://github.com/formal-land/coq-of-rust">coq-of-rust</a> for the cryptocurrency <a href="https://alephzero.org/">Aleph Zero</a>&nbsp;🔗. We can very arbitrarily large Rust programs, thanks to the use of the interactive theorem prover <a href="https://coq.inria.fr/">Coq</a>&nbsp;🐓 and our support of the <Link to="/blog/2024/04/26/translation-core-alloc-crates">Rust's standard library</Link>.<br />
+        We are now improving our reasoning principles for Rust, in order to make the verification process more efficient&nbsp;🏎️.
+      </p>
+    ),
+  },
+  {
+    title: 'EVM',
+    image: 'img/icons/canyon.png',
+    imageNight: 'img/icons/canyon-night.png',
+    description: (
+      <>
+        <p>
+          We are verifying that the two following EVM implementations:
+        </p>
+        <ul style={{listStylePosition: "inside", paddingLeft: 0, marginTop: 20}}>
+          <li>
+            the reference <a href="https://github.com/ethereum/execution-specs">Python&nbsp;🐍 EVM</a>, and
+          </li>
+          <li>
+            the Rust EVM <a href="https://github.com/bluealloy/revm">Revm&nbsp;🦀</a>
+          </li>
+        </ul>
+        <p>
+          are equivalent for every possible inputs. This would be the first time that one, and actually two, EVM implementations are formally verified.&nbsp;🏁<br />
+          This work relies on our tools <a href="https://github.com/formal-land/coq-of-rust">coq-of-rust</a> and <a href="https://github.com/formal-land/coq-of-python">coq-of-python</a>.
+        </p>
       </>
+    ),
+  },
+  {
+    title: 'More to come! 🚀',
+    image: 'img/icons/water.png',
+    imageNight: 'img/icons/wolf-night.png',
+    description: (
+      <p>
+        We are working on another formal verification project that will be <strong>announced soon</strong>. This will help dApps to greatly reduce their risks.&nbsp;🧑‍🚀🌜
+      </p>
     ),
   },
 ];
@@ -86,17 +147,19 @@ function Feature({title, image, imageNight, description}: FeatureItem) {
   const isDarkTheme = false;
 
   return (
-    <div className={clsx('col col--4')} style={{marginTop: 50}}>
-      <div className="text--center">
-        <img
-          alt={title}
-          className={styles.featureImg}
-          src={isDarkTheme ? imageNight : image}
-        />
-      </div>
-      <div className="text--center padding-horiz--md">
-        <h3>{title}</h3>
-        <p>{description}</p>
+    <div className={clsx('col col--6')} style={{marginTop: 50}}>
+      <div style={{margin: "auto", maxWidth: 500}}>
+        <div className="text--center">
+          <img
+            alt={title}
+            className={styles.featureImg}
+            src={isDarkTheme ? imageNight : image}
+          />
+        </div>
+        <div className="text--center padding-horiz--md" style={{marginTop: 30}}>
+          <h3>{title}</h3>
+          {description}
+        </div>
       </div>
     </div>
   );
@@ -106,8 +169,11 @@ export default function HomepageFeatures(): JSX.Element {
   return (
     <section className={styles.features}>
       <div className="container">
+        <h2 className="margin-bottom--lg text--center">
+          Our formal verification projects
+        </h2>
         <div className="row">
-          {FeatureList.map((props, idx) => (
+          {FeatureListPastProjects.map((props, idx) => (
             <Feature key={idx} {...props} />
           ))}
         </div>

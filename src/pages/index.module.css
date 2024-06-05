@@ -43,36 +43,52 @@
 .hero__title {
   color: #fffbf1;
   animation: glow 1s ease-in-out infinite alternate;
-  font-size: 140px;
-  margin-top: 100px;
-  margin-bottom: 150px;
-}
-
-@media screen and (max-width: 966px) {
-  .hero__title {
-    font-size: 80px;
-    margin-top: 50px;
-    margin-bottom: 50px;
-  }
+  font-size: 70px;
+  margin-top: 30px;
+  margin-bottom: 50px;
 }
 
 .hero__subtitle {
   color: #fffbf1;
-  font-size: 40px;
+  font-size: 35px;
+}
+
+.hero__subtitle a {
+  color: #fffbf1;
 }
 
 .hero__subsubtitle {
   color: #fffbf1;
-  font-size: 2rem;
+  font-size: 25px;
 }
 
 .hero__subsubtitle a {
   color: #fffbf1;
 }
 
-@media screen and (max-width: 1200px) {
+@media screen and (max-width: 966px) {
+  .hero__title {
+    font-size: 50px;
+    margin-top: 50px;
+    margin-bottom: 50px;
+  }
+
+  .hero__subtitle {
+    font-size: 30px;
+  }
+
+  .hero__subsubtitle {
+    font-size: 20px;
+  }
+}
+
+@media screen and (max-width: 1500px) {
   .onlyDesktop {
     display: none;
+  }
+
+  .container {
+    max-width: 1400px;
   }
 }
 

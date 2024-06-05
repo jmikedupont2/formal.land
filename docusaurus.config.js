@@ -117,15 +117,20 @@ const config = {
             position: 'left',
             label: 'Company',
           },
+          // {
+          //   to: 'docs/verification/ocaml',
+          //   position: 'left',
+          //   label: 'Formal verification',
+          // },
+          // {
+          //   to: 'docs/services/solidity-development',
+          //   position: 'left',
+          //   label: 'Services',
+          // },
           {
-            to: 'docs/verification/ocaml',
+            to: 'docs/coq-of-rust/introduction',
             position: 'left',
-            label: 'Formal verification',
-          },
-          {
-            to: 'docs/services/solidity-development',
-            position: 'left',
-            label: 'Services',
+            label: 'coq-of-rust',
           },
           {
             to: 'docs/coq-of-ocaml/introduction',
@@ -149,7 +154,7 @@ const config = {
         id: 'hiring',
         content:
           // 'We are hiring! 📣 See our <a href="/docs/company/careers">job offers 🌷</a>.',
-          'For formal verification services, email us at <a href="mailto:&#099;&#111;&#110;&#116;&#097;&#099;&#116;&#064;formal&#046;&#108;&#097;&#110;&#100;">&#099;&#111;&#110;&#116;&#097;&#099;&#116;&#064;formal&#046;&#108;&#097;&#110;&#100;</a>&nbsp;💌&nbsp;!',
+          'For our services, email us at <a href="mailto:&#099;&#111;&#110;&#116;&#097;&#099;&#116;&#064;formal&#046;&#108;&#097;&#110;&#100;">&#099;&#111;&#110;&#116;&#097;&#099;&#116;&#064;formal&#046;&#108;&#097;&#110;&#100;</a>&nbsp;💌&nbsp;!',
         backgroundColor: '#fafbfc',
         textColor: '#091E42',
         isCloseable: false,
@@ -227,8 +232,8 @@ const config = {
       },
       colorMode: {
         defaultMode: 'light',
-        disableSwitch: true,
-        respectPrefersColorScheme: false,
+        disableSwitch: false,
+        respectPrefersColorScheme: true,
       },
       prism: {
         theme: PrismReactRender.themes.github,
