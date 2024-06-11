@@ -199,6 +199,10 @@ const config = {
                 href: 'https://www.tiktok.com/@formal.land',
               },
               {
+                label: 'RSS',
+                href: 'https://formal.land/blog/rss.xml',
+              },
+              {
                 label: 'Email',
                 href: 'mailto:contact@formal.land',
               },

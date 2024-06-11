@@ -17,13 +17,13 @@ We typically use formal verification for critical applications, where either:
 - life is at stake, like in the case of trains, airplanes, medical devices, or
 - money is at stake, like in the case of financial applications.
 
-With formal verification, in theory, **we can guarantee that the software will never fail**, as we can check **all possible cases** for a given property. A property can be that no non-admin users can read sensitive data, or that a program never fails with  uncaught exceptions.
+With formal verification, in theory, **we can guarantee that the software will never fail**, as we can check **all possible cases** for a given property. A property can be that no non-admin users can read sensitive data, or that a program never fails with uncaught exceptions. For that to be truly the case, we need to verify the whole software stack for all the relevant properties.
 
 In this research paper [Finding and Understanding Bugs in C Compilers](https://users.cs.utah.edu/~regehr/papers/pldi11-preprint.pdf), no bugs were found in the middle-end of the formally verified [CompCert](https://en.wikipedia.org/wiki/CompCert) C compiler, while the other C compilers (GCC, LLVM, ...) all contained subtle bugs. This illustrates that formal verification can be an effective way to make complex software with zero bugs!
 
 ## Definition of programming languages
 
-To be able to reason on a program we go back to the definition of a programming language. These languages (C, JavaScript, Python, ...) are generally defined with a precise set of rules. For example, in Python, the `if` statement is [defined in the reference manual](https://docs.python.org/3/reference/compound_stmts.html#if) by:
+To be able to reason on a program we go back to the definition of programming languages. The programming languages (C, JavaScript, Python, ...) are generally defined with a precise set of rules. For example, in Python, the `if` statement is [defined in the reference manual](https://docs.python.org/3/reference/compound_stmts.html#if) by:
 
 ```python
 if_stmt ::=  "if" assignment_expression ":" suite
@@ -31,6 +31,8 @@ if_stmt ::=  "if" assignment_expression ":" suite
              ["else" ":" suite]
 ```
 > It selects exactly one of the suites by evaluating the expressions one by one until one is found to be true (see section Boolean operations for the definition of true and false); then that suite is executed (and no other part of the if statement is executed or evaluated). If all expressions are false, the suite of the else clause, if present, is executed.
+>
+> &mdash; <cite>The Python's reference manual</cite>
 
 This means that the Python code:
 
@@ -145,7 +147,7 @@ It says that the maximum of the list is actually in the list. We can verify it b
 
 :::info For more
 
-If you want to go into more details for the formal verification of Python programs, you can look at our [coq-of-python](https://github.com/formal-land/coq-of-python) project, where we define the semantics of Python in Coq and verify properties of Python programs (ongoing project!). We also provide formal verification services for [Rust](https://github.com/formal-land/coq-of-rust) and other languages like [OCaml](https://github.com/formal-land/coq-of-ocaml). Contact us at&nbsp;[&#099;&#111;&#110;&#116;&#097;&#099;&#116;&#064;formal&#046;&#108;&#097;&#110;&#100;](mailto:contact@formal.land) to discuss!
+If you want to go into more details for the formal verification of Python programs, you can look at our [coq-of-python](https://github.com/formal-land/coq-of-python) project, where we define the semantics of Python in Coq and verify properties of Python programs (ongoing project!). We also provide formal verification services for [Rust](https://github.com/formal-land/coq-of-rust) and other languages like [OCaml](https://github.com/formal-land/coq-of-ocaml). Contact us at&nbsp;[&#099;&#111;&#110;&#116;&#097;&#099;&#116;&#064;formal&#046;&#108;&#097;&#110;&#100;](mailto:contact@formal.land) to discuss if you have critical applications to check!
 
 :::
 
