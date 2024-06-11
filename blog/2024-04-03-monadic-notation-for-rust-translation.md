@@ -20,7 +20,6 @@ Contact us at&nbsp;[&#099;&#111;&#110;&#116;&#097;&#099;&#116;&#064;formal&#046;
 
 <figure>
   ![Crab with a pen](2024-04-03/crab-writing.webp)
-  <figcaption>A crab writing</figcaption>
 </figure>
 
 ## Example 🔎
