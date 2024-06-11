@@ -1,5 +1,5 @@
 ---
-title: Monadic notation for the Rust translation
+title: 🦀 Monadic notation for the Rust translation
 tags: [coq-of-rust, Rust, Coq, translation, monad]
 authors: []
 ---

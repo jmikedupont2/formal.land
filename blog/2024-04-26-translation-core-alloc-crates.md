@@ -1,5 +1,5 @@
 ---
-title: Translation of the Rust's core and alloc crates
+title: 🦀 Translation of the Rust's core and alloc crates
 tags: [coq-of-rust, Rust, Coq, translation, core, alloc]
 authors: []
 ---

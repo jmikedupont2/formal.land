@@ -1,5 +1,5 @@
 ---
-title: Translating Go to Coq, part 1
+title: 🦫 Translating Go to Coq, part 1
 tags: [coq-of-go, Go, Coq, translation]
 authors: []
 ---

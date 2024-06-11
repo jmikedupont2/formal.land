@@ -1,5 +1,5 @@
 ---
-title: Translation of Python code to Coq
+title: 🐍 Translation of Python code to Coq
 tags: [coq-of-python, Python, Coq, translation, Ethereum]
 authors: []
 ---
