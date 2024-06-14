@@ -1,0 +1,271 @@
+# 🐍 interpreter.py
+
+[🐙 GitHub source](https://github.com/ethereum/execution-specs/blob/c5415056a4a7066906f67c203ec5364a9de8e017/src/ethereum/dao_fork/vm/interpreter.py)
+
+```python
+"""
+Ethereum Virtual Machine (EVM) Interpreter
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. contents:: Table of Contents
+    :backlinks: none
+    :local:
+
+Introduction
+------------
+
+A straightforward interpreter that executes EVM code.
+"""
+from dataclasses import dataclass
+from typing import Optional, Set, Tuple, Union
+
+from ethereum.base_types import U256, Bytes0, Uint
+from ethereum.trace import (
+    EvmStop,
+    OpEnd,
+    OpException,
+    OpStart,
+    PrecompileEnd,
+    PrecompileStart,
+    TransactionEnd,
+    evm_trace,
+)
+
+from ..blocks import Log
+from ..fork_types import Address
+from ..state import (
+    account_has_code_or_nonce,
+    begin_transaction,
+    commit_transaction,
+    move_ether,
+    rollback_transaction,
+    set_code,
+    touch_account,
+)
+from ..vm import Message
+from ..vm.gas import GAS_CODE_DEPOSIT, charge_gas
+from ..vm.precompiled_contracts.mapping import PRE_COMPILED_CONTRACTS
+from . import Environment, Evm
+from .exceptions import (
+    AddressCollision,
+    ExceptionalHalt,
+    InvalidOpcode,
+    StackDepthLimitError,
+)
+from .instructions import Ops, op_implementation
+from .runtime import get_valid_jump_destinations
+
+STACK_DEPTH_LIMIT = U256(1024)
+
+
+@dataclass
+class MessageCallOutput:
+    """
+    Output of a particular message call
+
+    Contains the following:
+
+          1. `gas_left`: remaining gas after execution.
+          2. `refund_counter`: gas to refund after execution.
+          3. `logs`: list of `Log` generated during execution.
+          4. `accounts_to_delete`: Contracts which have self-destructed.
+          5. `error`: The error from the execution if any.
+    """
+
+    gas_left: Uint
+    refund_counter: U256
+    logs: Union[Tuple[()], Tuple[Log, ...]]
+    accounts_to_delete: Set[Address]
+    error: Optional[Exception]
+
+
+def process_message_call(
+    message: Message, env: Environment
+) -> MessageCallOutput:
+    """
+    If `message.current` is empty then it creates a smart contract
+    else it executes a call from the `message.caller` to the `message.target`.
+
+    Parameters
+    ----------
+    message :
+        Transaction specific items.
+
+    env :
+        External items required for EVM execution.
+
+    Returns
+    -------
+    output : `MessageCallOutput`
+        Output of the message call
+    """
+    if message.target == Bytes0(b""):
+        is_collision = account_has_code_or_nonce(
+            env.state, message.current_target
+        )
+        if is_collision:
+            return MessageCallOutput(
+                Uint(0), U256(0), tuple(), set(), AddressCollision()
+            )
+        else:
+            evm = process_create_message(message, env)
+    else:
+        evm = process_message(message, env)
+
+    if evm.error:
+        logs: Tuple[Log, ...] = ()
+        accounts_to_delete = set()
+        refund_counter = U256(0)
+    else:
+        logs = evm.logs
+        accounts_to_delete = evm.accounts_to_delete
+        refund_counter = evm.refund_counter
+
+    tx_end = TransactionEnd(message.gas - evm.gas_left, evm.output, evm.error)
+    evm_trace(evm, tx_end)
+
+    return MessageCallOutput(
+        gas_left=evm.gas_left,
+        refund_counter=refund_counter,
+        logs=logs,
+        accounts_to_delete=accounts_to_delete,
+        error=evm.error,
+    )
+
+
+def process_create_message(message: Message, env: Environment) -> Evm:
+    """
+    Executes a call to create a smart contract.
+
+    Parameters
+    ----------
+    message :
+        Transaction specific items.
+    env :
+        External items required for EVM execution.
+
+    Returns
+    -------
+    evm: :py:class:`~ethereum.dao_fork.vm.Evm`
+        Items containing execution specific objects.
+    """
+    # take snapshot of state before processing the message
+    begin_transaction(env.state)
+
+    evm = process_message(message, env)
+    if not evm.error:
+        contract_code = evm.output
+        contract_code_gas = len(contract_code) * GAS_CODE_DEPOSIT
+        try:
+            charge_gas(evm, contract_code_gas)
+        except ExceptionalHalt as error:
+            rollback_transaction(env.state)
+            evm.gas_left = Uint(0)
+            evm.error = error
+        else:
+            set_code(env.state, message.current_target, contract_code)
+            commit_transaction(env.state)
+    else:
+        rollback_transaction(env.state)
+    return evm
+
+
+def process_message(message: Message, env: Environment) -> Evm:
+    """
+    Executes a call to create a smart contract.
+
+    Parameters
+    ----------
+    message :
+        Transaction specific items.
+    env :
+        External items required for EVM execution.
+
+    Returns
+    -------
+    evm: :py:class:`~ethereum.dao_fork.vm.Evm`
+        Items containing execution specific objects
+    """
+    if message.depth > STACK_DEPTH_LIMIT:
+        raise StackDepthLimitError("Stack depth limit reached")
+
+    # take snapshot of state before processing the message
+    begin_transaction(env.state)
+
+    touch_account(env.state, message.current_target)
+
+    if message.should_transfer_value and message.value != 0:
+        move_ether(
+            env.state, message.caller, message.current_target, message.value
+        )
+
+    evm = execute_code(message, env)
+    if evm.error:
+        # revert state to the last saved checkpoint
+        # since the message call resulted in an error
+        rollback_transaction(env.state)
+    else:
+        commit_transaction(env.state)
+    return evm
+
+
+def execute_code(message: Message, env: Environment) -> Evm:
+    """
+    Executes bytecode present in the `message`.
+
+    Parameters
+    ----------
+    message :
+        Transaction specific items.
+    env :
+        External items required for EVM execution.
+
+    Returns
+    -------
+    evm: `ethereum.vm.EVM`
+        Items containing execution specific objects
+    """
+    code = message.code
+    valid_jump_destinations = get_valid_jump_destinations(code)
+
+    evm = Evm(
+        pc=Uint(0),
+        stack=[],
+        memory=bytearray(),
+        code=code,
+        gas_left=message.gas,
+        env=env,
+        valid_jump_destinations=valid_jump_destinations,
+        logs=(),
+        refund_counter=U256(0),
+        running=True,
+        message=message,
+        output=b"",
+        accounts_to_delete=set(),
+        error=None,
+    )
+    try:
+        if evm.message.code_address in PRE_COMPILED_CONTRACTS:
+            evm_trace(evm, PrecompileStart(evm.message.code_address))
+            PRE_COMPILED_CONTRACTS[evm.message.code_address](evm)
+            evm_trace(evm, PrecompileEnd())
+            return evm
+
+        while evm.running and evm.pc < len(evm.code):
+            try:
+                op = Ops(evm.code[evm.pc])
+            except ValueError:
+                raise InvalidOpcode(evm.code[evm.pc])
+
+            evm_trace(evm, OpStart(op))
+            op_implementation[op](evm)
+            evm_trace(evm, OpEnd())
+
+        evm_trace(evm, EvmStop(Ops.STOP))
+
+    except ExceptionalHalt as error:
+        evm_trace(evm, OpException(error))
+        evm.gas_left = Uint(0)
+        evm.error = error
+    return evm
+```
