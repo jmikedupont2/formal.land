@@ -137,7 +137,16 @@ const config = {
             position: 'left',
             label: 'coq-of-ocaml',
           },
-          {to: '/blog', label: 'Blog', position: 'left'},
+          {
+            to: 'docs/revm-python-spec/revm-verif',
+            position: 'left',
+            label: 'Revm',
+          },
+          {
+            to: '/blog',
+            label: 'Blog',
+            position: 'left',
+          },
           {
             href: 'https://github.com/formal-land',
             label: 'GitHub',
