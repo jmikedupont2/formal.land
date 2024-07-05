@@ -6,12 +6,6 @@ authors: []
 
 [Solidity](https://soliditylang.org/) is the most widely used **smart contract language** on the blockchain. As smart contracts are **critical software** handling a lot of money, there is a huge interest in finding **all possible bugs** before putting them into production.
 
-:::info AlephZero
-
-_We are happy to be working with [AlephZero](https://alephzero.org/) to develop tools to bring more security for the audit of Solidity smart contracts, thanks to the use of formal verification and the interactive theorem prover [Coq](https://coq.inria.fr/). We thank the Aleph Zero Foundation for their support._
-
-:::
-
 **Formal verification** is a technique to test a program on all possible entries, even when there are **infinitely many**. This contrasts with the traditional test techniques, which can only execute a finite set of scenarios. As such, it appears to be an ideal way to bring more security to smart contract audits.
 
 <!-- Many companies, like [Certora](https://certora.com/) and [CertiK](https://www.certik.io/), are already providing formal verification services for Solidity. -->
@@ -26,6 +20,12 @@ Here, we present how we translate Solidity code into Coq using the intermediate 
 The code is available in our fork of the Solidity compiler at [github.com/formal-land/solidity](https://github.com/formal-land/solidity).
 
 <!-- truncate -->
+
+:::info AlephZero
+
+_We are happy to be working with [AlephZero](https://alephzero.org/) to develop tools to bring more security for the audit of Solidity smart contracts, thanks to the use of formal verification and the interactive theorem prover [Coq](https://coq.inria.fr/). We thank the Aleph Zero Foundation for their support._
+
+:::
 
 <figure>
   ![Ethereum in forest](2024-06-28/ethereum-in-forest.webp)
