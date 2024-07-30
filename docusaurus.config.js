@@ -19,7 +19,8 @@ const liveChat = `<!-- Start of LiveChat (www.livechat.com) code -->
 const config = {
   title: 'Formal Land',
   // tagline: 'Formal verification for everyday-life programs',
-  tagline: 'Formal verification for everyday-life applications 🏇',
+  // tagline: 'Formal verification for everyday-life applications 🏇',
+  tagline: 'Innovative technologies to make code without bugs',
   // tagline: 'Prevent all bugs',
   // tagline: 'The more you are demanding, the more you need us',
   // tagline: 'Securing everyday-life programs thanks to formal verification',
